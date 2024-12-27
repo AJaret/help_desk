@@ -1,4 +1,3 @@
-import 'package:help_desk/internal/login/domain/entities/user_login.dart';
 import 'package:help_desk/internal/login/domain/repositories/login_repository.dart';
 
 class PostLoginUseCase {
@@ -6,7 +5,7 @@ class PostLoginUseCase {
 
   PostLoginUseCase({required this.userLoginRepo});
 
-  Future<Session> execute({required String email, required String password}) async {
+  Future<void> execute({required String email, required String password}) async {
     try {
       return await userLoginRepo.postLogin(email, password);
     } catch (e) {

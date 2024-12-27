@@ -1,5 +1,5 @@
 
-import 'package:help_desk/internal/login/domain/entities/user_login.dart';
+import 'package:help_desk/internal/login/domain/entities/session.dart';
 
 class LoginModel extends Session {
   LoginModel({
@@ -9,8 +9,8 @@ class LoginModel extends Session {
 
   factory LoginModel.fromJson(Map<String, dynamic> json) {
     return LoginModel(
-      accessToken: json["value"],
-      refreshToken: json["label"],
+      accessToken: json["token"],
+      refreshToken: json["refreshToken"],
     );
   }
 

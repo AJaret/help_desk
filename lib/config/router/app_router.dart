@@ -10,11 +10,14 @@ Future<RouterConfig<Object>> getInitialRoute(GlobalKey<NavigatorState> navigator
   return GoRouter(
     navigatorKey: navigatorKey,
     redirect: (context, state) async {
-      final TokenService authService = TokenService();
-      final longToken = await authService.getLongToken();
-      if (longToken == null) {
-        return '/main';
+      final TokenService tokenService = TokenService();
+      final longToken = await tokenService.getLongToken();
+      const publicRoutes = ['/register', '/'];
+
+      if (longToken == null && !publicRoutes.contains(state.uri.path)) {
+        return '/';
       }
+      
       return null;
     },
     routes: [
@@ -38,14 +41,6 @@ Future<RouterConfig<Object>> getInitialRoute(GlobalKey<NavigatorState> navigator
           return const MainMenuWidget();
         },
       ),
-      
-      // GoRoute(
-      //   path: '/academic_offer_categories',
-      //   builder: (context, state){
-      //     List<dynamic> categories = state.extra as List<dynamic>;
-      //     return AcademicOfferCategories(data: categories);
-      //   },
-      // ),
     ]
   );
 }
