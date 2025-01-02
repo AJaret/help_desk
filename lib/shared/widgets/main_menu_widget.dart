@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:help_desk/internal/announcements/presentation/screens/announcements_screen.dart';
-import 'package:help_desk/internal/history/presentation/screens/history_screen.dart';
 import 'package:help_desk/internal/profile/presentation/screens/profile_screen.dart';
+import 'package:help_desk/internal/request/presentation/screens/history_screen.dart';
 import 'package:help_desk/internal/request/presentation/screens/request_screen.dart';
 import 'package:help_desk/internal/request/presentation/widgets/new_request_form.dart';
 
@@ -141,6 +142,7 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
                 onTabChange: (index) {
                   setState(() {
                     _selectedIndex = index;
+                    GoRouter.of(context).refresh();
                   });
                 },
               ),

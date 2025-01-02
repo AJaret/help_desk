@@ -1,15 +1,15 @@
 class Request {
-  int folio;
-  String name;
-  String desc;
-  int status;
-  String date;
+  String? requestId;
+  String? date;
+  String? dependency;
+  String? status;
+  String? folio;
 
   Request({
-    required this.folio,
-    required this.name,
-    required this.desc,
-    required this.status,
-    required this.date
+    this.requestId,
+    this.date,
+    this.dependency,
+    this.status,
+    this.folio,
   });
 }

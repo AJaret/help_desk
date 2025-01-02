@@ -5,14 +5,15 @@ import 'package:help_desk/internal/request/presentation/blocs/request_bloc/reque
 import 'package:help_desk/internal/request/presentation/widgets/request_search_widget.dart';
 import 'package:help_desk/shared/helpers/app_dependencies.dart';
 
-class RequestScreen extends StatefulWidget {
-  const RequestScreen({super.key});
+class HistoryScreen extends StatefulWidget {
+  const HistoryScreen({super.key});
 
   @override
-  State<RequestScreen> createState() => _RequestScreenState();
+  State<HistoryScreen> createState() => _HistoryScreenState();
 }
 
-class _RequestScreenState extends State<RequestScreen> {
+class _HistoryScreenState extends State<HistoryScreen> {
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -21,7 +22,7 @@ class _RequestScreenState extends State<RequestScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'SOLICITUDES PENDIENTES',
+          'HISTORIAL DE SOLICITUDES',
           style: TextStyle(
             color: const Color(0xFF2C2927),
             fontSize: size.width * 0.06,
@@ -56,7 +57,7 @@ class _RequestScreenState extends State<RequestScreen> {
                     );
                   }
                 },
-                child: const RequestSearchWidget(requestType: 'All'),
+                child: const RequestSearchWidget(requestType: 'Finished',),
               ),
             )
           ),

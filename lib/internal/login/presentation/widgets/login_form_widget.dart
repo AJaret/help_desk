@@ -1,6 +1,8 @@
 import 'package:fancy_password_field/fancy_password_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:help_desk/internal/login/presentation/blocs/login_bloc/login_bloc.dart';
 
 class LoginFormWidget extends StatefulWidget {
   const LoginFormWidget({super.key});
@@ -36,16 +38,16 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     super.dispose();
   }
 
-  String? _emailValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Por favor ingrese su correo electrónico';
-    }
-    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-    if (!emailRegex.hasMatch(value)) {
-      return 'Por favor ingrese un correo electrónico válido';
-    }
-    return null;
-  }
+  // String? _emailValidator(String? value) {
+  //   if (value == null || value.isEmpty) {
+  //     return 'Por favor ingrese su correo electrónico';
+  //   }
+  //   final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+  //   if (!emailRegex.hasMatch(value)) {
+  //     return 'Por favor ingrese un correo electrónico válido';
+  //   }
+  //   return null;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +83,6 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                       borderSide: BorderSide.none,
                     ),
                   ),
-                  validator: _emailValidator
                 ),
                 const SizedBox(height: 25),
                 FancyPasswordField(
@@ -127,7 +128,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
             onPressed: _isButtonEnabled ?
             () {
               if (_formKey.currentState!.validate()) {
-                GoRouter.of(context).go('/main');
+                context.read<LoginBloc>().add(PostLogin(email: _emailController.text, password: _passwordController.text));
               }
             } : null,
             style: ElevatedButton.styleFrom(
@@ -137,7 +138,10 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            child: Text(
+            child: context.read<LoginBloc>().state is PostingLogin ?
+            const CircularProgressIndicator()
+            : 
+            Text(
               'Iniciar sesión',
               style: TextStyle(fontSize: size.width * 0.04),
             ),

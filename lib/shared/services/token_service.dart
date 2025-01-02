@@ -24,31 +24,27 @@ class TokenService {
     await _storage.deleteAll();
   }
 
-  Future<String?> renewShortToken() async {
-    final longToken = await getLongToken();
-    if (longToken == null) {
-      return null; // Long token missing, session expired.
-    }
-
-    final response = await http.post(
-      Uri.parse('$baseUrl/apiHelpdeskDNTICS/administrador/refresh-token'),
-      headers: {
-        // 'Authorization': 'Bearer $longToken',
-        'Content-Type': 'application/json',
-      },
-      body: {
-        'refreshToken': longToken
+    Future<String?> renewShortToken() async {
+      final longToken = await getLongToken();
+      if (longToken == null) {
+        return null;
       }
-    );
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      final newShortToken = data['token'];
-      await saveTokens(newShortToken, longToken);
-      return newShortToken;
-    } else {
-      await logout();
-      return null;
+      final response = await http.post(
+        Uri.parse('$baseUrl/apiHelpdeskDNTICS/administrador/refresh-token'),
+        body: {
+          'refreshToken': longToken,
+        }
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final newShortToken = data['token'];
+        await saveTokens(newShortToken, longToken);
+        return newShortToken;
+      } else {
+        await logout();
+        return null;
+      }
     }
-  }
 }

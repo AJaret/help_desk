@@ -23,35 +23,35 @@ class _RequestCardWidgetState extends State<RequestCardWidget>{
     String? statusDesc;
 
     switch (widget.request.status) {
-      case 1:
+      case 'Solicitud registrada':
         statusColor = const Color(0XFF0DCAF0);
         statusIcon = Icons.add_circle_outline;
         statusDesc = 'Registrada';
         break;
-      case 2:
+      case 'Solicitud validada':
         statusColor = const Color(0XFF0D6EFD);
         statusIcon = Icons.verified;
         statusDesc = 'Validada';
         break;
-      case 3:
+      case 'Solicitud asignada':
         statusColor = const Color(0XFF212529);
         statusIcon = Icons.assignment_ind;
         statusDesc = 'Asignada';
         break;
-      case 4:
+      case 'Solicitud en proceso':
         statusColor = const Color(0XFFFFC107);
         statusIcon = Icons.hourglass_bottom;
         statusDesc = 'En proceso';
         break;
-      case 5:
+      case 'Solicitud terminada':
         statusColor = const Color(0xFFD619AD);
         statusIcon = Icons.task_alt;
         statusDesc = 'Terminada';
         break;
-      case 6:
+      case 'Solicitud finalizada':
         statusColor = const Color(0xFFCCBDC9);
         statusIcon = Icons.done_all;
-        statusDesc = 'Finalizado';
+        statusDesc = 'Finalizada';
         break;
       default:
     }
@@ -119,6 +119,7 @@ class _RequestCardWidgetState extends State<RequestCardWidget>{
         },
         child: Container(
           padding: const EdgeInsets.all(10.0),
+          width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
             color: statusColor,
             borderRadius: BorderRadius.circular(10),
@@ -129,7 +130,7 @@ class _RequestCardWidgetState extends State<RequestCardWidget>{
               children: [
                 Icon(
                   statusIcon,
-                  color: widget.request.status == 3 || widget.request.status == 2 ? Colors.white : Colors.black,
+                  color: widget.request.status == 'Solicitud asignada' || widget.request.status == 'Solicitud validada' ? Colors.white : Colors.black,
                 ),
                 const SizedBox(
                   width: 15,
@@ -141,27 +142,25 @@ class _RequestCardWidgetState extends State<RequestCardWidget>{
                     Text(
                       'Estatus: $statusDesc',
                       style: TextStyle(
-                        color: widget.request.status == 3 || widget.request.status == 2 ? Colors.white : Colors.black,
+                        color: widget.request.status == 'Solicitud asignada' || widget.request.status == 'Solicitud validada' ? Colors.white : Colors.black,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
                       'Folio: ${widget.request.folio}',
                       style: TextStyle(
-                        color: widget.request.status == 3 || widget.request.status == 2 ? Colors.white : Colors.black,
+                        color: widget.request.status == 'Solicitud asignada' || widget.request.status == 'Solicitud validada' ? Colors.white : Colors.black,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(
-                      'Nombre: ${widget.request.name}',
-                      style: TextStyle(
-                        color: widget.request.status == 3 || widget.request.status == 2 ? Colors.white : Colors.black,
-                      ),
-                    ),
-                    Text(
-                      'Descripción: ${widget.request.desc}',
-                      style: TextStyle(
-                        color: widget.request.status == 3 || widget.request.status == 2 ? Colors.white : Colors.black,
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      child: Text(
+                        'Dirección: ${widget.request.dependency}',
+                        style: TextStyle(
+                          color: widget.request.status == 'Solicitud asignada' || widget.request.status == 'Solicitud validada' ? Colors.white : Colors.black,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
