@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:help_desk/internal/request/domain/entities/request.dart';
-import 'package:help_desk/internal/request/domain/usecases/get_request_usecase.dart';
+import 'package:help_desk/internal/request/domain/usecases/post_request_usecase.dart';
 import 'package:meta/meta.dart';
 
 part 'request_event.dart';

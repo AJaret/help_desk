@@ -22,7 +22,7 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
     setState(() {
       filteredRequests = requests.where((request) {
         final queryLower = searchQuery.toLowerCase();
-        final matchesSearch = request.folio.toString().contains(queryLower) ||
+        final matchesSearch = request.requestId.toString().contains(queryLower) ||
             (request.dependency != null
                 ? request.dependency!.toLowerCase().contains(queryLower)
                 : false) ||
@@ -35,7 +35,7 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
 
       if (sortByDateDesc) {
         filteredRequests
-            .sort((a, b) => _parseDate(b.date!).compareTo(_parseDate(a.date!)));
+            .sort((a, b) => _parseDate(b.registrationDate!).compareTo(_parseDate(a.registrationDate!)));
       }
     });
   }

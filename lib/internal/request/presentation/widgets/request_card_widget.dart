@@ -1,6 +1,6 @@
-import 'package:animated_segmented_tab_control/animated_segmented_tab_control.dart';
 import 'package:flutter/material.dart';
 import 'package:help_desk/internal/request/domain/entities/request.dart';
+import 'package:help_desk/internal/request/presentation/widgets/request_details_widget.dart';
 
 class RequestCardWidget extends StatefulWidget {
   final Request request;
@@ -14,8 +14,7 @@ class RequestCardWidget extends StatefulWidget {
   State<RequestCardWidget> createState() => _RequestCardWidgetState();
 }
 
-class _RequestCardWidgetState extends State<RequestCardWidget>{
-
+class _RequestCardWidgetState extends State<RequestCardWidget> {
   @override
   Widget build(BuildContext context) {
     Color? statusColor;
@@ -59,7 +58,7 @@ class _RequestCardWidgetState extends State<RequestCardWidget>{
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: GestureDetector(
-        onTap: (){
+        onTap: () {
           showModalBottomSheet<String>(
             context: context,
             isDismissible: true,
@@ -67,53 +66,10 @@ class _RequestCardWidgetState extends State<RequestCardWidget>{
             builder: (BuildContext context) => SizedBox(
               height: MediaQuery.of(context).size.height * 0.9,
               width: MediaQuery.of(context).size.width,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: DefaultTabController(
-                      length: 4,
-                      child: SegmentedTabControl(
-                        tabs: [
-                          SegmentTab(
-                            backgroundColor: statusColor,
-                            color: Colors.white,
-                            textColor: Colors.white,
-                            selectedTextColor: Colors.black,
-                            label: "Home",
-                          ),
-                          SegmentTab(
-                            backgroundColor: statusColor,
-                            color: Colors.white,
-                            textColor: Colors.white,
-                            selectedTextColor: Colors.black,
-                            label: "Account",
-                          ),
-                          SegmentTab(
-                            backgroundColor: statusColor,
-                            color: Colors.white,
-                            textColor: Colors.white,
-                            selectedTextColor: Colors.black,
-                            label: "Account",
-                          ),
-                          SegmentTab(
-                            backgroundColor: statusColor,
-                            color: Colors.white,
-                            textColor: Colors.white,
-                            selectedTextColor: Colors.black,
-                            label: "Account",
-                          ),
-                        ],
-                      )
-                    ),
-                  ),
-                  const Expanded(
-                    child: Center(
-                      child: Text('lol'),
-                    ),
-                  )
-                ],
-              )
+              child: RequestDetailsWidget(
+                statusColor: statusColor ?? const Color(0XFF0DCAF0),
+                requestId: widget.request.requestId ?? '0 ',
+              ),
             )
           );
         },
@@ -130,7 +86,10 @@ class _RequestCardWidgetState extends State<RequestCardWidget>{
               children: [
                 Icon(
                   statusIcon,
-                  color: widget.request.status == 'Solicitud asignada' || widget.request.status == 'Solicitud validada' ? Colors.white : Colors.black,
+                  color: widget.request.status == 'Solicitud asignada' ||
+                          widget.request.status == 'Solicitud validada'
+                      ? Colors.white
+                      : Colors.black,
                 ),
                 const SizedBox(
                   width: 15,
@@ -142,14 +101,20 @@ class _RequestCardWidgetState extends State<RequestCardWidget>{
                     Text(
                       'Estatus: $statusDesc',
                       style: TextStyle(
-                        color: widget.request.status == 'Solicitud asignada' || widget.request.status == 'Solicitud validada' ? Colors.white : Colors.black,
+                        color: widget.request.status == 'Solicitud asignada' ||
+                                widget.request.status == 'Solicitud validada'
+                            ? Colors.white
+                            : Colors.black,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      'Folio: ${widget.request.folio}',
+                      'Folio: ${widget.request.requestId}',
                       style: TextStyle(
-                        color: widget.request.status == 'Solicitud asignada' || widget.request.status == 'Solicitud validada' ? Colors.white : Colors.black,
+                        color: widget.request.status == 'Solicitud asignada' ||
+                                widget.request.status == 'Solicitud validada'
+                            ? Colors.white
+                            : Colors.black,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -158,7 +123,11 @@ class _RequestCardWidgetState extends State<RequestCardWidget>{
                       child: Text(
                         'Dirección: ${widget.request.dependency}',
                         style: TextStyle(
-                          color: widget.request.status == 'Solicitud asignada' || widget.request.status == 'Solicitud validada' ? Colors.white : Colors.black,
+                          color: widget.request.status ==
+                                      'Solicitud asignada' ||
+                                  widget.request.status == 'Solicitud validada'
+                              ? Colors.white
+                              : Colors.black,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
