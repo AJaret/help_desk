@@ -1,4 +1,5 @@
 class Request {
+  final String? requestToken;
   final String? requestId;
   final String? registrationDate;
   final String? employee;
@@ -17,6 +18,7 @@ class Request {
   final String? inventoryNumber;
 
   Request({
+    this.requestToken,
     this.requestId,
     this.registrationDate,
     this.employee,

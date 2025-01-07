@@ -22,20 +22,22 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
     setState(() {
       filteredRequests = requests.where((request) {
         final queryLower = searchQuery.toLowerCase();
-        final matchesSearch = request.requestId.toString().contains(queryLower) ||
-            (request.dependency != null
-                ? request.dependency!.toLowerCase().contains(queryLower)
-                : false) ||
-            (request.status != null
-                ? request.status!.toLowerCase().contains(queryLower)
-                : false);
-        final matchesStatus = selectedStatus == null || request.status == selectedStatus;
+        final matchesSearch =
+            request.requestId.toString().contains(queryLower) ||
+                (request.dependency != null
+                    ? request.dependency!.toLowerCase().contains(queryLower)
+                    : false) ||
+                (request.status != null
+                    ? request.status!.toLowerCase().contains(queryLower)
+                    : false);
+        final matchesStatus =
+            selectedStatus == null || request.status == selectedStatus;
         return matchesSearch && matchesStatus;
       }).toList();
 
       if (sortByDateDesc) {
-        filteredRequests
-            .sort((a, b) => _parseDate(b.registrationDate!).compareTo(_parseDate(a.registrationDate!)));
+        filteredRequests.sort((a, b) => _parseDate(b.registrationDate!)
+            .compareTo(_parseDate(a.registrationDate!)));
       }
     });
   }
@@ -69,12 +71,16 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
                 isExpanded: true,
                 hint: const Text("Selecciona un estatus"),
                 items: const [
-                  DropdownMenuItem(value: 'Registrada', child: Text("Registrada")),
+                  DropdownMenuItem(
+                      value: 'Registrada', child: Text("Registrada")),
                   DropdownMenuItem(value: 'Validada', child: Text("Validada")),
                   DropdownMenuItem(value: 'Asignada', child: Text("Asignada")),
-                  DropdownMenuItem(value: 'En proceso', child: Text("En proceso")),
-                  DropdownMenuItem(value: 'Terminada', child: Text("Terminada")),
-                  DropdownMenuItem(value: 'Finalizado', child: Text("Finalizado")),
+                  DropdownMenuItem(
+                      value: 'En proceso', child: Text("En proceso")),
+                  DropdownMenuItem(
+                      value: 'Terminada', child: Text("Terminada")),
+                  DropdownMenuItem(
+                      value: 'Finalizado', child: Text("Finalizado")),
                 ],
                 onChanged: (value) {
                   setState(() {
@@ -123,69 +129,88 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
   Widget build(BuildContext context) {
     return BlocBuilder<RequestBloc, RequestState>(
       builder: (context, state) {
-        if(state is RequestInitial){
+        if (state is RequestInitial) {
           context.read<RequestBloc>().add(PostRequest());
-        }
-        else if(state is PostingRequest){
+        } else if (state is PostingRequest) {
           return const Center(
             child: CircularProgressIndicator(),
           );
-        }else if(state is RequestSuccess){
-          widget.requestType == 'Finished' ? filteredRequests = state.requests.where((request) => request.status == 'Finalizada').toList() : filteredRequests = state.requests;
-          return filteredRequests.isEmpty ? Center(
-            child: Text("No se encontraron solicitudes ${widget.requestType == 'Finished' ? 'Finalizadas' : 'pendientes'}", style: const TextStyle(fontSize: 20,), textAlign: TextAlign.center,),
-          ) :
-          Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: "Buscar por folio, nombre o descripción",
-                        border: const OutlineInputBorder(),
-                        suffixIcon: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.filter_alt),
-                              onPressed: () => _showFilterDialog(state.requests),
-                            ),
-                            if (selectedStatus != null || searchQuery.isNotEmpty || sortByDateDesc)
-                              IconButton(
-                                icon: const Icon(Icons.clear),
-                                onPressed: () => _clearFilters(state.requests),
-                              ),
-                          ],
-                        ),
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          searchQuery = value;
-                        });
-                        _filterRequests(state.requests);
-                      },
+        } else if (state is RequestSuccess) {
+          widget.requestType == 'Finished'
+              ? filteredRequests = state.requests
+                  .where((request) => request.status == 'Finalizada')
+                  .toList()
+              : filteredRequests = state.requests;
+          return filteredRequests.isEmpty
+              ? Center(
+                  child: Text(
+                    "No se encontraron solicitudes ${widget.requestType == 'Finished' ? 'Finalizadas' : 'pendientes'}",
+                    style: const TextStyle(
+                      fontSize: 20,
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: filteredRequests.length,
-                  itemBuilder: (context, index) {
-                    return RequestCardWidget(request: filteredRequests[index]);
-                  },
-                ),
-              ),
-            ],
-          );
-        }else if(state is ErrorPostingRequest){
+                )
+              : Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              labelText:
+                                  "Buscar por folio, nombre o descripción",
+                              border: const OutlineInputBorder(),
+                              suffixIcon: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.filter_alt),
+                                    onPressed: () =>
+                                        _showFilterDialog(state.requests),
+                                  ),
+                                  if (selectedStatus != null ||
+                                      searchQuery.isNotEmpty ||
+                                      sortByDateDesc)
+                                    IconButton(
+                                      icon: const Icon(Icons.clear),
+                                      onPressed: () =>
+                                          _clearFilters(state.requests),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                searchQuery = value;
+                              });
+                              _filterRequests(state.requests);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: filteredRequests.length,
+                        itemBuilder: (context, index) {
+                          return RequestCardWidget(
+                            request: filteredRequests[index]
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                );
+        } else if (state is ErrorPostingRequest) {
           return Center(
             child: IconButton(
-              onPressed: () => context.read<RequestBloc>().add(PostRequest()),
-              icon: const Icon(Icons.refresh_rounded, size: 60,)
-            ),
+                onPressed: () => context.read<RequestBloc>().add(PostRequest()),
+                icon: const Icon(
+                  Icons.refresh_rounded,
+                  size: 60,
+                )),
           );
         }
         return Container();

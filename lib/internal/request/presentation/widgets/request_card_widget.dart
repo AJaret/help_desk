@@ -1,8 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:help_desk/internal/request/domain/entities/request.dart';
+import 'package:help_desk/internal/request/presentation/blocs/request_details_bloc/request_details_bloc.dart';
 import 'package:help_desk/internal/request/presentation/widgets/request_details_widget.dart';
+import 'package:help_desk/shared/helpers/app_dependencies.dart';
+import 'package:help_desk/shared/helpers/status_information.dart';
 
-class RequestCardWidget extends StatefulWidget {
+class RequestCardWidget extends StatelessWidget {
   final Request request;
 
   const RequestCardWidget({
@@ -11,50 +17,18 @@ class RequestCardWidget extends StatefulWidget {
   });
 
   @override
-  State<RequestCardWidget> createState() => _RequestCardWidgetState();
-}
-
-class _RequestCardWidgetState extends State<RequestCardWidget> {
-  @override
   Widget build(BuildContext context) {
     Color? statusColor;
+    Color? textColor;
     IconData? statusIcon;
     String? statusDesc;
 
-    switch (widget.request.status) {
-      case 'Solicitud registrada':
-        statusColor = const Color(0XFF0DCAF0);
-        statusIcon = Icons.add_circle_outline;
-        statusDesc = 'Registrada';
-        break;
-      case 'Solicitud validada':
-        statusColor = const Color(0XFF0D6EFD);
-        statusIcon = Icons.verified;
-        statusDesc = 'Validada';
-        break;
-      case 'Solicitud asignada':
-        statusColor = const Color(0XFF212529);
-        statusIcon = Icons.assignment_ind;
-        statusDesc = 'Asignada';
-        break;
-      case 'Solicitud en proceso':
-        statusColor = const Color(0XFFFFC107);
-        statusIcon = Icons.hourglass_bottom;
-        statusDesc = 'En proceso';
-        break;
-      case 'Solicitud terminada':
-        statusColor = const Color(0xFFD619AD);
-        statusIcon = Icons.task_alt;
-        statusDesc = 'Terminada';
-        break;
-      case 'Solicitud finalizada':
-        statusColor = const Color(0xFFCCBDC9);
-        statusIcon = Icons.done_all;
-        statusDesc = 'Finalizada';
-        break;
-      default:
-    }
+    Map<String, dynamic> statusInfo = getStatusInformation(request.status ?? 'Solicitud registrada');
 
+    statusColor = statusInfo['statusColor'];
+    statusIcon = statusInfo['statusIcon'];
+    statusDesc = statusInfo['statusDesc'];
+    textColor = statusInfo['textColor'];
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: GestureDetector(
@@ -63,14 +37,41 @@ class _RequestCardWidgetState extends State<RequestCardWidget> {
             context: context,
             isDismissible: true,
             isScrollControlled: true,
-            builder: (BuildContext context) => SizedBox(
-              height: MediaQuery.of(context).size.height * 0.9,
-              width: MediaQuery.of(context).size.width,
-              child: RequestDetailsWidget(
-                statusColor: statusColor ?? const Color(0XFF0DCAF0),
-                requestId: widget.request.requestId ?? '0 ',
-              ),
-            )
+            builder: (context) {
+              return SizedBox(
+                height: MediaQuery.of(context).size.height * 0.9,
+                width: MediaQuery.of(context).size.width,
+                child: BlocProvider(
+                  create: (context) => RequestDetailsBloc(AppDependencies.getRequestById),
+                  child: BlocListener<RequestDetailsBloc, RequestDetailsState>(
+                    listener: (context, state) {
+                      if (state is ErrorGettingRequestDetails) {
+                        GoRouter.of(context).canPop() ? GoRouter.of(context).pop() : null;
+                        showCupertinoDialog(
+                          context: context,
+                          builder: (context) => CupertinoAlertDialog(
+                            title: const Text('Error'),
+                            content: Center(
+                              child: Text(state.message),
+                            ),
+                            actions: [
+                              CupertinoDialogAction(
+                                onPressed: () => GoRouter.of(context).pop(),
+                                child: const Text('Aceptar'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                    child: RequestDetailsWidget(
+                      statusColor: statusColor ?? Colors.white,
+                      requestId: request.requestToken ?? '',
+                    ),
+                  ),
+                ),
+              );
+            },
           );
         },
         child: Container(
@@ -86,10 +87,7 @@ class _RequestCardWidgetState extends State<RequestCardWidget> {
               children: [
                 Icon(
                   statusIcon,
-                  color: widget.request.status == 'Solicitud asignada' ||
-                          widget.request.status == 'Solicitud validada'
-                      ? Colors.white
-                      : Colors.black,
+                  color: textColor
                 ),
                 const SizedBox(
                   width: 15,
@@ -101,33 +99,23 @@ class _RequestCardWidgetState extends State<RequestCardWidget> {
                     Text(
                       'Estatus: $statusDesc',
                       style: TextStyle(
-                        color: widget.request.status == 'Solicitud asignada' ||
-                                widget.request.status == 'Solicitud validada'
-                            ? Colors.white
-                            : Colors.black,
+                        color: textColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      'Folio: ${widget.request.requestId}',
+                      'Folio: ${request.requestId}',
                       style: TextStyle(
-                        color: widget.request.status == 'Solicitud asignada' ||
-                                widget.request.status == 'Solicitud validada'
-                            ? Colors.white
-                            : Colors.black,
+                        color: textColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.6,
                       child: Text(
-                        'Dirección: ${widget.request.dependency}',
+                        'Dirección: ${request.dependency}',
                         style: TextStyle(
-                          color: widget.request.status ==
-                                      'Solicitud asignada' ||
-                                  widget.request.status == 'Solicitud validada'
-                              ? Colors.white
-                              : Colors.black,
+                          color: textColor,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),

@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:help_desk/internal/request/domain/entities/document.dart';
 import 'package:help_desk/internal/request/domain/entities/follow_up.dart';
 import 'package:help_desk/internal/request/domain/entities/request.dart';
+import 'package:help_desk/internal/request/domain/entities/service.dart';
 
 class RequestFull {
   final Request? requestDetails;

@@ -44,7 +44,7 @@ class RequestApiDatasourceImp implements RequestRepository {
       if (response.statusCode == 201) {
         dynamic body = jsonDecode(response.body);
         if(body["respuesta"] == "correcto"){
-          final RequestFull data = body["solicitud"].map<RequestFull>((data) => RequestFullModel.fromJson(data)).toList();
+          final RequestFull data = RequestFullModel.fromJson(body);
           return data;
         }else{
           throw Exception('No se encontró la solicitud.');

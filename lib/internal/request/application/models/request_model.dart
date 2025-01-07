@@ -2,6 +2,7 @@ import 'package:help_desk/internal/request/domain/entities/request.dart';
 
 class RequestModel extends Request {
   RequestModel({
+    super.requestToken,
     super.requestId,
     super.registrationDate,
     super.employee,
@@ -22,6 +23,7 @@ class RequestModel extends Request {
 
   factory RequestModel.fromJson(Map<String, dynamic> json) {
     return RequestModel(
+      requestToken: json["token"],
       requestId: json["folio"],
       registrationDate: json["fechaRegistro"],
       employee: json["empleado"],
@@ -43,6 +45,7 @@ class RequestModel extends Request {
 
   factory RequestModel.fromEntity(Request req) {
     return RequestModel(
+      requestToken: req.requestToken,
       requestId: req.requestId,
       registrationDate: req.registrationDate,
       employee: req.employee,

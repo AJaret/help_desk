@@ -39,29 +39,4 @@ class LoginApiDatasourceImp implements LoginRepository {
       throw Exception(e.toString());
     }
   }
-
-  // @override
-  // Future<Session> postRefreshToken(String refreshToken) async{
-  //   try {
-  //     var url = Uri.http(urlApi, '/apiHelpdeskDNTICS/catalogos/direcciones-secretarias');
-  //     var response = await http.get(
-  //       url,
-  //     );
-  //     dynamic body = jsonDecode(response.body);
-  //     if (response.statusCode == 201) {
-  //       List<dynamic> data = body["catalogo"];
-  //       List<DependencyCatalog> depenTmp =  data.map<DependencyCatalog>((data) => DependencyCatalogModel.fromJson(data)).toList();
-  //       return Session(accessToken: 'ada', refreshToken: 'dasdas');
-  //     } else {
-  //       String message = body['mensaje_error'];
-  //       throw Exception(message);
-  //     }
-  //   } on SocketException {
-  //     throw Exception('No hay conexión a Internet. Por favor, revisa tu conexión.');
-  //   }
-  //   catch (e) {
-  //     throw Exception(e.toString());
-  //   }
-  // }
-
 }
