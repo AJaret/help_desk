@@ -42,7 +42,7 @@ class RequestCardWidget extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * 0.9,
                 width: MediaQuery.of(context).size.width,
                 child: BlocProvider(
-                  create: (context) => RequestDetailsBloc(AppDependencies.getRequestById),
+                  create: (context) => RequestDetailsBloc(AppDependencies.getRequestById, AppDependencies.getDocumentFile),
                   child: BlocListener<RequestDetailsBloc, RequestDetailsState>(
                     listener: (context, state) {
                       if (state is ErrorGettingRequestDetails) {

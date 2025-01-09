@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:help_desk/internal/request/domain/entities/request.dart';
 import 'package:help_desk/internal/request/presentation/blocs/request_details_bloc/request_details_bloc.dart';
+import 'package:help_desk/internal/request/presentation/widgets/request_details_widgets/files_widget.dart';
+import 'package:help_desk/internal/request/presentation/widgets/request_details_widgets/follow_up_widget.dart';
 import 'package:help_desk/internal/request/presentation/widgets/request_details_widgets/request_menu_widget.dart';
+import 'package:help_desk/internal/request/presentation/widgets/request_details_widgets/services_widget.dart';
 
 class RequestDetailsWidget extends StatelessWidget {
   final Color statusColor;
@@ -74,14 +77,14 @@ class RequestDetailsWidget extends StatelessWidget {
                             RequestMenuWidget(
                               requestData: state.request.requestDetails ?? Request(),
                             ),
-                            RequestMenuWidget(
-                              requestData: state.request.requestDetails ?? Request(),
+                            FilesWidget(
+                              documents: state.request.documents ?? [],
                             ),
-                            RequestMenuWidget(
-                              requestData: state.request.requestDetails ?? Request(),
+                            FollowUpWidget(
+                              followUps: state.request.followUps ?? [],
                             ),
-                            RequestMenuWidget(
-                              requestData: state.request.requestDetails ?? Request(),
+                            ServicesWidget(
+                              services: state.request.services ?? [],
                             ),
                           ],
                         ),

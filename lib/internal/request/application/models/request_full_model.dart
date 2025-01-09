@@ -19,7 +19,7 @@ class RequestFullModel extends RequestFull {
     return RequestFullModel(
       requestDetails: json["solicitud"] != null ? RequestModel.fromJson(json["solicitud"]) : null,
       documents: json["documentos"]?.map<Document>((data) => DocumentModel.fromJson(data)).toList(),
-      followUps: json["seguimientos"]?.map<FollowUp>((data) => FollowUpModel.fromJson(data)).toList(),
+      followUps: json["seguimiento"]?.map<FollowUp>((data) => FollowUpModel.fromJson(data)).toList(),
       services: json["servicios"]?.map<Service>((data) => ServiceModel.fromJson(data)).toList()
     );
   }

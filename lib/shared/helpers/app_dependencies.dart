@@ -9,6 +9,7 @@ import 'package:help_desk/internal/register/application/repositories/user_regist
 import 'package:help_desk/internal/register/domain/usecases/post_user_usecase.dart';
 import 'package:help_desk/internal/request/application/datasource/request_api_datasource.dart';
 import 'package:help_desk/internal/request/application/repositories/request_repository_impl.dart';
+import 'package:help_desk/internal/request/domain/usecases/get_document_file_usecase.dart';
 import 'package:help_desk/internal/request/domain/usecases/get_request_by_id_usecase.dart';
 import 'package:help_desk/internal/request/domain/usecases/post_request_usecase.dart';
 
@@ -29,5 +30,6 @@ class AppDependencies {
   static final RequestRepositoryImpl requestRepo = RequestRepositoryImpl(datasource: requestDatasource);
   static final PostRequestUsecase postRequestUseCase = PostRequestUsecase(requestRepo: requestRepo);
   static final GetRequestByIdUsecase getRequestById = GetRequestByIdUsecase(requestRepo: requestRepo);
+  static final GetDocumentFileUsecase getDocumentFile = GetDocumentFileUsecase(requestRepo: requestRepo);
   
 }

@@ -13,14 +13,19 @@ class RequestSearchWidget extends StatefulWidget {
 }
 
 class _RequestSearchWidgetState extends State<RequestSearchWidget> {
+  List<Request> allRequests = [];
   List<Request> filteredRequests = [];
   String searchQuery = "";
   String? selectedStatus;
   bool sortByDateDesc = false;
 
-  void _filterRequests(List<Request> requests) {
+  @override
+  void initState() {
+    super.initState();
+  }
+  void _filterRequests() {
     setState(() {
-      filteredRequests = requests.where((request) {
+      filteredRequests = allRequests.where((request) {
         final queryLower = searchQuery.toLowerCase();
         final matchesSearch =
             request.requestId.toString().contains(queryLower) ||
@@ -36,28 +41,25 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
       }).toList();
 
       if (sortByDateDesc) {
-        filteredRequests.sort((a, b) => _parseDate(b.registrationDate!)
-            .compareTo(_parseDate(a.registrationDate!)));
+        filteredRequests.sort((a, b) {
+          DateTime dateA = DateTime.parse(a.registrationDate!);
+          DateTime dateB = DateTime.parse(b.registrationDate!);
+          return dateB.compareTo(dateA);
+        });
       }
     });
   }
 
-  void _clearFilters(List<Request> requests) {
+  void _clearFilters() {
     setState(() {
       searchQuery = "";
       selectedStatus = null;
       sortByDateDesc = false;
-      filteredRequests = requests;
+      filteredRequests = List.from(allRequests);
     });
   }
 
-  DateTime _parseDate(String date) {
-    final parts = date.split('-');
-    return DateTime(
-        int.parse(parts[2]), int.parse(parts[1]), int.parse(parts[0]));
-  }
-
-  void _showFilterDialog(List<Request> requests) {
+  void _showFilterDialog() {
     showDialog(
       context: context,
       builder: (context) {
@@ -71,22 +73,18 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
                 isExpanded: true,
                 hint: const Text("Selecciona un estatus"),
                 items: const [
-                  DropdownMenuItem(
-                      value: 'Registrada', child: Text("Registrada")),
-                  DropdownMenuItem(value: 'Validada', child: Text("Validada")),
-                  DropdownMenuItem(value: 'Asignada', child: Text("Asignada")),
-                  DropdownMenuItem(
-                      value: 'En proceso', child: Text("En proceso")),
-                  DropdownMenuItem(
-                      value: 'Terminada', child: Text("Terminada")),
-                  DropdownMenuItem(
-                      value: 'Finalizado', child: Text("Finalizado")),
+                  DropdownMenuItem(value: 'Solicitud registrada', child: Text("Registrada")),
+                  DropdownMenuItem(value: 'Solicitud validada', child: Text("Validada")),
+                  DropdownMenuItem(value: 'Solicitud asignada', child: Text("Asignada")),
+                  DropdownMenuItem(value: 'Solicitud en proceso', child: Text("En proceso")),
+                  DropdownMenuItem(value: 'Solicitud terminada', child: Text("Terminada")),
+                  DropdownMenuItem(value: 'Solicitud finalizado', child: Text("Finalizado")),
                 ],
                 onChanged: (value) {
                   setState(() {
                     selectedStatus = value;
                   });
-                  _filterRequests(requests);
+                  _filterRequests();
                   Navigator.of(context).pop();
                 },
               ),
@@ -99,7 +97,7 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
                       setState(() {
                         sortByDateDesc = value!;
                       });
-                      _filterRequests(requests);
+                      _filterRequests();
                       Navigator.of(context).pop();
                     },
                   ),
@@ -114,7 +112,7 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
             ),
             TextButton(
               onPressed: () {
-                _clearFilters(requests);
+                _clearFilters();
                 Navigator.of(context).pop();
               },
               child: const Text("Limpiar Filtros"),
@@ -136,73 +134,68 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
             child: CircularProgressIndicator(),
           );
         } else if (state is RequestSuccess) {
-          widget.requestType == 'Finished'
-              ? filteredRequests = state.requests
-                  .where((request) => request.status == 'Finalizada')
-                  .toList()
-              : filteredRequests = state.requests;
-          return filteredRequests.isEmpty
-              ? Center(
+          if (allRequests.isEmpty) {
+            allRequests = widget.requestType == 'Finished' ?  state.requests.where((request) => request.status == 'Solicitud finalizado').toList() : state.requests;
+            filteredRequests = List.from(allRequests);
+          }
+          return Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        labelText: "Buscar por folio, nombre o descripción",
+                        border: const OutlineInputBorder(),
+                        suffixIcon: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.filter_alt),
+                              onPressed: () => _showFilterDialog(),
+                            ),
+                            if (selectedStatus != null ||
+                                searchQuery.isNotEmpty ||
+                                sortByDateDesc)
+                              IconButton(
+                                icon: const Icon(Icons.clear),
+                                onPressed: () => _clearFilters(),
+                              ),
+                          ],
+                        ),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          searchQuery = value;
+                        });
+                        _filterRequests();
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Expanded(
+                child: filteredRequests.isNotEmpty ?
+                ListView.builder(
+                  itemCount: filteredRequests.length,
+                  itemBuilder: (context, index) {
+                    return RequestCardWidget(
+                        request: filteredRequests[index]);
+                  },
+                ) : 
+                Center(
                   child: Text(
                     "No se encontraron solicitudes ${widget.requestType == 'Finished' ? 'Finalizadas' : 'pendientes'}",
                     style: const TextStyle(
                       fontSize: 20,
                     ),
                     textAlign: TextAlign.center,
-                  ),
+                  )
                 )
-              : Column(
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            decoration: InputDecoration(
-                              labelText:
-                                  "Buscar por folio, nombre o descripción",
-                              border: const OutlineInputBorder(),
-                              suffixIcon: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.filter_alt),
-                                    onPressed: () =>
-                                        _showFilterDialog(state.requests),
-                                  ),
-                                  if (selectedStatus != null ||
-                                      searchQuery.isNotEmpty ||
-                                      sortByDateDesc)
-                                    IconButton(
-                                      icon: const Icon(Icons.clear),
-                                      onPressed: () =>
-                                          _clearFilters(state.requests),
-                                    ),
-                                ],
-                              ),
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                searchQuery = value;
-                              });
-                              _filterRequests(state.requests);
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: filteredRequests.length,
-                        itemBuilder: (context, index) {
-                          return RequestCardWidget(
-                            request: filteredRequests[index]
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                );
+              ),
+            ],
+          );
         } else if (state is ErrorPostingRequest) {
           return Center(
             child: IconButton(
@@ -218,3 +211,4 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
     );
   }
 }
+

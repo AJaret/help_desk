@@ -10,3 +10,11 @@ class GetRequestById extends RequestDetailsEvent {
     required this.requestId,
   });
 }
+
+class GetDocumentFile extends RequestDetailsEvent {
+  final int documentId;
+
+  GetDocumentFile({
+    required this.documentId,
+  });
+}

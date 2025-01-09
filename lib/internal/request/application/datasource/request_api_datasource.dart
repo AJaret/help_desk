@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:help_desk/internal/request/application/models/document_model.dart';
 import 'package:help_desk/internal/request/application/models/request_full_model.dart';
 import 'package:help_desk/internal/request/application/models/request_model.dart';
+import 'package:help_desk/internal/request/domain/entities/document.dart';
 import 'package:help_desk/internal/request/domain/entities/request.dart';
 import 'package:help_desk/internal/request/domain/entities/request_full.dart';
 import 'package:help_desk/internal/request/domain/repositories/request_repository.dart';
@@ -49,11 +51,28 @@ class RequestApiDatasourceImp implements RequestRepository {
         }else{
           throw Exception('No se encontró la solicitud.');
         }
-      } 
-      // else if(response.statusCode == 401) {
-      //   String message = 'Su sesión ha expirado, por favor vuelva a iniciar sesión.';
-      //   throw Exception(message);
-      // }
+      }
+      else{
+        String message = 'Ocurrió un error al obtener las solicitudes, por favor intente de nuevo.';
+        throw Exception(message);
+      }
+    } on SocketException {
+      throw Exception('No hay conexión a Internet. Por favor, revisa tu conexión.');
+    }
+    catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<Document> getDocumentFile(int fileId) async{
+    try {
+      final response = await httpService.getRequest('$urlApi/apiHelpdeskDNTICS/solicitudes-usuarios/archivo-digital/$fileId', 1);
+      if (response.statusCode == 201) {
+        dynamic body = jsonDecode(response.body);
+        final Document data = DocumentModel.fromJson(body);
+        return data;
+      }
       else{
         String message = 'Ocurrió un error al obtener las solicitudes, por favor intente de nuevo.';
         throw Exception(message);

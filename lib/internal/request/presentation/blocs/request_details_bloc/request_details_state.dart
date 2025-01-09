@@ -18,3 +18,17 @@ final class ErrorGettingRequestDetails extends RequestDetailsState {
 
   ErrorGettingRequestDetails(this.message);
 }
+
+final class GettingDocumentFile extends RequestDetailsState {}
+
+final class DocumentFileSuccess extends RequestDetailsState {
+  final Document doc;
+
+  DocumentFileSuccess(this.doc);
+}
+
+final class ErrorGettingDocumentFile extends RequestDetailsState {
+  final String message;
+
+  ErrorGettingDocumentFile(this.message);
+}

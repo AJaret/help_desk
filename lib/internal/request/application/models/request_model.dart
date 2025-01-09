@@ -25,7 +25,7 @@ class RequestModel extends Request {
     return RequestModel(
       requestToken: json["token"],
       requestId: json["folio"],
-      registrationDate: json["fechaRegistro"],
+      registrationDate: json["fechaRegistro"] ?? json["fecha"],
       employee: json["empleado"],
       dependency: json["direccion"],
       documentNumber: json["numeroOficio"],
