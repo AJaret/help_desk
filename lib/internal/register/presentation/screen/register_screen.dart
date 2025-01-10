@@ -2,15 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:help_desk/internal/catalog/application/datasources/dependency_catalog_api_datasource.dart';
+import 'package:help_desk/internal/catalog/application/datasources/catalog_api_datasource.dart';
 import 'package:help_desk/internal/catalog/application/repositories/dependency_catalog_repository_impl.dart';
 import 'package:help_desk/internal/catalog/domain/usecases/get_dependency_catalog_usecase.dart';
-import 'package:help_desk/internal/catalog/presentation/blocs/dependency_catalog_bloc/dependency_catalog_bloc.dart';
+import 'package:help_desk/internal/catalog/presentation/blocs/catalog_bloc/catalog_bloc.dart';
 import 'package:help_desk/internal/register/application/datasources/user_register_api_datasource.dart';
 import 'package:help_desk/internal/register/application/repositories/user_register_repository_impl.dart';
 import 'package:help_desk/internal/register/domain/usecases/post_user_usecase.dart';
 import 'package:help_desk/internal/register/presentation/blocs/user_register_bloc/user_register_bloc.dart';
 import 'package:help_desk/internal/register/presentation/widgets/register_form_widget.dart';
+import 'package:help_desk/shared/helpers/app_dependencies.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -26,7 +27,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    DependencyCatalogApiDatasourceImp dependencyDatasource = DependencyCatalogApiDatasourceImp();
+    CatalogApiDatasourceImp dependencyDatasource = CatalogApiDatasourceImp();
     DependencyCatalogRepositoryImpl repoDependency = DependencyCatalogRepositoryImpl(datasource: dependencyDatasource);
     GetDependencyCatalogUseCase getDependency = GetDependencyCatalogUseCase(dependencycatalogRepo: repoDependency);
 
@@ -39,7 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => DependencyCatalogBloc(getDependencyCatalogUseCase: getDependency),
+            create: (context) => CatalogBloc(getDependencyCatalogUseCase: getDependency, getPhysicalLocationsCatalogUseCase: AppDependencies.getPhysicalLocations),
           ),
           BlocProvider(
             create: (context) => UserRegisterBloc(postUserRegisterUseCase: postUser),
@@ -96,7 +97,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             child: MultiBlocListener(
                               listeners: [
-                                BlocListener<DependencyCatalogBloc, DependencyCatalogState>(
+                                BlocListener<CatalogBloc, CatalogState>(
                                   listener: (context, state) {
                                     if(state is ErrorGettingDependencyCatalog){
                                       showCupertinoDialog(

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:help_desk/internal/request/domain/entities/request.dart';
@@ -44,7 +45,7 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
         filteredRequests.sort((a, b) {
           DateTime dateA = DateTime.parse(a.registrationDate!);
           DateTime dateB = DateTime.parse(b.registrationDate!);
-          return dateB.compareTo(dateA);
+          return dateA.compareTo(dateB);
         });
       }
     });
@@ -60,7 +61,7 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
   }
 
   void _showFilterDialog() {
-    showDialog(
+    showCupertinoDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -90,7 +91,7 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
               ),
               Row(
                 children: [
-                  const Text("Ordenar por fecha"),
+                  const Text("Ordenar por fecha ascendente"),
                   Checkbox(
                     value: sortByDateDesc,
                     onChanged: (value) {
@@ -136,6 +137,11 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
         } else if (state is RequestSuccess) {
           if (allRequests.isEmpty) {
             allRequests = widget.requestType == 'Finished' ?  state.requests.where((request) => request.status == 'Solicitud finalizado').toList() : state.requests;
+            allRequests.sort((a, b) {
+              DateTime dateA = DateTime.parse(a.registrationDate!);
+              DateTime dateB = DateTime.parse(b.registrationDate!);
+              return dateB.compareTo(dateA);
+            });
             filteredRequests = List.from(allRequests);
           }
           return Column(
@@ -154,13 +160,11 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
                               icon: const Icon(Icons.filter_alt),
                               onPressed: () => _showFilterDialog(),
                             ),
-                            if (selectedStatus != null ||
-                                searchQuery.isNotEmpty ||
-                                sortByDateDesc)
-                              IconButton(
-                                icon: const Icon(Icons.clear),
-                                onPressed: () => _clearFilters(),
-                              ),
+                            if (selectedStatus != null || searchQuery.isNotEmpty || sortByDateDesc)
+                            IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () => _clearFilters(),
+                            ),
                           ],
                         ),
                       ),

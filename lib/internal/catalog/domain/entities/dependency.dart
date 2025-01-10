@@ -1,8 +1,8 @@
-class DependencyCatalog{
+class Catalog{
   final int? value;
   final String? label;
 
-  DependencyCatalog({
+  Catalog({
     this.value,
     this.label
   });

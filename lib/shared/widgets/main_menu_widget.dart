@@ -5,7 +5,7 @@ import 'package:help_desk/internal/announcements/presentation/screens/announceme
 import 'package:help_desk/internal/profile/presentation/screens/profile_screen.dart';
 import 'package:help_desk/internal/request/presentation/screens/history_screen.dart';
 import 'package:help_desk/internal/request/presentation/screens/request_screen.dart';
-import 'package:help_desk/internal/request/presentation/widgets/new_request_form.dart';
+import 'package:help_desk/internal/request/presentation/screens/new_request_screen.dart';
 
 class MainMenuWidget extends StatefulWidget {
   const MainMenuWidget({super.key});
@@ -83,7 +83,7 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
             builder: (BuildContext context) => SizedBox(
               height: MediaQuery.of(context).size.height * 0.9,
               width: MediaQuery.of(context).size.width,
-              child: const NewRequestForm()
+              child: const NewRequestScreen()
             )
           );
         },

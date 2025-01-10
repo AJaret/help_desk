@@ -5,7 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:help_desk/internal/catalog/domain/entities/dependency.dart';
-import 'package:help_desk/internal/catalog/presentation/blocs/dependency_catalog_bloc/dependency_catalog_bloc.dart';
+import 'package:help_desk/internal/catalog/presentation/blocs/catalog_bloc/catalog_bloc.dart';
 import 'package:help_desk/internal/register/domain/entities/user_register.dart';
 import 'package:help_desk/internal/register/presentation/blocs/user_register_bloc/user_register_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -145,11 +145,11 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
               ],
             ),
             const SizedBox(height: 20),
-            BlocBuilder<DependencyCatalogBloc, DependencyCatalogState>(
+            BlocBuilder<CatalogBloc, CatalogState>(
               builder: (context, state) {
-                if (state is DependencyCatalogInitial) {
-                  context.read<DependencyCatalogBloc>().add(GetDependencies());
-                } else if (state is GettingDependencyCatalog) {
+                if (state is CatalogInitial) {
+                  context.read<CatalogBloc>().add(GetDependencies());
+                } else if (state is GettingCatalog) {
                   return const Center(
                     child: CircularProgressIndicator(color: Color(0XFF721538)),
                   );
@@ -250,7 +250,7 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
                         searchMatchFn: (DropdownMenuItem<int> item, String searchValue) {
                           final matchingItem = state.dependencyList.firstWhere(
                             (dep) => dep.value == item.value,
-                            orElse: () => DependencyCatalog(),
+                            orElse: () => Catalog(),
                           );
                           final normalizedLabel = removeDiacritics(matchingItem.label ?? '').toLowerCase();
                           final normalizedSearchValue = removeDiacritics(searchValue).toLowerCase();
@@ -268,7 +268,7 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
                 } else {
                   return Center(
                     child: IconButton(
-                      onPressed: () => context.read<DependencyCatalogBloc>().add(GetDependencies()),
+                      onPressed: () => context.read<CatalogBloc>().add(GetDependencies()),
                       icon: const Icon(Icons.refresh),
                     ),
                   );

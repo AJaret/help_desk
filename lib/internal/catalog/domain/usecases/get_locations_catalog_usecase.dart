@@ -1,14 +1,14 @@
 import 'package:help_desk/internal/catalog/domain/entities/dependency.dart';
 import 'package:help_desk/internal/catalog/domain/repositories/catalog_repository.dart';
 
-class GetDependencyCatalogUseCase {
+class GetPhysicalLocationsCatalogUseCase {
   final CatalogRepository dependencycatalogRepo;
 
-  GetDependencyCatalogUseCase({required this.dependencycatalogRepo});
+  GetPhysicalLocationsCatalogUseCase({required this.dependencycatalogRepo});
 
   Future<List<Catalog>> execute() async {
     try {
-      return await dependencycatalogRepo.getDependencies();
+      return await dependencycatalogRepo.getPhysicalLocations();
     } catch (e) {
       throw Exception(e.toString());
     }

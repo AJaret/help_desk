@@ -5,16 +5,20 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:help_desk/internal/catalog/presentation/blocs/catalog_bloc/catalog_bloc.dart';
+import 'package:help_desk/shared/helpers/app_dependencies.dart';
 import 'package:image_picker/image_picker.dart';
 
-class NewRequestForm extends StatefulWidget {
-  const NewRequestForm({super.key});
+class NewRequestScreen extends StatefulWidget {
+  const NewRequestScreen({super.key});
 
   @override
-  State<NewRequestForm> createState() => _MultiStepFormState();
+  State<NewRequestScreen> createState() => _MultiStepFormState();
 }
 
-class _MultiStepFormState extends State<NewRequestForm> {
+class _MultiStepFormState extends State<NewRequestScreen> {
   final _formKeyStep1 = GlobalKey<FormState>();
   final _formKeyStep2 = GlobalKey<FormState>();
   final _formKeyStep3 = GlobalKey<FormState>();
@@ -35,7 +39,7 @@ class _MultiStepFormState extends State<NewRequestForm> {
   int characterCount = 0;
   final List<File> _files = [];
   final ImagePicker _imagePicker = ImagePicker();
-  String? selectedUbi;
+  int? selectedUbi;
   
   Future<void> _selectFile() async {
     showModalBottomSheet(
@@ -148,7 +152,6 @@ class _MultiStepFormState extends State<NewRequestForm> {
 
   void _submitForm() {
     if (_validateCurrentStep()) {
-      // Perform final submission actions
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Formulario enviado exitosamente")),
       );
@@ -157,97 +160,132 @@ class _MultiStepFormState extends State<NewRequestForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 28.0, bottom: 28.0, left: 15, right: 15),
-      child: Column(
-        children: [
-          currentStep == 0 ? Container(
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5.0),
-              color: Colors.blue[200]
-            ),
-            width: double.infinity,
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.info),
-                SizedBox(width: 10),
-                SizedBox(
-                  width: 300,
-                  child: Text('Entre mejor se encuentre descrita tu solicitud de ayuda, más rápida y eficiente será atendida. ¡Gracias!')
-                )
-              ],
-            ),
-          ) : Container(),
-          const SizedBox(height: 10),
-          EasyStepper(
-            activeStep: currentStep,
-            steps: const [
-              EasyStep(
-                icon: Icon(Icons.account_balance_outlined),
-                title: 'Entidad',
-              ),
-              EasyStep(
-                icon: Icon(Icons.email),
-                title: 'Descripción',
-              ),
-              EasyStep(
-                icon: Icon(Icons.location_on),
-                title: 'Ubicación',
-              ),
-              EasyStep(
-                icon: Icon(Icons.assignment_ind_sharp),
-                title: 'Contactos',
-              ),
-              EasyStep(
-                icon: Icon(Icons.file_present_sharp),
-                title: 'Archivos',
-              ),
-            ],
-            onStepReached: (index) {
-              if (index <= currentStep) {
-                setState(() {
-                  currentStep = index;
-                });
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => CatalogBloc(getDependencyCatalogUseCase: AppDependencies.getDependency, getPhysicalLocationsCatalogUseCase: AppDependencies.getPhysicalLocations)),
+      ],
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<CatalogBloc, CatalogState>(
+            listener: (context, state) {
+              if(state is ErrorGettingPhysicalLocationsCatalog){
+                showCupertinoDialog(
+                  context: context, 
+                  builder: (context) => CupertinoAlertDialog(
+                  title: const Text('Error'),
+                    content: Center(
+                      child: Text(state.message),
+                    ),
+                    actions: [
+                      CupertinoDialogAction(
+                        onPressed: () => GoRouter.of(context).pop(), 
+                        child: const Text('Aceptar'),
+                      ),
+                    ],
+                  ),
+                );
               }
             },
           ),
-          Expanded(
-            child: Form(
-              key: _getCurrentFormKey(),
-              child: _buildStepContent(),
+        ],
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 28.0, bottom: 28.0, left: 15, right: 15),
+            child: Column(
+              children: [
+                currentStep == 0 ? Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5.0),
+                    color: Colors.blue[200]
+                  ),
+                  width: double.infinity,
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.info),
+                      SizedBox(width: 10),
+                      SizedBox(
+                        width: 300,
+                        child: Text('Entre mejor se encuentre descrita tu solicitud de ayuda, más rápida y eficiente será atendida. ¡Gracias!')
+                      )
+                    ],
+                  ),
+                ) : Container(),
+                const SizedBox(height: 10),
+                EasyStepper(
+                  activeStep: currentStep,
+                  steps: const [
+                    EasyStep(
+                      icon: Icon(Icons.account_balance_outlined),
+                      title: 'Entidad',
+                    ),
+                    EasyStep(
+                      icon: Icon(Icons.email),
+                      title: 'Descripción',
+                    ),
+                    EasyStep(
+                      icon: Icon(Icons.location_on),
+                      title: 'Ubicación',
+                    ),
+                    EasyStep(
+                      icon: Icon(Icons.assignment_ind_sharp),
+                      title: 'Contactos',
+                    ),
+                    EasyStep(
+                      icon: Icon(Icons.file_present_sharp),
+                      title: 'Archivos',
+                    ),
+                  ],
+                  onStepReached: (index) {
+                    if (index <= currentStep) {
+                      setState(() {
+                        currentStep = index;
+                      });
+                    }
+                  },
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Form(
+                      key: _getCurrentFormKey(),
+                      child: _buildStepContent(context),
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF8B1A42),
+                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: currentStep > 0 ? _previousStep : null,
+                      child: const Text("Anterior"),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF8B1A42),
+                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: currentStep < 4 ? _nextStep : _submitForm,
+                      child: Text(currentStep < 4 ? "Siguiente" : "Enviar"),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 177, 119, 139),
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: currentStep > 0 ? _previousStep : null,
-                child: const Text("Anterior"),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF8B1A42),
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: currentStep < 4 ? _nextStep : _submitForm,
-                child: Text(currentStep < 4 ? "Siguiente" : "Enviar"),
-              ),
-            ],
-          ),
-        ],
-      ),
+        ),
+      )
     );
   }
 
@@ -268,7 +306,7 @@ class _MultiStepFormState extends State<NewRequestForm> {
     }
   }
 
-  Widget _buildStepContent() {
+  Widget _buildStepContent(BuildContext context) {
     switch (currentStep) {
       case 0:
         return const Column(
@@ -360,58 +398,70 @@ class _MultiStepFormState extends State<NewRequestForm> {
       case 2:
         return Column(
           children: [
-            DropdownButtonFormField<String>(
-              value: selectedUbi,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.transparent,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  borderSide: const BorderSide(
-                    color: Colors.grey,
-                    width: 1.0,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  borderSide: const BorderSide(
-                    color: Color(0xFF8B1A42),
-                    width: 2.0,
-                  ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  borderSide: const BorderSide(
-                    color: Colors.grey,
-                    width: 1.0,
-                  ),
-                ),
-              ),
-              hint: const Text(
-                "Selecciona una opción",
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-              ),
-              items: const [
-                DropdownMenuItem(
-                  value: "Externo",
-                  child: Text("Externo"),
-                ),
-                DropdownMenuItem(
-                  value: "Palacio centro",
-                  child: Text("Palacio centro"),
-                ),
-                DropdownMenuItem(
-                  value: "Palacio Nuevo",
-                  child: Text("Palacio Nuevo"),
-                ),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  selectedUbi = value;
-                });
+            BlocBuilder<CatalogBloc, CatalogState>(
+              builder: (context, state) {
+                if(state is CatalogInitial){
+                  context.read<CatalogBloc>().add(GetPhysicalLocations());
+                }else if(state is GettingCatalog){
+                  return const Center(child: CircularProgressIndicator());
+                }else if(state is PhysicalLocationsCatalogList){
+                  return DropdownButtonFormField<int>(
+                    value: selectedUbi,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.transparent,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: const BorderSide(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: const BorderSide(
+                          color: Color(0xFF8B1A42),
+                          width: 2.0,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: const BorderSide(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
+                    hint: const Text(
+                      "Selecciona una opción",
+                      style: TextStyle(fontSize: 14, color: Colors.grey),
+                    ),
+                    items: state.locationsList.isNotEmpty ? 
+                    state.locationsList.map((location) {
+                      return DropdownMenuItem(
+                        value: location.value,
+                        child: Text(location.label ?? ''),
+                      );
+                    }).toList() :
+                    const [],
+                    onChanged: (value) {
+                      setState(() {
+                        selectedUbi = value;
+                      });
+                    },
+                    icon: const Icon(Icons.arrow_drop_down, color: Colors.grey),
+                    dropdownColor: Colors.white,
+                  );
+                }else if(state is ErrorGettingPhysicalLocationsCatalog){
+                  return Center(
+                    child: IconButton(
+                      onPressed: () => context.read<CatalogBloc>().add(GetPhysicalLocations()),
+                      icon: const Icon(Icons.refresh)
+                    )
+                  );
+                }
+                return Container();
               },
-              icon: const Icon(Icons.arrow_drop_down, color: Colors.grey),
-              dropdownColor: Colors.white,
             ),
             const SizedBox(height: 20,),
             TextFormField(

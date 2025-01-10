@@ -1,21 +1,21 @@
 
 import 'package:help_desk/internal/catalog/domain/entities/dependency.dart';
 
-class DependencyCatalogModel extends DependencyCatalog {
-  DependencyCatalogModel({
+class CatalogModel extends Catalog {
+  CatalogModel({
     super.value,
     super.label,
   });
 
-  factory DependencyCatalogModel.fromJson(Map<String, dynamic> json) {
-    return DependencyCatalogModel(
+  factory CatalogModel.fromJson(Map<String, dynamic> json) {
+    return CatalogModel(
       value: json["value"],
       label: json["label"],
     );
   }
 
-  factory DependencyCatalogModel.fromEntity(DependencyCatalog dependency) {
-    return DependencyCatalogModel(
+  factory CatalogModel.fromEntity(Catalog dependency) {
+    return CatalogModel(
       value: dependency.value,
       label: dependency.label,
     );

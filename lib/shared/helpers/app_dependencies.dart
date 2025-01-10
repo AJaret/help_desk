@@ -1,6 +1,7 @@
-import 'package:help_desk/internal/catalog/application/datasources/dependency_catalog_api_datasource.dart';
+import 'package:help_desk/internal/catalog/application/datasources/catalog_api_datasource.dart';
 import 'package:help_desk/internal/catalog/application/repositories/dependency_catalog_repository_impl.dart';
 import 'package:help_desk/internal/catalog/domain/usecases/get_dependency_catalog_usecase.dart';
+import 'package:help_desk/internal/catalog/domain/usecases/get_locations_catalog_usecase.dart';
 import 'package:help_desk/internal/login/application/datasources/login_api_datasource.dart';
 import 'package:help_desk/internal/login/application/repositories/login_repository_impl.dart';
 import 'package:help_desk/internal/login/domain/usecases/post_login_usecase.dart';
@@ -14,9 +15,10 @@ import 'package:help_desk/internal/request/domain/usecases/get_request_by_id_use
 import 'package:help_desk/internal/request/domain/usecases/post_request_usecase.dart';
 
 class AppDependencies {
-  static final DependencyCatalogApiDatasourceImp dependencyDatasource = DependencyCatalogApiDatasourceImp();
+  static final CatalogApiDatasourceImp dependencyDatasource = CatalogApiDatasourceImp();
   static final DependencyCatalogRepositoryImpl repoDependency = DependencyCatalogRepositoryImpl(datasource: dependencyDatasource);
   static final GetDependencyCatalogUseCase getDependency = GetDependencyCatalogUseCase(dependencycatalogRepo: repoDependency);
+  static final GetPhysicalLocationsCatalogUseCase getPhysicalLocations = GetPhysicalLocationsCatalogUseCase(dependencycatalogRepo: repoDependency);
 
   static final UserRegisterApiDatasourceImp userRegisterDatasource = UserRegisterApiDatasourceImp();
   static final UserRepositoryRepositoryImpl repoUser = UserRepositoryRepositoryImpl(datasource: userRegisterDatasource);
