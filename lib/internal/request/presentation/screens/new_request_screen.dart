@@ -1,14 +1,18 @@
 import 'dart:io';
 
 import 'package:easy_stepper/easy_stepper.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:help_desk/internal/catalog/presentation/blocs/catalog_bloc/catalog_bloc.dart';
+import 'package:help_desk/internal/request/presentation/widgets/new_request_steps/step1.dart';
+import 'package:help_desk/internal/request/presentation/widgets/new_request_steps/step2.dart';
+import 'package:help_desk/internal/request/presentation/widgets/new_request_steps/step3.dart';
+import 'package:help_desk/internal/request/presentation/widgets/new_request_steps/step4.dart';
+import 'package:help_desk/internal/request/presentation/widgets/new_request_steps/step5.dart';
 import 'package:help_desk/shared/helpers/app_dependencies.dart';
+import 'package:help_desk/shared/helpers/new_request_form_helper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class NewRequestScreen extends StatefulWidget {
@@ -41,66 +45,13 @@ class _MultiStepFormState extends State<NewRequestScreen> {
   final ImagePicker _imagePicker = ImagePicker();
   int? selectedUbi;
   
-  Future<void> _selectFile() async {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Wrap(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.camera),
-              title: const Text('Tomar una foto'),
-              onTap: () async {
-                Navigator.of(context).pop();
-                final pickedFile =
-                    await _imagePicker.pickImage(source: ImageSource.camera);
-                if (pickedFile != null) {
-                  setState(() {
-                    _files.add(File(pickedFile.path));
-                  });
-                }
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo),
-              title: const Text('Seleccionar desde la galería'),
-              onTap: () async {
-                Navigator.of(context).pop();
-                final pickedFile =
-                    await _imagePicker.pickImage(source: ImageSource.gallery);
-                if (pickedFile != null) {
-                  setState(() {
-                    _files.add(File(pickedFile.path));
-                  });
-                }
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.attach_file),
-              title: const Text('Añadir archivo'),
-              onTap: () async {
-                Navigator.of(context).pop();
-                FilePickerResult? result = await FilePicker.platform.pickFiles(
-                  type: FileType.custom,
-                  allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'zip', 'mp4'],
-                );
-                if (result != null) {
-                  setState(() {
-                    _files.add(File(result.files.single.path!));
-                  });
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _removeFile(int index) {
-    setState(() {
-      _files.removeAt(index);
-    });
+  Future<void> _handleFileSelection() async {
+    File? file = await selectFile(context, _imagePicker);
+    if (file != null) {
+      setState(() {
+        _files.add(file);
+      });
+    }
   }
 
   void _addItem(List<String> items, TextEditingController controller) {
@@ -113,24 +64,12 @@ class _MultiStepFormState extends State<NewRequestScreen> {
     }
   }
 
-  void _removeItem(int index, List<String> items) {
-    setState(() {
-      items.removeAt(index);
-    });
-  }
-
   void _nextStep() {
     if (_validateCurrentStep()) {
       setState(() {
         if (currentStep < 4) currentStep++;
       });
     }
-  }
-
-  void _previousStep() {
-    setState(() {
-      if (currentStep > 0) currentStep--;
-    });
   }
 
   bool _validateCurrentStep() {
@@ -157,6 +96,27 @@ class _MultiStepFormState extends State<NewRequestScreen> {
       );
     }
   }
+
+  GlobalKey<FormState> _getCurrentFormKey() {
+    switch (currentStep) {
+      case 0:
+        return _formKeyStep1;
+      case 1:
+        return _formKeyStep2;
+      case 2:
+        return _formKeyStep3;
+      case 3:
+        return _formKeyStep4;
+      case 4:
+        return _formKeyStep5;
+      default:
+        return _formKeyStep1;
+    }
+  }
+
+  void _removeFile(int index) {setState(() {_files.removeAt(index);});}
+  void _removeItem(int index, List<String> items) {setState(() {items.removeAt(index);});}
+  void _previousStep() {setState(() {if (currentStep > 0) currentStep--;});}
 
   @override
   Widget build(BuildContext context) {
@@ -289,567 +249,53 @@ class _MultiStepFormState extends State<NewRequestScreen> {
     );
   }
 
-  GlobalKey<FormState> _getCurrentFormKey() {
-    switch (currentStep) {
-      case 0:
-        return _formKeyStep1;
-      case 1:
-        return _formKeyStep2;
-      case 2:
-        return _formKeyStep3;
-      case 3:
-        return _formKeyStep4;
-      case 4:
-        return _formKeyStep5;
-      default:
-        return _formKeyStep1;
-    }
-  }
-
   Widget _buildStepContent(BuildContext context) {
     switch (currentStep) {
       case 0:
-        return const Column(
-          children: [
-            Text('Estás creando una solicitud de servicio para la entidad:', style: TextStyle(fontSize: 20), textAlign: TextAlign.center,),
-            SizedBox(height: 20),
-            Text('DIRECCIÓN DE NUEVAS TECNOLOGÍAS DE LA INFORMACIÓN Y COMUNICACIONES', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
-            SizedBox(height: 20),
-            Text('Nombre del titular:', style: TextStyle(fontSize: 20), textAlign: TextAlign.center,),
-            SizedBox(height: 20),
-            Text('GUSTAVO ALFONSO GONZALEZ VELAZQUEZ', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
-          ],
-        );
+        return buildStep1();
       case 1:
-        return Column(
-          children: [
-            TextFormField(
-              minLines: 5,
-              maxLines: 10,
-              maxLengthEnforcement: MaxLengthEnforcement.none,
-              maxLength: 4000,
-              controller: descriptionController,
-              onChanged: (value) {
-                setState(() {
-                  characterCount = value.length;
-                });
-              },
-              decoration: InputDecoration(
-                counterText: '$characterCount/4000 Máximo',
-                labelText: "Describe la solicitud del servicio *",
-                border: const OutlineInputBorder(),
-              ),
-              validator: (value) =>
-                  value == null || value.isEmpty ? "El campo es requerido" : null,
-            ),
-            const SizedBox(height: 20),
-            TextFormField(
-              minLines: 3,
-              maxLines: 8,
-              maxLengthEnforcement: MaxLengthEnforcement.none,
-              maxLength: 4000,
-              controller: aditionalDescriptionController,
-              decoration: const InputDecoration(
-                labelText: "Observaciones adicionales",
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    maxLengthEnforcement: MaxLengthEnforcement.none,
-                    maxLength: 200,
-                    controller: inventoryController,
-                    decoration: const InputDecoration(
-                      labelText: "Número de inventario",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Tooltip(
-                  message: "Ingrese el número de inventario único para identificar el artículo.",
-                  child: IconButton(
-                    icon: const Icon(Icons.info_outline),
-                    onPressed: () {
-                      showCupertinoDialog(
-                        context: context,
-                        builder: (_) => CupertinoAlertDialog(
-                          title: const Text("Información"),
-                          content: const Text("Indica el número de inventario del equipo; laptop, computadora de escritorio, impresora. Ejemplo 12345678901"),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: const Text("Cerrar"),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ],
+        return buildStep2(
+          descriptionController: descriptionController,
+          aditionalDescriptionController: aditionalDescriptionController,
+          inventoryController: inventoryController,
+          characterCount: characterCount,
+          onDescriptionChanged: (value) {
+            setState(() {
+              characterCount = value.length;
+            });
+          },
+          context: context
         );
       case 2:
-        return Column(
-          children: [
-            BlocBuilder<CatalogBloc, CatalogState>(
-              builder: (context, state) {
-                if(state is CatalogInitial){
-                  context.read<CatalogBloc>().add(GetPhysicalLocations());
-                }else if(state is GettingCatalog){
-                  return const Center(child: CircularProgressIndicator());
-                }else if(state is PhysicalLocationsCatalogList){
-                  return DropdownButtonFormField<int>(
-                    value: selectedUbi,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.transparent,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5),
-                        borderSide: const BorderSide(
-                          color: Colors.grey,
-                          width: 1.0,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5),
-                        borderSide: const BorderSide(
-                          color: Color(0xFF8B1A42),
-                          width: 2.0,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5),
-                        borderSide: const BorderSide(
-                          color: Colors.grey,
-                          width: 1.0,
-                        ),
-                      ),
-                    ),
-                    hint: const Text(
-                      "Selecciona una opción",
-                      style: TextStyle(fontSize: 14, color: Colors.grey),
-                    ),
-                    items: state.locationsList.isNotEmpty ? 
-                    state.locationsList.map((location) {
-                      return DropdownMenuItem(
-                        value: location.value,
-                        child: Text(location.label ?? ''),
-                      );
-                    }).toList() :
-                    const [],
-                    onChanged: (value) {
-                      setState(() {
-                        selectedUbi = value;
-                      });
-                    },
-                    icon: const Icon(Icons.arrow_drop_down, color: Colors.grey),
-                    dropdownColor: Colors.white,
-                  );
-                }else if(state is ErrorGettingPhysicalLocationsCatalog){
-                  return Center(
-                    child: IconButton(
-                      onPressed: () => context.read<CatalogBloc>().add(GetPhysicalLocations()),
-                      icon: const Icon(Icons.refresh)
-                    )
-                  );
-                }
-                return Container();
-              },
-            ),
-            const SizedBox(height: 20,),
-            TextFormField(
-              controller: addressController,
-              decoration: const InputDecoration(
-                labelText: "Ubicación física del servicio",
-                border: OutlineInputBorder(),
-              ),
-              validator: (value) =>
-                  value == null || value.isEmpty ? "La dirección es requerida" : null,
-            ),
-          ],
+        return buildStep3(
+          selectedUbi: selectedUbi,
+          addressController: addressController,
+          characterCount: characterCount,
+          onLocationChange: (value) {
+            setState(() {
+              selectedUbi = value;
+            });
+          },
+          context: context
         );
       case 3:
-        return SingleChildScrollView(
-          child: Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                    border: Border.all(
-                      
-                    )
-                  ),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE0F3FF),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                const Icon(Icons.phone_android, color: Colors.blue),
-                                const SizedBox(width: 8),
-                                Text(
-                                  'Registra un teléfono de contacto',
-                                  style: TextStyle(
-                                    color: Colors.blue.shade900,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              'x${_phoneNumbers.length}',
-                              style: const TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: _phoneController,
-                              keyboardType: TextInputType.phone,
-                              decoration: InputDecoration(
-                                labelText: 'Teléfono',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          ElevatedButton(
-                            onPressed: () => _addItem(_phoneNumbers, _phoneController),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            child: const Text(
-                              'Agregar',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: _phoneNumbers.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    const Icon(Icons.circle, size: 8, color: Colors.black),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      _phoneNumbers[index],
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                                IconButton(
-                                  onPressed: () => _removeItem(index, _phoneNumbers),
-                                  icon: const Icon(Icons.delete, color: Colors.red),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                    border: Border.all(
-                      
-                    )
-                  ),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE0F3FF),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                const Icon(Icons.mail, color: Colors.blue),
-                                const SizedBox(width: 8),
-                                Text(
-                                  'Anexa correos adicionales',
-                                  style: TextStyle(
-                                    color: Colors.blue.shade900,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              'x${_emails.length}',
-                              style: const TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: _emailController,
-                              keyboardType: TextInputType.phone,
-                              decoration: InputDecoration(
-                                labelText: 'Teléfono',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          ElevatedButton(
-                            onPressed: () => _addItem(_emails, _emailController),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            child: const Text(
-                              'Agregar',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: _emails.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    const Icon(Icons.circle, size: 8, color: Colors.black),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      _emails[index],
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                                IconButton(
-                                  onPressed: () => _removeItem(index, _emails),
-                                  icon: const Icon(Icons.delete, color: Colors.red),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                    border: Border.all(
-                      
-                    )
-                  ),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE0F3FF),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                const Icon(Icons.phone, color: Colors.blue),
-                                const SizedBox(width: 8),
-                                Text(
-                                  'Extensión(es) de contacto',
-                                  style: TextStyle(
-                                    color: Colors.blue.shade900,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              'Opcional x${_extensions.length}',
-                              style: const TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: _extensionController,
-                              keyboardType: TextInputType.phone,
-                              decoration: InputDecoration(
-                                labelText: 'Extensión',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          ElevatedButton(
-                            onPressed: () => _addItem(_extensions, _extensionController),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            child: const Text(
-                              'Agregar',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: _extensions.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    const Icon(Icons.circle, size: 8, color: Colors.black),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      _extensions[index],
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                                IconButton(
-                                  onPressed: () => _removeItem(index, _extensions),
-                                  icon: const Icon(Icons.delete, color: Colors.red),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+        return buildStep4(
+          phoneController: _phoneController,
+          emailController: _emailController,
+          extensionController: _extensionController,
+          phoneNumbers: _phoneNumbers,
+          emails: _emails,
+          extensions: _extensions,
+          addItem: _addItem,
+          removeItem: _removeItem,
+          context: context
         );
       case 4:
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ElevatedButton(
-              onPressed: _selectFile,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                backgroundColor: Colors.green,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: const Text(
-                'Añadir archivo o tomar foto',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            const SizedBox(height: 16),
-            if (_files.isNotEmpty)
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: _files.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    leading: Icon(
-                      _files[index].path.endsWith('.pdf')
-                          ? Icons.picture_as_pdf
-                          : _files[index].path.endsWith('.zip')
-                              ? Icons.archive
-                              : Icons.image,
-                      color: Colors.blue,
-                    ),
-                    title: Text(_files[index].path.split('/').last),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () => _removeFile(index),
-                    ),
-                  );
-                },
-              ),
-          ],
+        return buildStep5(
+          files: _files,
+          handleFileSelection: _handleFileSelection,
+          removeFile: _removeFile,
+          context: context
         );
       default:
         return const SizedBox.shrink();

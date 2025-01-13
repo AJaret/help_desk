@@ -7,9 +7,16 @@ class TokenService {
   final _storage = const FlutterSecureStorage();
   final String baseUrl = 'soportetecnico.gobiernodesolidaridad.gob.mx';
 
-  Future<void> saveTokens(String shortToken, String longToken) async {
+  Future<void> saveTokens(String shortToken, String longToken, [String? userDependency, String? userDependencyDirector]) async {
     await _storage.write(key: 'shortToken', value: shortToken);
     await _storage.write(key: 'longToken', value: longToken);
+    userDependency != null ? await _storage.write(key: 'userDependency', value: userDependency) : null;
+    userDependencyDirector != null ? await _storage.write(key: 'userDependencyDirector', value: userDependencyDirector) : null;
+  }
+
+  Future<void> saveUserDependencyData([String? userDependency, String? userDependencyDirector]) async {
+    userDependency != null ? await _storage.write(key: 'userDependency', value: userDependency) : null;
+    userDependencyDirector != null ? await _storage.write(key: 'userDependencyDirector', value: userDependencyDirector) : null;
   }
 
   Future<String?> getShortToken() async { 
