@@ -4,9 +4,9 @@ class NewRequest {
   final String? documentNumber;
   final String? serviceDescription;
   final String? observations;
-  final String? inventoryNumber;
-  final String? location;
+  final String? serviceLocation;
   final String? physicalServiceLocation;
+  final List<String>? inventoryNumber;
   final List<String>? phoneList;
   final List<String>? extensions;
   final List<String>? emails;
@@ -17,7 +17,7 @@ class NewRequest {
     this.serviceDescription,
     this.observations,  
     this.inventoryNumber,
-    this.location,
+    this.serviceLocation,
     this.physicalServiceLocation,
     this.phoneList,
     this.extensions,

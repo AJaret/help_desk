@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 class HttpService {
   final TokenService authService = TokenService();
 
-  Future<http.Response> getRequest(String endpoint, int RequestType, {Map<String, dynamic>? body}) async {
+  Future<http.Response> getRequest(String endpoint, int requestType, {Map<String, dynamic>? body}) async {
     String? token = await authService.getShortToken();
 
     if (token == null) {
@@ -18,7 +18,7 @@ class HttpService {
 
     dynamic response;
 
-    switch (RequestType) {
+    switch (requestType) {
       case 1:
         response = await http.get(
           Uri.parse(endpoint),

@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class TokenService {
   final _storage = const FlutterSecureStorage();
-  final String baseUrl = 'soportetecnico.gobiernodesolidaridad.gob.mx';
+  final String baseUrl = 'helpdesk.gobiernodesolidaridad.gob.mx';
 
   Future<void> saveTokens(String shortToken, String longToken, [String? userDependency, String? userDependencyDirector]) async {
     await _storage.write(key: 'shortToken', value: shortToken);

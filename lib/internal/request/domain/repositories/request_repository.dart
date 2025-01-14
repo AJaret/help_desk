@@ -6,4 +6,5 @@ abstract class RequestRepository {
   Future<List<Request>> getRequests();
   Future<RequestFull> getRequestById(String requestId);
   Future<Document> getDocumentFile(int fileId);
+  Future<bool> postNewRequest();
 }

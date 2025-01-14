@@ -12,7 +12,7 @@ import 'package:help_desk/shared/helpers/http_interceptor.dart';
 import 'package:help_desk/shared/services/token_service.dart';
 
 class RequestApiDatasourceImp implements RequestRepository {
-  final String urlApi = "https://soportetecnico.gobiernodesolidaridad.gob.mx";
+  final String urlApi = "https://helpdesk.gobiernodesolidaridad.gob.mx";
   final TokenService tokenService = TokenService();
   final httpService = HttpService();
   
@@ -74,6 +74,29 @@ class RequestApiDatasourceImp implements RequestRepository {
         return data;
       }
       else{
+        String message = 'Ocurrió un error al obtener las solicitudes, por favor intente de nuevo.';
+        throw Exception(message);
+      }
+    } on SocketException {
+      throw Exception('No hay conexión a Internet. Por favor, revisa tu conexión.');
+    }
+    catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<bool> postNewRequest() async{
+    try {
+      final response = await httpService.getRequest('$urlApi/apiHelpdeskDNTICS/solicitudes-usuarios/solicitud', 2);
+      if (response.statusCode == 201) {
+        dynamic body = jsonDecode(response.body);
+        final bool data = body["solicitudes"].map<Request>((data) => RequestModel.fromJson(data)).toList();
+        return data;
+      } else if(response.statusCode == 401) {
+        String message = 'Su sesión ha expirado, por favor vuelva a iniciar sesión.';
+        throw Exception(message);
+      }else{
         String message = 'Ocurrió un error al obtener las solicitudes, por favor intente de nuevo.';
         throw Exception(message);
       }

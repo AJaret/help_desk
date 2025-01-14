@@ -8,14 +8,14 @@ import 'package:help_desk/shared/helpers/http_interceptor.dart';
 import 'package:help_desk/shared/services/token_service.dart';
 
 class CatalogApiDatasourceImp implements CatalogRepository {
-  String urlApi = "soportetecnico.gobiernodesolidaridad.gob.mx";
+  String urlApi = "helpdesk.gobiernodesolidaridad.gob.mx";
   final TokenService tokenService = TokenService();
   final httpService = HttpService();
 
   @override
   Future<List<Catalog>> getDependencies() async{
     try {
-      final response = await httpService.getRequest('https://soportetecnico.gobiernodesolidaridad.gob.mx/apiHelpdeskDNTICS/catalogos/direcciones-secretarias', 1);
+      final response = await httpService.getRequest('https://helpdesk.gobiernodesolidaridad.gob.mx/apiHelpdeskDNTICS/catalogos/direcciones-secretarias', 1);
       dynamic body = jsonDecode(response.body);
       if (response.statusCode == 201) {
         List<dynamic> data = body["catalogo"];
@@ -36,7 +36,7 @@ class CatalogApiDatasourceImp implements CatalogRepository {
   @override
   Future<List<Catalog>> getPhysicalLocations() async{
     try {
-      final response = await httpService.getRequest('https://soportetecnico.gobiernodesolidaridad.gob.mx/apiHelpdeskDNTICS/catalogos/ubicacion-servicio', 1);
+      final response = await httpService.getRequest('https://helpdesk.gobiernodesolidaridad.gob.mx/apiHelpdeskDNTICS/catalogos/ubicacion-servicio', 1);
       dynamic body = jsonDecode(response.body);
       if (response.statusCode == 201) {
         List<dynamic> data = body["catalogo"];

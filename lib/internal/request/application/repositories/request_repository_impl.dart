@@ -35,4 +35,13 @@ class RequestRepositoryImpl implements RequestRepository {
       throw Exception(e.toString());
     }
   }
+  
+  @override
+  Future<bool> postNewRequest() async{
+    try {
+      return await datasource.postNewRequest();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }
