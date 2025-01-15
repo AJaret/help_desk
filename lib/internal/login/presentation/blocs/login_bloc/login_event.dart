@@ -12,3 +12,5 @@ class PostLogin extends LoginEvent {
     required this.password,
   });
 }
+
+class Logout extends LoginEvent {}

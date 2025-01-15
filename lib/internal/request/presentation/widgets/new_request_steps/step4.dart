@@ -4,6 +4,7 @@ Widget buildStep4({
   required TextEditingController phoneController,
   required TextEditingController emailController,
   required TextEditingController extensionController,
+  required TextEditingController referredPersonController,
   required List<String> phoneNumbers,
   required List<String> emails,
   required List<String> extensions,
@@ -16,6 +17,16 @@ Widget buildStep4({
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          TextFormField(
+            controller: referredPersonController,
+            decoration: const InputDecoration(
+              labelText: "Persona que atenderá al técnico",
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) =>
+                value == null || value.isEmpty ? "El nombre es requerido" : null,
+          ),
+          const SizedBox(height: 20,),
           Container(
             padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
             decoration: BoxDecoration(

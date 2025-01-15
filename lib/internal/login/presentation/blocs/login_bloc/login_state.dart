@@ -14,3 +14,5 @@ final class ErrorPostingLogin extends LoginState {
 
   ErrorPostingLogin(this.message);
 }
+
+final class Unauthenticated extends LoginState {}

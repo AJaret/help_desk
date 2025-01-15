@@ -29,7 +29,7 @@ class LoginApiDatasourceImp implements LoginRepository {
           final shortToken = data['token'];
           final longToken = data['refreshToken'];
           await tokenService.saveTokens(shortToken, longToken);
-          final responseDep = await httpService.getRequest('https://helpdesk.gobiernodesolidaridad.gob.mx/apiHelpdeskDNTICS/solicitudes-usuarios/entidad-director-usuario', 2);
+          final responseDep = await httpService.getRequest('https://helpdesk.gobiernodesolidaridad.gob.mx/apiHelpdeskDNTICS/solicitudes-usuarios/entidad-director-usuario', 1);
           if(responseDep.statusCode == 201){
             dynamic bodyDep = jsonDecode(responseDep.body);
             userDependency = bodyDep["entidad"];

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:help_desk/internal/login/presentation/blocs/login_bloc/login_bloc.dart';
 import 'package:help_desk/internal/login/presentation/widgets/login_form_widget.dart';
 import 'package:help_desk/shared/helpers/app_dependencies.dart';
+import 'package:help_desk/shared/services/token_service.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -12,6 +13,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    TokenService tokenService = TokenService();
 
     return Scaffold(
       backgroundColor: const Color.fromRGBO(161, 0, 70, 1),
@@ -39,7 +41,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                   height: size.height * 0.65,
                   child: BlocProvider(
-                    create: (context) => LoginBloc(AppDependencies.postLoginUseCase),
+                    create: (context) => LoginBloc(AppDependencies.postLoginUseCase, tokenService),
                     child: BlocListener<LoginBloc, LoginState>(
                       listener: (context, state) {
                         if(state is PostingLogin){

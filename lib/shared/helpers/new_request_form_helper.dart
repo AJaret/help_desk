@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -5,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 Future<File?> selectFile(BuildContext context, ImagePicker imagePicker) async {
-  File? selectedFile;
+  final Completer<File?> completer = Completer<File?>();
 
   await showModalBottomSheet(
     context: context,
@@ -17,10 +18,11 @@ Future<File?> selectFile(BuildContext context, ImagePicker imagePicker) async {
             title: const Text('Tomar una foto'),
             onTap: () async {
               Navigator.of(context).pop();
-              final pickedFile =
-                  await imagePicker.pickImage(source: ImageSource.camera);
+              final XFile? pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
               if (pickedFile != null) {
-                selectedFile = File(pickedFile.path);
+                completer.complete(File(pickedFile.path));
+              } else {
+                completer.complete(null);
               }
             },
           ),
@@ -29,10 +31,11 @@ Future<File?> selectFile(BuildContext context, ImagePicker imagePicker) async {
             title: const Text('Seleccionar desde la galería'),
             onTap: () async {
               Navigator.of(context).pop();
-              final pickedFile =
-                  await imagePicker.pickImage(source: ImageSource.gallery);
+              final pickedFile = await imagePicker.pickMedia();
               if (pickedFile != null) {
-                selectedFile = File(pickedFile.path);
+                completer.complete(File(pickedFile.path));
+              } else {
+                completer.complete(null);
               }
             },
           ),
@@ -46,7 +49,9 @@ Future<File?> selectFile(BuildContext context, ImagePicker imagePicker) async {
                 allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'zip', 'mp4'],
               );
               if (result != null) {
-                selectedFile = File(result.files.single.path!);
+                completer.complete(File(result.files.single.path!));
+              } else {
+                completer.complete(null);
               }
             },
           ),
@@ -55,5 +60,6 @@ Future<File?> selectFile(BuildContext context, ImagePicker imagePicker) async {
     },
   );
 
+  final File? selectedFile = await completer.future;
   return selectedFile;
 }

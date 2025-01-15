@@ -1,5 +1,6 @@
 import 'package:help_desk/internal/request/application/datasource/request_api_datasource.dart';
 import 'package:help_desk/internal/request/domain/entities/document.dart';
+import 'package:help_desk/internal/request/domain/entities/new_request.dart';
 import 'package:help_desk/internal/request/domain/entities/request.dart';
 import 'package:help_desk/internal/request/domain/entities/request_full.dart';
 import 'package:help_desk/internal/request/domain/repositories/request_repository.dart';
@@ -37,9 +38,9 @@ class RequestRepositoryImpl implements RequestRepository {
   }
   
   @override
-  Future<bool> postNewRequest() async{
+  Future<bool> postNewRequest(NewRequest requestData) async{
     try {
-      return await datasource.postNewRequest();
+      return await datasource.postNewRequest(requestData);
     } catch (e) {
       throw Exception(e.toString());
     }

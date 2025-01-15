@@ -1,3 +1,4 @@
+import 'package:help_desk/internal/request/domain/entities/new_request.dart';
 import 'package:help_desk/internal/request/domain/repositories/request_repository.dart';
 
 class PostNewRequestUsecase {
@@ -5,9 +6,9 @@ class PostNewRequestUsecase {
 
   PostNewRequestUsecase({required this.requestRepo});
 
-  Future<bool> execute() async {
+  Future<bool> execute({required NewRequest requestData}) async {
     try {
-      return await requestRepo.postNewRequest();
+      return await requestRepo.postNewRequest(requestData);
     } catch (e) {
       throw Exception(e.toString());
     }

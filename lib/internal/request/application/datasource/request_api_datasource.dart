@@ -5,6 +5,7 @@ import 'package:help_desk/internal/request/application/models/document_model.dar
 import 'package:help_desk/internal/request/application/models/request_full_model.dart';
 import 'package:help_desk/internal/request/application/models/request_model.dart';
 import 'package:help_desk/internal/request/domain/entities/document.dart';
+import 'package:help_desk/internal/request/domain/entities/new_request.dart';
 import 'package:help_desk/internal/request/domain/entities/request.dart';
 import 'package:help_desk/internal/request/domain/entities/request_full.dart';
 import 'package:help_desk/internal/request/domain/repositories/request_repository.dart';
@@ -86,7 +87,7 @@ class RequestApiDatasourceImp implements RequestRepository {
   }
 
   @override
-  Future<bool> postNewRequest() async{
+  Future<bool> postNewRequest(NewRequest requestData) async{
     try {
       final response = await httpService.getRequest('$urlApi/apiHelpdeskDNTICS/solicitudes-usuarios/solicitud', 2);
       if (response.statusCode == 201) {

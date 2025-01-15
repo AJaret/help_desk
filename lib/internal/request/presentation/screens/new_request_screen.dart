@@ -35,18 +35,21 @@ class _MultiStepFormState extends State<NewRequestScreen> {
   final TextEditingController inventoryController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final List<String> _phoneNumbers = [];
   final TextEditingController _emailController = TextEditingController();
-  final List<String> _emails = [];
   final TextEditingController _extensionController = TextEditingController();
+  final TextEditingController _referredPersonController = TextEditingController();
+  final List<String> _inventoryNumbers = [];
+  final List<String> _phoneNumbers = [];
+  final List<String> _emails = [];
   final List<String> _extensions = [];
-  int characterCount = 0;
   final List<File> _files = [];
   final ImagePicker _imagePicker = ImagePicker();
+  int characterCount = 0;
   int? selectedUbi;
   
   Future<void> _handleFileSelection() async {
     File? file = await selectFile(context, _imagePicker);
+    print(file);
     if (file != null) {
       setState(() {
         _files.add(file);
@@ -252,11 +255,14 @@ class _MultiStepFormState extends State<NewRequestScreen> {
   Widget _buildStepContent(BuildContext context) {
     switch (currentStep) {
       case 0:
-        return buildStep1();
+        return const Step1();
       case 1:
         return buildStep2(
           descriptionController: descriptionController,
           aditionalDescriptionController: aditionalDescriptionController,
+          inventoryNumbers: _inventoryNumbers,
+          addItem: _addItem,
+          removeItem: _removeItem,
           inventoryController: inventoryController,
           characterCount: characterCount,
           onDescriptionChanged: (value) {
@@ -283,6 +289,7 @@ class _MultiStepFormState extends State<NewRequestScreen> {
           phoneController: _phoneController,
           emailController: _emailController,
           extensionController: _extensionController,
+          referredPersonController: _referredPersonController,
           phoneNumbers: _phoneNumbers,
           emails: _emails,
           extensions: _extensions,
@@ -293,7 +300,7 @@ class _MultiStepFormState extends State<NewRequestScreen> {
       case 4:
         return buildStep5(
           files: _files,
-          handleFileSelection: _handleFileSelection,
+          handleFileSelectionModal: _handleFileSelection,
           removeFile: _removeFile,
           context: context
         );
