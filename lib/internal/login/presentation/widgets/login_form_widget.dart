@@ -38,17 +38,6 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     super.dispose();
   }
 
-  // String? _emailValidator(String? value) {
-  //   if (value == null || value.isEmpty) {
-  //     return 'Por favor ingrese su correo electrónico';
-  //   }
-  //   final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-  //   if (!emailRegex.hasMatch(value)) {
-  //     return 'Por favor ingrese un correo electrónico válido';
-  //   }
-  //   return null;
-  // }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -73,6 +62,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
               children: [
                 TextFormField(
                   controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,

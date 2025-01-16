@@ -6,7 +6,7 @@ class PostNewRequestUsecase {
 
   PostNewRequestUsecase({required this.requestRepo});
 
-  Future<bool> execute({required NewRequest requestData}) async {
+  Future<String> execute({required NewRequest requestData}) async {
     try {
       return await requestRepo.postNewRequest(requestData);
     } catch (e) {

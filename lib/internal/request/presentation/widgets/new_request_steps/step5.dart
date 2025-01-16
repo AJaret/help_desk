@@ -43,13 +43,13 @@ Widget buildStep5({
   }
 
   return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.center,
     children: [
       ElevatedButton(
         onPressed: () => handleFileSelection(context),
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          backgroundColor: Colors.green,
+          backgroundColor: const Color(0xFF8B1A42),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -67,14 +67,10 @@ Widget buildStep5({
           itemBuilder: (context, index) {
             return ListTile(
               leading: Icon(
-                files[index].path.endsWith('.pdf')
-                    ? Icons.picture_as_pdf
-                    : files[index].path.endsWith('.zip')
-                        ? Icons.archive
-                        : Icons.image,
-                color: Colors.blue,
+                files[index].path.endsWith('.pdf') ? Icons.picture_as_pdf : Icons.image,
+                color: const Color(0xFF8B1A42),
               ),
-              title: Text(files[index].path.split('/').last),
+              title: Text(files[index].path.endsWith('.pdf') ? 'PDF' : 'Imagen'),
               trailing: IconButton(
                 icon: const Icon(Icons.delete, color: Colors.red),
                 onPressed: () => removeFile(index),

@@ -1,3 +1,4 @@
+import 'package:help_desk/internal/request/application/models/document_model.dart';
 import 'package:help_desk/internal/request/domain/entities/new_request.dart';
 
 class NewRequestModel extends NewRequest {
@@ -42,5 +43,20 @@ class NewRequestModel extends NewRequest {
       emails: req.emails,
       documents: req.documents
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "numeroOficio": documentNumber,
+      "descripcionServicio": serviceDescription,
+      "observaciones": observations,
+      "numeroInventario": inventoryNumber,
+      "ubicacionServicio": serviceLocation,
+      "ubicacionFisica": physicalServiceLocation,
+      "telefonos": phoneList != null ? phoneList!.map((phone) => {"telefono": phone}).toList() : [],
+      "extensiones": extensions != null ? extensions!.map((ext) => {"extension": ext}).toList() : [],
+      "correos": emails != null ? emails!.map((email) => {"correo": email}).toList() : [],
+      "documentos": documents != null ? documents!.map((doc) => (doc as DocumentModel).toJson()).toList() : [],
+    };
   }
 }

@@ -25,4 +25,13 @@ class DocumentModel extends Document {
       type: doc.type,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "iddocumento": documentId,
+      "extension": fileExtension,
+      "archivo": file,
+      "tipo": type,
+    };
+  }
 }

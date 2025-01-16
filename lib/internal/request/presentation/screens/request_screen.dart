@@ -34,12 +34,12 @@ class _RequestScreenState extends State<RequestScreen> {
           child: SizedBox(
             height: size.height * 0.62,
             child: BlocProvider(
-              create: (context) => RequestBloc(AppDependencies.postRequestUseCase),
+              create: (context) => RequestBloc(AppDependencies.postRequestUseCase, AppDependencies.postNewRequest),
               child: BlocListener<RequestBloc, RequestState>(
                 listener: (context, state) {
                   BlocListener<RequestBloc, RequestState>(
                     listener: (context, state) {
-                      if (state is ErrorPostingRequest) {
+                      if (state is ErrorGettingRequests) {
                         GoRouter.of(context).canPop() ? GoRouter.of(context).pop() : null;
                         showCupertinoDialog(
                           context: context,

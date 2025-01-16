@@ -129,12 +129,12 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
     return BlocBuilder<RequestBloc, RequestState>(
       builder: (context, state) {
         if (state is RequestInitial) {
-          context.read<RequestBloc>().add(PostRequest());
-        } else if (state is PostingRequest) {
+          context.read<RequestBloc>().add(GetRequests());
+        } else if (state is GettingRequests) {
           return const Center(
             child: CircularProgressIndicator(),
           );
-        } else if (state is RequestSuccess) {
+        } else if (state is GetRequestSuccess) {
           if (allRequests.isEmpty) {
             allRequests = widget.requestType == 'Finished' ?  state.requests.where((request) => request.status == 'Solicitud finalizado').toList() : state.requests;
             allRequests.sort((a, b) {
@@ -200,10 +200,10 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
               ),
             ],
           );
-        } else if (state is ErrorPostingRequest) {
+        } else if (state is ErrorGettingRequests) {
           return Center(
             child: IconButton(
-                onPressed: () => context.read<RequestBloc>().add(PostRequest()),
+                onPressed: () => context.read<RequestBloc>().add(GetRequests()),
                 icon: const Icon(
                   Icons.refresh_rounded,
                   size: 60,

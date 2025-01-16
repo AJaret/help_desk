@@ -38,7 +38,7 @@ class RequestRepositoryImpl implements RequestRepository {
   }
   
   @override
-  Future<bool> postNewRequest(NewRequest requestData) async{
+  Future<String> postNewRequest(NewRequest requestData) async{
     try {
       return await datasource.postNewRequest(requestData);
     } catch (e) {

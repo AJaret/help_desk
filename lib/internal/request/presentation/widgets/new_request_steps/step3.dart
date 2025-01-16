@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:help_desk/internal/catalog/presentation/blocs/catalog_bloc/catalog_bloc.dart';
@@ -46,7 +47,7 @@ Widget buildStep3({
                 ),
               ),
               hint: const Text(
-                "Selecciona una opción",
+                "Selecciona una ubicación para el servicio *",
                 style: TextStyle(fontSize: 14, color: Colors.grey),
               ),
               items: state.locationsList.isNotEmpty ? 
@@ -60,6 +61,7 @@ Widget buildStep3({
               onChanged: (value) => onLocationChange,
               icon: const Icon(Icons.arrow_drop_down, color: Colors.grey),
               dropdownColor: Colors.white,
+              validator: (value) => value == null ? "La ubicación es requerida" : null,
             );
           }else if(state is ErrorGettingPhysicalLocationsCatalog){
             return Center(
@@ -73,14 +75,42 @@ Widget buildStep3({
         },
       ),
       const SizedBox(height: 20,),
-      TextFormField(
-        controller: addressController,
-        decoration: const InputDecoration(
-          labelText: "Ubicación física del servicio",
-          border: OutlineInputBorder(),
-        ),
-        validator: (value) =>
-            value == null || value.isEmpty ? "La dirección es requerida" : null,
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: TextFormField(
+              controller: addressController,
+              decoration: const InputDecoration(
+                labelText: "Ubicación física del servicio *",
+                border: OutlineInputBorder(),
+              ),
+              validator: (value) => value == null || value.isEmpty ? "La dirección es requerida" : null,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Tooltip(
+            message: "Especifica el lugar en el que se llevará acabo el servicio",
+            child: IconButton(
+              icon: const Icon(Icons.info_outline),
+              onPressed: () {
+                showCupertinoDialog(
+                  context: context,
+                  builder: (_) => CupertinoAlertDialog(
+                    title: const Text("Información"),
+                    content: const Text("Especifica el lugar en el que se llevará acabo el servicio, por ejemplo: oficina del jefe de departamento de sistemas en planta alta"),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text("Cerrar"),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     ],
   );

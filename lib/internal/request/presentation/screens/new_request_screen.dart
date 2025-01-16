@@ -49,7 +49,6 @@ class _MultiStepFormState extends State<NewRequestScreen> {
   
   Future<void> _handleFileSelection() async {
     File? file = await selectFile(context, _imagePicker);
-    print(file);
     if (file != null) {
       setState(() {
         _files.add(file);

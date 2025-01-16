@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:help_desk/internal/request/application/models/document_model.dart';
+import 'package:help_desk/internal/request/application/models/new_request_model.dart';
 import 'package:help_desk/internal/request/application/models/request_full_model.dart';
 import 'package:help_desk/internal/request/application/models/request_model.dart';
 import 'package:help_desk/internal/request/domain/entities/document.dart';
@@ -87,13 +88,19 @@ class RequestApiDatasourceImp implements RequestRepository {
   }
 
   @override
-  Future<bool> postNewRequest(NewRequest requestData) async{
+  Future<String> postNewRequest(NewRequest requestData) async{
     try {
-      final response = await httpService.getRequest('$urlApi/apiHelpdeskDNTICS/solicitudes-usuarios/solicitud', 2);
+      final Map<String, dynamic> dataToSend = NewRequestModel.fromEntity(requestData).toJson();
+      final response = await httpService.getRequest('$urlApi/apiHelpdeskDNTICS/solicitudes-usuarios/solicitud', 2, body: dataToSend);
       if (response.statusCode == 201) {
         dynamic body = jsonDecode(response.body);
-        final bool data = body["solicitudes"].map<Request>((data) => RequestModel.fromJson(data)).toList();
-        return data;
+        if(body["respuesta"] == 'registrado'){
+          final String data = body["folio"];
+          return data;
+        }else{
+          String message = 'Ocurrió un error al crear la solicitud';
+          throw Exception(message);  
+        }
       } else if(response.statusCode == 401) {
         String message = 'Su sesión ha expirado, por favor vuelva a iniciar sesión.';
         throw Exception(message);

@@ -3,10 +3,18 @@ part of 'request_bloc.dart';
 @immutable
 sealed class RequestEvent {}
 
-class PostRequest extends RequestEvent {
+class GetRequests extends RequestEvent {
   final String? filter;
 
-  PostRequest({
+  GetRequests({
     this.filter,
+  });
+}
+
+class PostNewRequest extends RequestEvent {
+  final NewRequest requestData;
+
+  PostNewRequest({
+    required this.requestData,
   });
 }
