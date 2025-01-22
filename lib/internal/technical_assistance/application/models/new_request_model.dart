@@ -53,14 +53,14 @@ class NewRequestModel extends NewRequest {
       "numeroOficio": documentNumber,
       "descripcionServicio": serviceDescription,
       "observaciones": observations,
-      "numerosInventario": inventoryNumber != null ? inventoryNumber!.map((inv) => {"numeroInventario": inv}).toList() : [],
+      "numerosInventario": inventoryNumber != null ? inventoryNumber!.map((inv) => {"numeroinventario": inv}).toList() : [],
       "ubicacionServicio": serviceLocation,
       "ubicacionFisica": physicalServiceLocation,
       "dirigirseCon": addressWith,
       "telefonos": phoneList != null ? phoneList!.map((phone) => {"telefono": phone}).toList() : [],
       "extensiones": extensions != null ? extensions!.map((ext) => {"extension": ext}).toList() : [],
       "correos": emails != null ? emails!.map((email) => {"correo": email}).toList() : [],
-      "documentos": documents != null ? documents!.map((doc) => DocumentModel.fromEntity(doc).toJson()).toList() : [],
+      "documentos": documents != null ? documents!.map((doc) => (doc as DocumentModel).toJson()).toList() : [],
     };
   }
 }

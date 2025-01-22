@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -460,4 +463,35 @@ Widget buildMultipleItemsPhoneExtensionField({
       )
     ],
   );
+}
+
+Future<String> encodeFileToBase64(File file) async {
+  try {
+    final bytes = await file.readAsBytes();
+    final base64String = base64Encode(bytes);
+    final mimeType = getMimeType(file.path);
+    return 'data:$mimeType;base64,$base64String';
+  } catch (e) {
+    throw Exception('Error al codificar el archivo: $e');
+  }
+}
+
+
+String getMimeType(String filePath) {
+  final extension = filePath.split('.').last.toLowerCase();
+  switch (extension) {
+    case 'jpg':
+    case 'jpeg':
+      return 'image/jpeg';
+    case 'png':
+      return 'image/png';
+    case 'pdf':
+      return 'application/pdf';
+    case 'mp4':
+      return 'video/mp4';
+    case 'zip':
+      return 'application/zip';
+    default:
+      return 'application/octet-stream';
+  }
 }

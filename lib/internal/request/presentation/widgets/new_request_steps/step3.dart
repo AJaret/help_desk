@@ -58,7 +58,7 @@ Widget buildStep3({
                 );
               }).toList() :
               const [],
-              onChanged: (value) => onLocationChange,
+              onChanged: (value) => onLocationChange(value),
               icon: const Icon(Icons.arrow_drop_down, color: Colors.grey),
               dropdownColor: Colors.white,
               validator: (value) => value == null ? "La ubicación es requerida" : null,

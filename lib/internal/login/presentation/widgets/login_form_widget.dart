@@ -96,7 +96,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                 ),
                 const SizedBox(height: 20),
                 TextButton(
-                  onPressed: null,
+                  onPressed: () => GoRouter.of(context).push('/resetPassword'),
                   child: Text('¿Olvidaste tu contraseña?', style: TextStyle(color: Colors.blue.shade800, fontSize: size.width * 0.04),),
                 ),
                 const SizedBox(height: 5),

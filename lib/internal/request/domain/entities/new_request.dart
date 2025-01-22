@@ -6,19 +6,21 @@ class NewRequest {
   final String? observations;
   final String? serviceLocation;
   final String? physicalServiceLocation;
-  final List<Map<String, dynamic>>? inventoryNumber;
-  final List<Map<String, dynamic>>? phoneList;
-  final List<Map<String, dynamic>>? extensions;
-  final List<Map<String, dynamic>>? emails;
+  final String? addressWith;
+  final List<String>? inventoryNumber;
+  final List<String>? phoneList;
+  final List<String>? extensions;
+  final List<String>? emails;
   final List<Document>? documents;
 
   NewRequest({
     this.documentNumber,
     this.serviceDescription,
     this.observations,  
-    this.inventoryNumber,
     this.serviceLocation,
     this.physicalServiceLocation,
+    this.addressWith,
+    this.inventoryNumber,
     this.phoneList,
     this.extensions,
     this.emails,

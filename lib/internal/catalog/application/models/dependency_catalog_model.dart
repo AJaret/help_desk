@@ -5,12 +5,14 @@ class CatalogModel extends Catalog {
   CatalogModel({
     super.value,
     super.label,
+    super.decentralized,
   });
 
   factory CatalogModel.fromJson(Map<String, dynamic> json) {
     return CatalogModel(
       value: json["value"],
       label: json["label"],
+      decentralized: json["descentralizada"],
     );
   }
 
@@ -18,6 +20,7 @@ class CatalogModel extends Catalog {
     return CatalogModel(
       value: dependency.value,
       label: dependency.label,
+      decentralized: dependency.decentralized,
     );
   }
 }

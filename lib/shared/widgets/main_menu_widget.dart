@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:help_desk/internal/announcements/presentation/screens/announcements_screen.dart';
+import 'package:help_desk/internal/catalog/presentation/blocs/catalog_bloc/catalog_bloc.dart';
 import 'package:help_desk/internal/profile/presentation/screens/profile_screen.dart';
+import 'package:help_desk/internal/request/presentation/blocs/request_bloc/request_bloc.dart';
 import 'package:help_desk/internal/request/presentation/screens/history_screen.dart';
-import 'package:help_desk/internal/request/presentation/screens/request_screen.dart';
 import 'package:help_desk/internal/request/presentation/screens/new_request_screen.dart';
+import 'package:help_desk/internal/request/presentation/screens/request_screen.dart';
+import 'package:help_desk/shared/helpers/app_dependencies.dart';
 
 class MainMenuWidget extends StatefulWidget {
   const MainMenuWidget({super.key});
@@ -83,7 +87,13 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
             builder: (BuildContext context) => SizedBox(
               height: MediaQuery.of(context).size.height * 0.9,
               width: MediaQuery.of(context).size.width,
-              child: const NewRequestScreen()
+              child: MultiBlocProvider(
+                providers: [
+                  BlocProvider(create: (context) => CatalogBloc(getDependencyCatalogUseCase: AppDependencies.getDependency, getPhysicalLocationsCatalogUseCase: AppDependencies.getPhysicalLocations)),
+                  BlocProvider(create: (context) => RequestBloc(AppDependencies.postRequestUseCase, AppDependencies.postNewRequest)),
+                ],
+                child: const NewRequestScreen(),
+              )
             )
           );
         },

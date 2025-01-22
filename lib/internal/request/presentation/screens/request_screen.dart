@@ -69,26 +69,3 @@ class _RequestScreenState extends State<RequestScreen> {
     );
   }
 }
-
-                  // BlocListener<RequestDetailsBloc, RequestDetailsState>(
-                  //   listener: (context, state) {
-                  //     if(state is ErrorGettingRequestDetails){
-                  //       GoRouter.of(context).canPop() ? GoRouter.of(context).pop() : null;
-                  //       showCupertinoDialog(
-                  //         context: context, 
-                  //         builder: (context) => CupertinoAlertDialog(
-                  //         title: const Text('Error'),
-                  //           content: Center(
-                  //             child: Text(state.message),
-                  //           ),
-                  //           actions: [
-                  //             CupertinoDialogAction(
-                  //               onPressed: () => GoRouter.of(context).pop(), 
-                  //               child: const Text('Aceptar'),
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       );
-                  //     }
-                  //   },
-                  // ),

@@ -23,9 +23,13 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
   TextEditingController employeeNumberController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController firstLastNameController = TextEditingController();
+  TextEditingController secondLastNameController = TextEditingController();
   bool privacyPolicy = false;
   bool isEmailValid = false;
   bool isPasswordValid = false;
+  bool isDecentralized = false;
   int? selectedValue;
   bool isFormValid = false;
 
@@ -33,13 +37,25 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
 
   void _validateForm() {
     setState(() {
-      isFormValid = employeeNumberController.text.isNotEmpty &&
+      if(isDecentralized){
+        isFormValid = employeeNumberController.text.isNotEmpty &&
+          calendarFieldController.text.isNotEmpty &&
+          emailController.text.isNotEmpty &&
+          nameController.text.isNotEmpty && 
+          firstLastNameController.text.isNotEmpty &&
+          selectedValue != null &&
+          isEmailValid &&
+          isPasswordValid &&
+          privacyPolicy;
+      }else{
+        isFormValid = employeeNumberController.text.isNotEmpty &&
           calendarFieldController.text.isNotEmpty &&
           emailController.text.isNotEmpty &&
           selectedValue != null &&
           isEmailValid &&
           isPasswordValid &&
           privacyPolicy;
+      }
     });
   }
 
@@ -154,7 +170,6 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
                     child: CircularProgressIndicator(color: Color(0XFF721538)),
                   );
                 } else if (state is DependencyCatalogList) {
-                  // Aquí devolvemos correctamente el DropdownButton2
                   return DropdownButtonHideUnderline(
                     child: DropdownButton2<int>(
                       isExpanded: true,
@@ -172,12 +187,20 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
                         return DropdownMenuItem<int>(
                           value: item.value,
                           child: Column(
+                            mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                item.label ?? '',
-                                style: const TextStyle(
-                                  fontSize: 14,
+                              Flexible(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 2.0, right: 2.0),
+                                  child: Text(
+                                    item.label ?? '',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                               ),
                               const Divider(),
@@ -189,6 +212,12 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
                       onChanged: (int? value) {
                         setState(() {
                           selectedValue = value;
+                          final selectedEntity = state.dependencyList.firstWhere(
+                            (item) => item.value == value,
+                            orElse: () => Catalog(),
+                          );
+                          isDecentralized = selectedEntity.decentralized ?? false;
+                          _validateForm();
                         });
                       },
                       buttonStyleData: const ButtonStyleData(
@@ -199,22 +228,24 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
                           borderRadius: BorderRadius.all(Radius.circular(10)),
                         ),
                       ),
-                      dropdownStyleData: const DropdownStyleData(
-                        maxHeight: 200,
-                      ),
-                      menuItemStyleData: const MenuItemStyleData(
-                        height: 40,
+                      dropdownStyleData: DropdownStyleData(
+                        maxHeight: 400,
+                        // Add padding to prevent overflow
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.grey),
+                          color: Colors.white,
+                        ),
                       ),
                       selectedItemBuilder: (BuildContext context) {
                         return state.dependencyList.map((item) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Text(
-                              item.label ?? '',
-                              style: const TextStyle(
-                                fontSize: 14,
-                              ),
+                          return Text(
+                            item.label ?? '',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              overflow: TextOverflow.ellipsis,
                             ),
+                            maxLines: 2,
                           );
                         }).toList();
                       },
@@ -222,13 +253,8 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
                         searchController: textEditingController,
                         searchInnerWidgetHeight: 50,
                         searchInnerWidget: Container(
-                          height: 50,
-                          padding: const EdgeInsets.only(
-                            top: 8,
-                            bottom: 4,
-                            right: 8,
-                            left: 8,
-                          ),
+                          height: 55,
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: TextFormField(
                             expands: true,
                             maxLines: null,
@@ -240,7 +266,7 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
                                 vertical: 8,
                               ),
                               hintText: 'Buscar entidad',
-                              hintStyle: const TextStyle(fontSize: 12),
+                              hintStyle: const TextStyle(fontSize: 14),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
@@ -277,6 +303,53 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
                 return Container();
               },
             ),
+            isDecentralized ? const SizedBox(height: 20) : Container(),
+            isDecentralized ? 
+            TextField(
+              controller: nameController,
+              onChanged: (value) => _validateForm(),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                hintText: 'Nombre(s) *',
+                hintStyle: TextStyle(fontSize: size.width * 0.035),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ) : Container(),
+            isDecentralized ? const SizedBox(height: 20) : Container(),
+            isDecentralized ? 
+            TextField(
+              controller: firstLastNameController,
+              onChanged: (value) => _validateForm(),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                hintText: 'Primer apellido *',
+                hintStyle: TextStyle(fontSize: size.width * 0.035),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ) : Container(),
+            isDecentralized ? const SizedBox(height: 20) : Container(),
+            isDecentralized ? 
+            TextField(
+              controller: secondLastNameController,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                hintText: 'Segundo apellido',
+                hintStyle: TextStyle(fontSize: size.width * 0.035),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ) : Container(),
             const SizedBox(height: 20),
             TextField(
               controller: emailController,
