@@ -45,4 +45,13 @@ class RequestRepositoryImpl implements RequestRepository {
       throw Exception(e.toString());
     }
   }
+  
+  @override
+  Future<void> deleteRequest(String requestId) async{
+    try {
+      return await datasource.deleteRequest(requestId);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }

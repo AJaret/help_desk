@@ -1,17 +1,16 @@
 import 'package:fancy_password_field/fancy_password_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:help_desk/internal/login/presentation/blocs/login_bloc/login_bloc.dart';
 
-class LoginFormWidget extends StatefulWidget {
-  const LoginFormWidget({super.key});
+class TechniciansLoginFormWidget extends StatefulWidget {
+  const TechniciansLoginFormWidget({super.key});
 
   @override
-  State<LoginFormWidget> createState() => _LoginFormWidgetState();
+  State<TechniciansLoginFormWidget> createState() => _TechniciansLoginWidgetState();
 }
 
-class _LoginFormWidgetState extends State<LoginFormWidget> {
+class _TechniciansLoginWidgetState extends State<TechniciansLoginFormWidget> {
 
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
@@ -49,12 +48,13 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Text(
-            'INICIO DE SESIÓN',
+            'INICIO DE SESIÓN PARA TÉCNICOS',
             style: TextStyle(
               color: const Color(0xFF2C2927),
               fontSize: size.width * 0.07,
               fontWeight: FontWeight.bold,
             ),
+            textAlign: TextAlign.center,
           ),
           Padding(
             padding: EdgeInsets.only(left: size.width * 0.05, right: size.width * 0.05),
@@ -93,35 +93,6 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                     }
                     return null;
                   },
-                ),
-                const SizedBox(height: 20),
-                TextButton(
-                  onPressed: () => GoRouter.of(context).push('/resetPassword'),
-                  child: Text('¿Olvidaste tu contraseña?', style: TextStyle(color: Colors.blue.shade800, fontSize: size.width * 0.04),),
-                ),
-                const SizedBox(height: 5),
-                const Divider(color: Colors.black38,),
-                const SizedBox(height: 5),
-                Column(
-                  children: [
-                    Text('¿Aún no estas registrado?', style: TextStyle(color: const Color(0XFF2C2927), fontSize: size.width * 0.04)),
-                    TextButton(
-                      onPressed: () => GoRouter.of(context).push('/register'),
-                      child: Text('Crea una cuenta', style: TextStyle(color: Colors.blue.shade800, fontSize: size.width * 0.04),),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 5),
-                const Divider(color: Colors.black38,),
-                const SizedBox(height: 5),
-                Column(
-                  children: [
-                    Text('¿Eres técnico? inicia sesión aquí', style: TextStyle(color: const Color(0XFF2C2927), fontSize: size.width * 0.04)),
-                    TextButton(
-                      onPressed: () => GoRouter.of(context).push('/techLogin'),
-                      child: Text('Inicio de sesión', style: TextStyle(color: Colors.blue.shade800, fontSize: size.width * 0.04),),
-                    ),
-                  ],
                 ),
               ],
             ),

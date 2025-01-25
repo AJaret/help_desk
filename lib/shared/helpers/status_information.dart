@@ -43,7 +43,16 @@ Map<String, dynamic> getStatusInformation(String status){
       statusIcon = Icons.done_all;
       statusDesc = 'Solicitud finalizada';
       break;
-    default:
+    case 'Solicitud cancelada':
+      statusColor = Colors.red;
+      textColor = Colors.white;
+      statusIcon = Icons.cancel;
+      statusDesc = 'Solicitud cancelada';
+    default: 
+      statusColor = const Color(0XFF0DCAF0);
+      textColor = Colors.black;
+      statusIcon = Icons.question_mark;
+      statusDesc = 'No status';
   }
 
   return {

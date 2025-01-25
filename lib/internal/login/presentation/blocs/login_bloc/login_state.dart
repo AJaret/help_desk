@@ -16,3 +16,13 @@ final class ErrorPostingLogin extends LoginState {
 }
 
 final class Unauthenticated extends LoginState {}
+
+final class PostingResetPassword extends LoginState {}
+
+final class ResetPasswordSuccess extends LoginState {}
+
+final class ErrorPostingResetPassword extends LoginState {
+  final String message;
+
+  ErrorPostingResetPassword(this.message);
+}

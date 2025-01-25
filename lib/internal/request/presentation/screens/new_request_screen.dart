@@ -191,11 +191,39 @@ class _MultiStepFormState extends State<NewRequestScreen> {
                   ),
                 ),
               );
+            }else if(state is DeletingRequest){
+              showCupertinoDialog(
+                context: context, 
+                builder: (context) => const CupertinoAlertDialog(
+                title: Text('Cancelando la solicitud'),
+                  content: Center(
+                    child: CupertinoActivityIndicator(),
+                  ),
+                ),
+              );
             }
             else if(state is PostRequestSuccess){
               GoRouter.of(context).canPop() ? GoRouter.of(context).pop() : null;
               currentStep = 5;
               folio = state.folio;
+            }
+            else if(state is DeleteRequestSuccess){
+              GoRouter.of(context).canPop() ? GoRouter.of(context).pop() : null;
+              showCupertinoDialog(
+                context: context, 
+                builder: (context) => CupertinoAlertDialog(
+                title: const Text('Éxito'),
+                  content: const Center(
+                    child: Text('Solicitud cancelada correctamente'),
+                  ),
+                  actions: [
+                    CupertinoDialogAction(
+                      onPressed: () => GoRouter.of(context).pop(), 
+                      child: const Text('Aceptar'),
+                    ),
+                  ],
+                ),
+              );
             }
             else if(state is ErrorPostingRequest){
               GoRouter.of(context).canPop() ? GoRouter.of(context).pop() : null;
@@ -334,7 +362,10 @@ class _MultiStepFormState extends State<NewRequestScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () => GoRouter.of(context).pop(),
+                  onPressed: (){
+                    context.read<RequestBloc>().add(GetRequests());
+                    GoRouter.of(context).pop();
+                  },
                   child: const Text("Aceptar"),
                 ),
               ),

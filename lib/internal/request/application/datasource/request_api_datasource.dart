@@ -115,4 +115,30 @@ class RequestApiDatasourceImp implements RequestRepository {
       throw Exception(e.toString());
     }
   }
+  
+  @override
+  Future<void> deleteRequest(String requestId) async{
+    try {
+      final Map<String, dynamic> data = {'token': requestId};
+      final response = await httpService.getRequest('$urlApi/apiHelpdeskDNTICS/solicitudes-usuarios/cancelar-solicitud', 2, body: data);
+      if (response.statusCode == 201) {
+        dynamic body = jsonDecode(response.body);
+        if(body["respuesta"] == 'noSePuedeCancelar'){
+          String message = 'La solicitud no puede ser cancelada porque ya se encuentra en estatus distinto a registrada.';
+          throw Exception(message);  
+        }
+      } else if(response.statusCode == 401) {
+        String message = 'Su sesión ha expirado, por favor vuelva a iniciar sesión.';
+        throw Exception(message);
+      }else{
+        String message = 'Ocurrió un error al obtener las solicitudes, por favor intente de nuevo.';
+        throw Exception(message);
+      }
+    } on SocketException {
+      throw Exception('No hay conexión a Internet. Por favor, revisa tu conexión.');
+    }
+    catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }

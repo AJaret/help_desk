@@ -136,7 +136,7 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
           );
         } else if (state is GetRequestSuccess) {
           if (allRequests.isEmpty) {
-            allRequests = widget.requestType == 'Finished' ?  state.requests.where((request) => request.status == 'Solicitud finalizado').toList() : state.requests;
+            allRequests = widget.requestType == 'Finished' ? state.requests.where((request) => request.status == 'Solicitud finalizado' || request.status == 'Solicitud cancelada').toList() : state.requests.where((request) => request.status != 'Solicitud finalizado' && request.status != 'Solicitud cancelada').toList();
             allRequests.sort((a, b) {
               DateTime dateA = DateTime.parse(a.registrationDate!);
               DateTime dateB = DateTime.parse(b.registrationDate!);
@@ -184,8 +184,7 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
                 ListView.builder(
                   itemCount: filteredRequests.length,
                   itemBuilder: (context, index) {
-                    return RequestCardWidget(
-                        request: filteredRequests[index]);
+                    return RequestCardWidget(request: filteredRequests[index]);
                   },
                 ) : 
                 Center(

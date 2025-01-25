@@ -9,6 +9,8 @@ final class GettingRequests extends RequestState {}
 
 final class PostingNewRequest extends RequestState {}
 
+final class DeletingRequest extends RequestState {}
+
 final class GetRequestSuccess extends RequestState {
   final List<Request> requests;
 
@@ -21,6 +23,8 @@ final class PostRequestSuccess extends RequestState {
   PostRequestSuccess(this.folio);
 }
 
+final class DeleteRequestSuccess extends RequestState {}
+
 final class ErrorGettingRequests extends RequestState {
   final String message;
 
@@ -31,4 +35,10 @@ final class ErrorPostingRequest extends RequestState {
   final String message;
 
   ErrorPostingRequest(this.message);
+}
+
+final class ErrorDeletingRequest extends RequestState {
+  final String message;
+
+  ErrorDeletingRequest(this.message);
 }

@@ -90,7 +90,7 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
               child: MultiBlocProvider(
                 providers: [
                   BlocProvider(create: (context) => CatalogBloc(getDependencyCatalogUseCase: AppDependencies.getDependency, getPhysicalLocationsCatalogUseCase: AppDependencies.getPhysicalLocations)),
-                  BlocProvider(create: (context) => RequestBloc(AppDependencies.postRequestUseCase, AppDependencies.postNewRequest)),
+                  BlocProvider(create: (context) => RequestBloc(AppDependencies.postRequestUseCase, AppDependencies.postNewRequest, AppDependencies.deleteRequestUsecase)),
                 ],
                 child: const NewRequestScreen(),
               )

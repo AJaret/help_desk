@@ -5,15 +5,13 @@ import 'package:help_desk/config/router/app_router.dart';
 import 'package:help_desk/config/theme/app_theme.dart';
 import 'package:help_desk/internal/login/presentation/blocs/login_bloc/login_bloc.dart';
 import 'package:help_desk/shared/helpers/app_dependencies.dart';
-import 'package:help_desk/shared/services/token_service.dart';
 
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  TokenService tokenService = TokenService();
-  final loginBloc = LoginBloc(AppDependencies.postLoginUseCase, tokenService);
+  final loginBloc = LoginBloc(AppDependencies.postLoginUseCase, AppDependencies.postResetPasswordUseCase);
 
   final initialRouterConfig = await getInitialRoute(navigatorKey, loginBloc);
 

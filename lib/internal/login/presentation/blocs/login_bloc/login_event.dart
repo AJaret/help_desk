@@ -14,3 +14,13 @@ class PostLogin extends LoginEvent {
 }
 
 class Logout extends LoginEvent {}
+
+class PostResetPassword extends LoginEvent {
+  final String email;
+  final String employeeNumber;
+
+  PostResetPassword({
+    required this.email,
+    required this.employeeNumber,
+  });
+}

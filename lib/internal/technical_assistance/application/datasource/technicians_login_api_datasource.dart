@@ -1,18 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:help_desk/internal/login/domain/repositories/login_repository.dart';
+import 'package:help_desk/internal/technical_assistance/domain/repositories/technicians_login_repository.dart';
 import 'package:help_desk/shared/helpers/http_interceptor.dart';
 import 'package:help_desk/shared/services/token_service.dart';
 import 'package:http/http.dart' as http;
 
-class LoginApiDatasourceImp implements LoginRepository {
+class TechniciansLoginApiDatasource implements TechniciansLoginRepository {
   final String urlApi = "helpdesk.gobiernodesolidaridad.gob.mx";
   final TokenService tokenService = TokenService();
   final httpService = HttpService();
-
+//TODO PENDEIENTE CAMBIAR EL API PARA TECNICOS, AHORTA ES COPIA DEL OTRO LOGIN
   @override
-  Future<void> postLogin(String email, String password) async{
+  Future<void> postTechniciansLogin(String email, String password) async{
     try {
       var url = Uri.https(urlApi, '/apiHelpdeskDNTICS/administrador/iniciar-sesion');
       var response = await http.post(
@@ -37,36 +37,6 @@ class LoginApiDatasourceImp implements LoginRepository {
           }
         }else{
           throw Exception('Usuario o contraseña incorrectos');
-        }
-      } else {
-        throw Exception('Ocurrió un error al al momento de hacer la petición, por favor, vuelva a intentarlo');
-      }
-    } on SocketException {
-      throw Exception('No hay conexión a Internet. Por favor, revisa tu conexión.');
-    }
-    catch (e) {
-      throw Exception(e.toString());
-    }
-  }
-  
-  @override
-  Future<void> postResetPassword(String email, String employeeNumber) async{
-    try {
-      var url = Uri.https(urlApi, '/apiHelpdeskDNTICS/administrador/recuperar-contrasena');
-      var response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'correo': email, 'numeroEmpleado': employeeNumber}),
-      );
-      if (response.statusCode == 201) {
-        final data = jsonDecode(response.body);
-        switch (data["respuesta"]) {
-          case 'verificacion-pendiente':
-            throw Exception('Por el momento no se puede recuperar su contraseña ya que su cuenta se encuentra en proceso de ser activada');
-          case 'incorrecto':
-            throw Exception('Alguno de los datos ingresados no coinciden con los datos registrados en su cuenta, por favor, verifique la información');
-          default: 
-            throw Exception('Ocurrió un error al al momento de hacer la petición, por favor, vuelva a intentarlo');
         }
       } else {
         throw Exception('Ocurrió un error al al momento de hacer la petición, por favor, vuelva a intentarlo');

@@ -35,7 +35,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           child: SizedBox(
             height: size.height * 0.62,
             child: BlocProvider(
-              create: (context) => RequestBloc(AppDependencies.postRequestUseCase, AppDependencies.postNewRequest),
+              create: (context) => RequestBloc(AppDependencies.postRequestUseCase, AppDependencies.postNewRequest, AppDependencies.deleteRequestUsecase),
               child: BlocListener<RequestBloc, RequestState>(
                 listener: (context, state) {
                   if(state is ErrorGettingRequests){

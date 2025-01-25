@@ -8,4 +8,5 @@ abstract class RequestRepository {
   Future<RequestFull> getRequestById(String requestId);
   Future<Document> getDocumentFile(int fileId);
   Future<String> postNewRequest(NewRequest requestData);
+  Future<void> deleteRequest(String requestId);
 }

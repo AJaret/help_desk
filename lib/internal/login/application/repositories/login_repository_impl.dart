@@ -15,13 +15,13 @@ class LoginRepositoryImpl implements LoginRepository {
       throw Exception(e.toString());
     }
   }
-
-  // @override
-  // Future<Session> postRefreshToken(String refreshToken) async{
-  //   try {
-  //     return await datasource.postRefreshToken(refreshToken);
-  //   } catch (e) {
-  //     throw Exception(e.toString());
-  //   }
-  // }
+  
+  @override
+  Future<void> postResetPassword(String email, String employeeNumber) async{
+    try {
+      return await datasource.postResetPassword(email, employeeNumber);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }

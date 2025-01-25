@@ -34,7 +34,7 @@ class _RequestScreenState extends State<RequestScreen> {
           child: SizedBox(
             height: size.height * 0.62,
             child: BlocProvider(
-              create: (context) => RequestBloc(AppDependencies.postRequestUseCase, AppDependencies.postNewRequest),
+              create: (context) => RequestBloc(AppDependencies.postRequestUseCase, AppDependencies.postNewRequest, AppDependencies.deleteRequestUsecase),
               child: BlocListener<RequestBloc, RequestState>(
                 listener: (context, state) {
                   BlocListener<RequestBloc, RequestState>(
