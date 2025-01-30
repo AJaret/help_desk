@@ -14,6 +14,11 @@ class TokenService {
     userDependencyDirector != null ? await _storage.write(key: 'userDependencyDirector', value: userDependencyDirector) : null;
   }
 
+  Future<void> saveTechniciansTokens(String shortToken, String longToken) async {
+    await _storage.write(key: 'technicianShortToken', value: shortToken);
+    await _storage.write(key: 'technicianLongToken', value: longToken);
+  }
+
   Future<void> saveUserDependencyData([String? userDependency, String? userDependencyDirector]) async {
     userDependency != null ? await _storage.write(key: 'userDependency', value: userDependency) : null;
     userDependencyDirector != null ? await _storage.write(key: 'userDependencyDirector', value: userDependencyDirector) : null;
@@ -25,6 +30,14 @@ class TokenService {
 
   Future<String?> getLongToken() async {
     return await _storage.read(key: 'longToken');
+  }
+
+  Future<String?> getTechnicianShortToken() async { 
+    return await _storage.read(key: 'technicianShortToken');
+  }
+
+  Future<String?> getTechnicianLongToken() async {
+    return await _storage.read(key: 'technicianLongToken');
   }
 
   Future<void> logout() async {

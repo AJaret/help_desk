@@ -1,21 +1,24 @@
-import 'package:help_desk/internal/catalog/application/datasources/catalog_api_datasource.dart';
-import 'package:help_desk/internal/catalog/application/repositories/dependency_catalog_repository_impl.dart';
-import 'package:help_desk/internal/catalog/domain/usecases/get_dependency_catalog_usecase.dart';
-import 'package:help_desk/internal/catalog/domain/usecases/get_locations_catalog_usecase.dart';
-import 'package:help_desk/internal/login/application/datasources/login_api_datasource.dart';
-import 'package:help_desk/internal/login/application/repositories/login_repository_impl.dart';
-import 'package:help_desk/internal/login/domain/usecases/post_login_usecase.dart';
-import 'package:help_desk/internal/login/domain/usecases/post_reset_password_usecase.dart';
-import 'package:help_desk/internal/register/application/datasources/user_register_api_datasource.dart';
-import 'package:help_desk/internal/register/application/repositories/user_register_repository_impl.dart';
-import 'package:help_desk/internal/register/domain/usecases/post_user_usecase.dart';
-import 'package:help_desk/internal/request/application/datasource/request_api_datasource.dart';
-import 'package:help_desk/internal/request/application/repositories/request_repository_impl.dart';
-import 'package:help_desk/internal/request/domain/usecases/delete_request_usecase.dart';
-import 'package:help_desk/internal/request/domain/usecases/get_document_file_usecase.dart';
-import 'package:help_desk/internal/request/domain/usecases/get_request_by_id_usecase.dart';
-import 'package:help_desk/internal/request/domain/usecases/post_new_request_usecase.dart';
-import 'package:help_desk/internal/request/domain/usecases/post_request_usecase.dart';
+import 'package:help_desk/internal/technical_assistance/login/application/datasource/technicians_login_api_datasource.dart';
+import 'package:help_desk/internal/technical_assistance/login/application/repositories/request_repository_impl.dart';
+import 'package:help_desk/internal/technical_assistance/login/domain/usecases/post_technicians_login_usecase.dart';
+import 'package:help_desk/internal/users/catalog/application/datasources/catalog_api_datasource.dart';
+import 'package:help_desk/internal/users/catalog/application/repositories/dependency_catalog_repository_impl.dart';
+import 'package:help_desk/internal/users/catalog/domain/usecases/get_dependency_catalog_usecase.dart';
+import 'package:help_desk/internal/users/catalog/domain/usecases/get_locations_catalog_usecase.dart';
+import 'package:help_desk/internal/users/login/application/datasources/login_api_datasource.dart';
+import 'package:help_desk/internal/users/login/application/repositories/login_repository_impl.dart';
+import 'package:help_desk/internal/users/login/domain/usecases/post_login_usecase.dart';
+import 'package:help_desk/internal/users/login/domain/usecases/post_reset_password_usecase.dart';
+import 'package:help_desk/internal/users/register/application/datasources/user_register_api_datasource.dart';
+import 'package:help_desk/internal/users/register/application/repositories/user_register_repository_impl.dart';
+import 'package:help_desk/internal/users/register/domain/usecases/post_user_usecase.dart';
+import 'package:help_desk/internal/users/request/application/datasource/request_api_datasource.dart';
+import 'package:help_desk/internal/users/request/application/repositories/request_repository_impl.dart';
+import 'package:help_desk/internal/users/request/domain/usecases/delete_request_usecase.dart';
+import 'package:help_desk/internal/users/request/domain/usecases/get_document_file_usecase.dart';
+import 'package:help_desk/internal/users/request/domain/usecases/get_request_by_id_usecase.dart';
+import 'package:help_desk/internal/users/request/domain/usecases/post_new_request_usecase.dart';
+import 'package:help_desk/internal/users/request/domain/usecases/post_request_usecase.dart';
 
 class AppDependencies {
   static final CatalogApiDatasourceImp dependencyDatasource = CatalogApiDatasourceImp();
@@ -39,5 +42,8 @@ class AppDependencies {
   static final GetDocumentFileUsecase getDocumentFile = GetDocumentFileUsecase(requestRepo: requestRepo);
   static final PostNewRequestUsecase postNewRequest = PostNewRequestUsecase(requestRepo: requestRepo);
   static final DeleteRequestUsecase deleteRequestUsecase = DeleteRequestUsecase(requestRepo: requestRepo);
-  
+
+  static final TechniciansLoginApiDatasource techLoginDatasource = TechniciansLoginApiDatasource();
+  static final TechniciansLoginRepositoryImpl techLogin = TechniciansLoginRepositoryImpl(datasource: techLoginDatasource);
+  static final PostTechniciansLoginUsecase postTechniciansLoginUseCase = PostTechniciansLoginUsecase(techniciansLoginRepository: techLogin);
 }

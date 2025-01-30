@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:help_desk/config/router/app_router.dart';
 import 'package:help_desk/config/theme/app_theme.dart';
-import 'package:help_desk/internal/login/presentation/blocs/login_bloc/login_bloc.dart';
+import 'package:help_desk/internal/users/login/presentation/blocs/login_bloc/login_bloc.dart';
 import 'package:help_desk/shared/helpers/app_dependencies.dart';
 
 

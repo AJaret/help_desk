@@ -1,29 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:help_desk/internal/users/announcements/presentation/screens/announcements_screen.dart';
-import 'package:help_desk/internal/users/catalog/presentation/blocs/catalog_bloc/catalog_bloc.dart';
 import 'package:help_desk/internal/users/profile/presentation/screens/profile_screen.dart';
-import 'package:help_desk/internal/users/request/presentation/blocs/request_bloc/request_bloc.dart';
-import 'package:help_desk/internal/users/request/presentation/screens/history_screen.dart';
-import 'package:help_desk/internal/users/request/presentation/screens/new_request_screen.dart';
 import 'package:help_desk/internal/users/request/presentation/screens/request_screen.dart';
-import 'package:help_desk/shared/helpers/app_dependencies.dart';
 
-class MainMenuWidget extends StatefulWidget {
-  const MainMenuWidget({super.key});
+class TechMainMenuWidget extends StatefulWidget {
+  const TechMainMenuWidget({super.key});
 
   @override
-  State<MainMenuWidget> createState() => _MainMenuWidgetState();
+  State<TechMainMenuWidget> createState() => _TechMainMenuWidgetState();
 }
 
-class _MainMenuWidgetState extends State<MainMenuWidget> {
+class _TechMainMenuWidgetState extends State<TechMainMenuWidget> {
   int _selectedIndex = 0;
   static const List<Widget> _widgetOptions = <Widget>[
     RequestScreen(),
-    HistoryScreen(),
-    AnnouncementsScreen(),
     ProfileScreen()
   ];
 
@@ -77,28 +68,6 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
           }
         )
       ),
-      floatingActionButton: _selectedIndex == 0 ? FloatingActionButton(
-        backgroundColor: const Color(0XFF2C2927),
-        onPressed: () {
-          showModalBottomSheet<String>(
-            context: context,
-            isDismissible: true,
-            isScrollControlled: true,
-            builder: (BuildContext context) => SizedBox(
-              height: MediaQuery.of(context).size.height * 0.9,
-              width: MediaQuery.of(context).size.width,
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider(create: (context) => CatalogBloc(getDependencyCatalogUseCase: AppDependencies.getDependency, getPhysicalLocationsCatalogUseCase: AppDependencies.getPhysicalLocations)),
-                  BlocProvider(create: (context) => RequestBloc(AppDependencies.postRequestUseCase, AppDependencies.postNewRequest, AppDependencies.deleteRequestUsecase)),
-                ],
-                child: const NewRequestScreen(),
-              )
-            )
-          );
-        },
-        child: const Icon(Icons.add, color: Colors.white,),
-      ) : Container(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -133,15 +102,7 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
                 tabs: const [
                   GButton(
                     icon:  Icons.inventory_2_outlined,
-                    text: 'Mis solicitudes',
-                  ),
-                  GButton(
-                    icon: Icons.schedule_rounded,
-                    text: 'Historial',
-                  ),
-                  GButton(
-                    icon: Icons.newspaper,
-                    text: 'Anuncios',
+                    text: 'Mis servicios',
                   ),
                   GButton(
                     icon: Icons.account_circle_outlined,
