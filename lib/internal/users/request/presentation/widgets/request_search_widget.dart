@@ -30,16 +30,8 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
     setState(() {
       filteredRequests = allRequests.where((request) {
         final queryLower = searchQuery.toLowerCase();
-        final matchesSearch =
-            request.requestId.toString().contains(queryLower) ||
-                (request.dependency != null
-                    ? request.dependency!.toLowerCase().contains(queryLower)
-                    : false) ||
-                (request.status != null
-                    ? request.status!.toLowerCase().contains(queryLower)
-                    : false);
-        final matchesStatus =
-            selectedStatus == null || request.status == selectedStatus;
+        final matchesSearch = request.requestId.toString().toLowerCase().contains(queryLower) || (request.dependency != null ? request.dependency!.toLowerCase().contains(queryLower) : false) || (request.status != null ? request.status!.toLowerCase().contains(queryLower) : false);
+        final matchesStatus = selectedStatus == null || request.status == selectedStatus;
         return matchesSearch && matchesStatus;
       }).toList();
 
@@ -75,19 +67,17 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
                 value: selectedStatus,
                 isExpanded: true,
                 hint: const Text("Selecciona un estatus"),
-                items: const [
-                  DropdownMenuItem(
-                      value: 'Solicitud registrada', child: Text("Registrada")),
-                  DropdownMenuItem(
-                      value: 'Solicitud validada', child: Text("Validada")),
-                  DropdownMenuItem(
-                      value: 'Solicitud asignada', child: Text("Asignada")),
-                  DropdownMenuItem(
-                      value: 'Solicitud en proceso', child: Text("En proceso")),
-                  DropdownMenuItem(
-                      value: 'Solicitud terminada', child: Text("Terminada")),
-                  DropdownMenuItem(
-                      value: 'Solicitud finalizado', child: Text("Finalizado")),
+                items: widget.requestType == 'Finished' ?
+                const [
+                  DropdownMenuItem(value: 'Solicitud finalizada', child: Text("Finalizada")),
+                  DropdownMenuItem(value: 'Solicitud cancelada', child: Text("Cancelada")),
+                  DropdownMenuItem(value: 'Solicitud cerrada', child: Text("Cerrada")),
+                ]
+                : const [
+                  DropdownMenuItem(value: 'Solicitud registrada', child: Text("Registrada")),
+                  DropdownMenuItem(value: 'Solicitud validada', child: Text("Validada")),
+                  DropdownMenuItem(value: 'Solicitud asignada', child: Text("Asignada")),
+                  DropdownMenuItem(value: 'Solicitud en proceso', child: Text("En proceso"))
                 ],
                 onChanged: (value) {
                   setState(() {
@@ -144,17 +134,8 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
           );
         } else if (state is GetRequestSuccess) {
           if (allRequests.isEmpty) {
-            allRequests = widget.requestType == 'Finished'
-                ? state.requests
-                    .where((request) =>
-                        request.status == 'Solicitud finalizado' ||
-                        request.status == 'Solicitud cancelada')
-                    .toList()
-                : state.requests
-                    .where((request) =>
-                        request.status != 'Solicitud finalizado' &&
-                        request.status != 'Solicitud cancelada')
-                    .toList();
+            allRequests = widget.requestType == 'Finished' ? state.requests .where((request) => request.status == 'Solicitud finalizada' || request.status == 'Solicitud cancelada' || request.status == 'Solicitud cerrada').toList()
+                : state.requests.where((request) => request.status != 'Solicitud finalizado' && request.status != 'Solicitud cancelada' && request.status != 'Solicitud cerrada').toList();
             allRequests.sort((a, b) {
               DateTime dateA = DateTime.parse(a.registrationDate!);
               DateTime dateB = DateTime.parse(b.registrationDate!);

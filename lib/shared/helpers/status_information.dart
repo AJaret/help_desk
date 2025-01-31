@@ -31,17 +31,17 @@ Map<String, dynamic> getStatusInformation(String status){
       statusIcon = Icons.hourglass_bottom;
       statusDesc = 'Solicitud en proceso';
       break;
-    case 'Solicitud terminada':
-      statusColor = const Color(0xFFD619AD);
-      textColor = Colors.black;
-      statusIcon = Icons.task_alt;
-      statusDesc = 'Solicitud terminada';
-      break;
     case 'Solicitud finalizada':
       statusColor = const Color(0xFFCCBDC9);
       textColor = Colors.black;
-      statusIcon = Icons.done_all;
+      statusIcon = Icons.task_alt;
       statusDesc = 'Solicitud finalizada';
+      break;
+    case 'Solicitud cerrada':
+      statusColor = Colors.green;
+      textColor = Colors.black;
+      statusIcon = Icons.done_all;
+      statusDesc = 'Solicitud cerrada';
       break;
     case 'Solicitud cancelada':
       statusColor = Colors.red;
