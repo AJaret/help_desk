@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.help_desk"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
