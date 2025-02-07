@@ -2,4 +2,5 @@ import 'package:help_desk/internal/technical_assistance/services/domain/entities
 
 abstract class TechnicianServicesRepository {
   Future<List<TechnicianService>> getTechnicianServices();
+  Future<TechnicianService> getTechnicianServiceDetails(int serviceId);
 }

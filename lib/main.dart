@@ -11,28 +11,24 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final loginBloc = LoginBloc(AppDependencies.postLoginUseCase, AppDependencies.postResetPasswordUseCase);
 
-  final initialRouterConfig = await getInitialRoute(navigatorKey, loginBloc);
+  final initialRouterConfig = await getInitialRoute(navigatorKey);
 
-  runApp(MyApp(
-    initialRouterConfig: initialRouterConfig,
-    loginBloc: loginBloc,
-  ));
+  runApp(MyApp(initialRouterConfig: initialRouterConfig,));
 }
 
 class MyApp extends StatelessWidget {
   final RouterConfig<Object>? initialRouterConfig;
-  final LoginBloc loginBloc;
 
   const MyApp({
     super.key,
     required this.initialRouterConfig,
-    required this.loginBloc,
   });
 
   @override
   Widget build(BuildContext context) {
+    final loginBloc = LoginBloc(AppDependencies.postLoginUseCase, AppDependencies.postResetPasswordUseCase);
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,

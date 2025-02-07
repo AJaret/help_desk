@@ -44,8 +44,8 @@ class TokenService {
     await _storage.deleteAll();
   }
 
-  Future<String?> renewShortToken() async {
-    final longToken = await getLongToken();
+  Future<String?> renewShortToken( {bool isTechnician = false} ) async {
+    final longToken = !isTechnician ? await getLongToken() : await getTechnicianLongToken();
     if (longToken == null) {
       return null;
     }
@@ -61,7 +61,7 @@ class TokenService {
     if (response.statusCode == 201) {
       final data = jsonDecode(response.body);
       final newShortToken = data['token'];
-      await saveTokens(newShortToken, longToken);
+      !isTechnician ? await saveTokens(newShortToken, longToken) : await saveTechniciansTokens(newShortToken, longToken);
       return newShortToken;
     } else {
       await logout();

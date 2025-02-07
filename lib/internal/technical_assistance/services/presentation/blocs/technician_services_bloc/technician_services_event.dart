@@ -1,16 +1,12 @@
 part of 'technician_services_bloc.dart';
 
 @immutable
-sealed class TechnicalAssistanceLoginEvent {}
+sealed class TechnicianServicesEvent {}
 
-class PostTechnicalAssistanceLogin extends TechnicalAssistanceLoginEvent {
-  final String email;
-  final String password;
+class GetTechnicianServices extends TechnicianServicesEvent {}
 
-  PostTechnicalAssistanceLogin({
-    required this.email,
-    required this.password,
-  });
+class GetTechnicianServiceDetails extends TechnicianServicesEvent {
+  final int serviceId;
+
+  GetTechnicianServiceDetails(this.serviceId);
 }
-
-class TechnicalAssistanceLogout extends TechnicalAssistanceLoginEvent {}

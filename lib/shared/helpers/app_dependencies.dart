@@ -1,6 +1,10 @@
 import 'package:help_desk/internal/technical_assistance/login/application/datasource/technicians_login_api_datasource.dart';
 import 'package:help_desk/internal/technical_assistance/login/application/repositories/request_repository_impl.dart';
 import 'package:help_desk/internal/technical_assistance/login/domain/usecases/post_technicians_login_usecase.dart';
+import 'package:help_desk/internal/technical_assistance/services/application/datasource/technician_services_api_datasource.dart';
+import 'package:help_desk/internal/technical_assistance/services/application/repositories/technician_services_repository_impl.dart';
+import 'package:help_desk/internal/technical_assistance/services/domain/usecases/get_technician_service_details_usecase.dart';
+import 'package:help_desk/internal/technical_assistance/services/domain/usecases/get_technician_services_usecase.dart';
 import 'package:help_desk/internal/users/catalog/application/datasources/catalog_api_datasource.dart';
 import 'package:help_desk/internal/users/catalog/application/repositories/dependency_catalog_repository_impl.dart';
 import 'package:help_desk/internal/users/catalog/domain/usecases/get_dependency_catalog_usecase.dart';
@@ -46,4 +50,9 @@ class AppDependencies {
   static final TechniciansLoginApiDatasource techLoginDatasource = TechniciansLoginApiDatasource();
   static final TechniciansLoginRepositoryImpl techLogin = TechniciansLoginRepositoryImpl(datasource: techLoginDatasource);
   static final PostTechniciansLoginUsecase postTechniciansLoginUseCase = PostTechniciansLoginUsecase(techniciansLoginRepository: techLogin);
+
+  static final TechnicianServicesApiDatasource technicianServicesApiDatasource = TechnicianServicesApiDatasource();
+  static final TechnicianServicesRepositoryImpl technicianServicesRepositoryImpl = TechnicianServicesRepositoryImpl(datasource: technicianServicesApiDatasource);
+  static final GetTechnicianServicesUsecase getTechnicianServicesUsecase = GetTechnicianServicesUsecase(technicianServicesRepository: technicianServicesRepositoryImpl);
+  static final GetTechnicianServiceDetailsUsecase getTechnicianServiceDetailsUsecase = GetTechnicianServiceDetailsUsecase(technicianServicesRepository: technicianServicesRepositoryImpl);
 }

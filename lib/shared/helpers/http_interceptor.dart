@@ -6,11 +6,11 @@ import 'package:http/http.dart' as http;
 class HttpService {
   final TokenService authService = TokenService();
 
-  Future<http.Response> getRequest(String endpoint, int requestType, {Map<String, dynamic>? body}) async {
-    String? token = await authService.getShortToken();
+  Future<http.Response> getRequest(String endpoint, int requestType, {Map<String, dynamic>? body, bool isTechnician = false}) async {
+    String? token = isTechnician ? await authService.getTechnicianShortToken() : await authService.getShortToken();
 
     if (token == null) {
-      token = await authService.renewShortToken();
+      token = await authService.renewShortToken(isTechnician: isTechnician);
       if (token == null) {
         return http.Response('Unauthorized', 401);
       }
@@ -42,7 +42,7 @@ class HttpService {
     }
 
     if (response.statusCode == 401) {
-      token = await authService.renewShortToken();
+      token = await authService.renewShortToken(isTechnician: isTechnician);
       if (token != null) {
         return await http.get(
           Uri.parse(endpoint),

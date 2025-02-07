@@ -7,41 +7,41 @@ Map<String, dynamic> getStatusInformation(String status){
   String? statusDesc;
 
   switch (status) {
-    case 'Solicitud registrada':
+    case 'Solicitud registrada' || 'Servicio registrado':
       statusColor = const Color(0XFF0DCAF0);
       textColor = Colors.black;
       statusIcon = Icons.add_circle_outline;
-      statusDesc = 'Solicitud registrada';
+      statusDesc = status;
       break;
-    case 'Solicitud validada':
+    case 'Solicitud validada' || 'Servicio validado':
       statusColor = const Color(0XFF0D6EFD);
       textColor = Colors.white;
       statusIcon = Icons.verified;
-      statusDesc = 'Solicitud validada';
+      statusDesc = status;
       break;
-    case 'Solicitud asignada':
+    case 'Solicitud asignada' || 'Servicio asignado':
       statusColor = const Color(0XFF212529);
       textColor = Colors.white;
       statusIcon = Icons.assignment_ind;
-      statusDesc = 'Solicitud asignada';
+      statusDesc = status;
       break;
-    case 'Solicitud en proceso':
+    case 'Solicitud en proceso' || 'Servicio en proceso':
       statusColor = const Color(0XFFFFC107);
       textColor = Colors.black;
       statusIcon = Icons.hourglass_bottom;
-      statusDesc = 'Solicitud en proceso';
+      statusDesc = status;
       break;
-    case 'Solicitud finalizada':
+    case 'Solicitud finalizada' || 'Servicio finalizado':
       statusColor = const Color(0xFFCCBDC9);
       textColor = Colors.black;
       statusIcon = Icons.task_alt;
-      statusDesc = 'Solicitud finalizada';
+      statusDesc = status;
       break;
-    case 'Solicitud cerrada':
+    case 'Solicitud cerrada' || 'Servicio cerrado':
       statusColor = Colors.green;
       textColor = Colors.black;
       statusIcon = Icons.done_all;
-      statusDesc = 'Solicitud cerrada';
+      statusDesc = status;
       break;
     case 'Solicitud cancelada':
       statusColor = Colors.red;

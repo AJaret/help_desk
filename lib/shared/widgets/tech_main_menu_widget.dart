@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:help_desk/internal/technical_assistance/services/presentation/screens/technician_services_history_screen.dart';
+import 'package:help_desk/internal/technical_assistance/services/presentation/screens/technician_services_screen.dart';
 import 'package:help_desk/internal/users/profile/presentation/screens/profile_screen.dart';
-import 'package:help_desk/internal/users/request/presentation/screens/request_screen.dart';
 
 class TechMainMenuWidget extends StatefulWidget {
   const TechMainMenuWidget({super.key});
@@ -14,7 +15,8 @@ class TechMainMenuWidget extends StatefulWidget {
 class _TechMainMenuWidgetState extends State<TechMainMenuWidget> {
   int _selectedIndex = 0;
   static const List<Widget> _widgetOptions = <Widget>[
-    RequestScreen(),
+    TechnicianServicesScreen(),
+    TechnicianServicesHistoryScreen(),
     ProfileScreen()
   ];
 
@@ -103,6 +105,10 @@ class _TechMainMenuWidgetState extends State<TechMainMenuWidget> {
                   GButton(
                     icon:  Icons.inventory_2_outlined,
                     text: 'Mis servicios',
+                  ),
+                  GButton(
+                    icon:  Icons.history,
+                    text: 'Historial',
                   ),
                   GButton(
                     icon: Icons.account_circle_outlined,

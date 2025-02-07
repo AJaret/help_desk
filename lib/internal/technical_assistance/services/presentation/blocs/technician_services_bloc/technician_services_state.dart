@@ -1,18 +1,36 @@
 part of 'technician_services_bloc.dart';
 
 @immutable
-sealed class TechnicalAssistanceLoginState {}
+sealed class TechnicianServicesState {}
 
-final class TechnicalAssistanceLoginInitial extends TechnicalAssistanceLoginState {}
+final class TechnicianServicesInitial extends TechnicianServicesState {}
 
-final class PostingTechnicalAssistanceLogin extends TechnicalAssistanceLoginState {}
+final class GettingTechnicianServices extends TechnicianServicesState {}
 
-final class TechnicalAssistanceLoginSuccess extends TechnicalAssistanceLoginState {}
+final class TechnicianServicesSuccess extends TechnicianServicesState {
+  final List<TechnicianService> services;
 
-final class ErrorPostingTechnicalAssistanceLogin extends TechnicalAssistanceLoginState {
-  final String message;
-
-  ErrorPostingTechnicalAssistanceLogin(this.message);
+  TechnicianServicesSuccess(this.services);
 }
 
-final class TechnicalAssistanceUnauthenticated extends TechnicalAssistanceLoginState {}
+final class ErrorGettingTechnicianServices extends TechnicianServicesState {
+  final String message;
+
+  ErrorGettingTechnicianServices(this.message);
+}
+
+final class TechnicianServiceDetailsInitial extends TechnicianServicesState {}
+
+final class GettingTechnicianServiceDetails extends TechnicianServicesState {}
+
+final class TechnicianServiceDetailsSuccess extends TechnicianServicesState {
+  final TechnicianService services;
+
+  TechnicianServiceDetailsSuccess(this.services);
+}
+
+final class ErrorGettingTechnicianServiceDetails extends TechnicianServicesState {
+  final String message;
+
+  ErrorGettingTechnicianServiceDetails(this.message);
+}
