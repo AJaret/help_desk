@@ -1,3 +1,5 @@
+import 'package:help_desk/internal/technical_assistance/services/application/models/activities_model.dart';
+import 'package:help_desk/internal/technical_assistance/services/domain/entities/activity.dart';
 import 'package:help_desk/internal/technical_assistance/services/domain/entities/assigned_agent.dart';
 
 class AssignedAgentModel extends AssignedAgent {
@@ -17,7 +19,7 @@ class AssignedAgentModel extends AssignedAgent {
       date: json["fechaRegistro"],
       status: json["estado"],
       idStatus: json["idestado"],
-      activities: json["idestado"],
+      activities: json["actividades"]?.map<Activity>((data) => ActivitiesModel.fromJson(data)).toList(),
     );
   }
 

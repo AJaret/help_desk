@@ -5,7 +5,7 @@ class AssignedAgent {
   final String? assignedAgent;
   final String? date;
   final String? status;
-  final String? idStatus;
+  final int? idStatus;
   final List<Activity>? activities;
 
   AssignedAgent({
