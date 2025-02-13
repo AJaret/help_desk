@@ -10,3 +10,9 @@ class GetTechnicianServiceDetails extends TechnicianServicesEvent {
 
   GetTechnicianServiceDetails(this.serviceId);
 }
+
+class GetDocumentById extends TechnicianServicesEvent {
+  final int documentId;
+
+  GetDocumentById(this.documentId);
+}

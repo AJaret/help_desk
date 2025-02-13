@@ -33,49 +33,52 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFA10046),
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return Column(
-              children: [
-                SizedBox(
-                  child: Center(
-                    child: Image.asset(
-                      'assets/images/logos/sello_logo.png',
-                      fit: BoxFit.contain,
-                      width: 100,
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Column(
+                children: [
+                  SizedBox(
+                    child: Center(
+                      child: Image.asset(
+                        'assets/images/logos/sello_logo.png',
+                        fit: BoxFit.contain,
+                        width: 100,
+                      ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: constraints.maxHeight - 100,
-                      minWidth: constraints.maxWidth,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.all(30),
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFD4CBC0),
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(50),
+                  Expanded(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight - 100,
+                        minWidth: constraints.maxWidth,
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(30),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFD4CBC0),
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(50),
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Center(
+                              child: _widgetOptions.elementAt(_selectedIndex),
+                            ),
+                          ],
                         ),
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Center(
-                            child: _widgetOptions.elementAt(_selectedIndex),
-                          ),
-                        ],
-                      ),
                     ),
                   ),
-                ),
-              ],
-            );
-          }
-        )
+                ],
+              );
+            }
+          )
+        ),
       ),
       floatingActionButton: _selectedIndex == 0 ? FloatingActionButton(
         backgroundColor: const Color(0XFF2C2927),

@@ -34,3 +34,17 @@ final class ErrorGettingTechnicianServiceDetails extends TechnicianServicesState
 
   ErrorGettingTechnicianServiceDetails(this.message);
 }
+
+final class GettingDocumentById extends TechnicianServicesState {}
+
+final class GetDocumentByIdSuccess extends TechnicianServicesState {
+  final Document doc;
+
+  GetDocumentByIdSuccess(this.doc);
+}
+
+final class ErrorGettingDocumentById extends TechnicianServicesState {
+  final String message;
+
+  ErrorGettingDocumentById(this.message);
+}

@@ -3,6 +3,7 @@ import 'package:help_desk/internal/technical_assistance/login/application/reposi
 import 'package:help_desk/internal/technical_assistance/login/domain/usecases/post_technicians_login_usecase.dart';
 import 'package:help_desk/internal/technical_assistance/services/application/datasource/technician_services_api_datasource.dart';
 import 'package:help_desk/internal/technical_assistance/services/application/repositories/technician_services_repository_impl.dart';
+import 'package:help_desk/internal/technical_assistance/services/domain/usecases/get_document_by_id_usecase.dart';
 import 'package:help_desk/internal/technical_assistance/services/domain/usecases/get_technician_service_details_usecase.dart';
 import 'package:help_desk/internal/technical_assistance/services/domain/usecases/get_technician_services_usecase.dart';
 import 'package:help_desk/internal/users/catalog/application/datasources/catalog_api_datasource.dart';
@@ -55,4 +56,5 @@ class AppDependencies {
   static final TechnicianServicesRepositoryImpl technicianServicesRepositoryImpl = TechnicianServicesRepositoryImpl(datasource: technicianServicesApiDatasource);
   static final GetTechnicianServicesUsecase getTechnicianServicesUsecase = GetTechnicianServicesUsecase(technicianServicesRepository: technicianServicesRepositoryImpl);
   static final GetTechnicianServiceDetailsUsecase getTechnicianServiceDetailsUsecase = GetTechnicianServiceDetailsUsecase(technicianServicesRepository: technicianServicesRepositoryImpl);
+  static final GetDocumentByIdUsecase getDocumentByIdUsecase = GetDocumentByIdUsecase(techRepo: technicianServicesApiDatasource);
 }

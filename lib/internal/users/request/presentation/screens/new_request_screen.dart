@@ -249,7 +249,7 @@ class _MultiStepFormState extends State<NewRequestScreen> {
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Padding(
-          padding: const EdgeInsets.only(top: 28.0, bottom: 28.0, left: 15, right: 15),
+          padding: const EdgeInsets.only(top: 15.0, bottom: 15.0, left: 15, right: 15),
           child: Column(
             children: [
               currentStep == 0 ? Container(
@@ -271,88 +271,96 @@ class _MultiStepFormState extends State<NewRequestScreen> {
                   ],
                 ),
               ) : Container(),
-              const SizedBox(height: 10),
-              EasyStepper(
-                activeStep: currentStep,
-                steps: const [
-                  EasyStep(
-                    icon: Icon(Icons.account_balance_outlined),
-                    title: 'Entidad',
-                  ),
-                  EasyStep(
-                    icon: Icon(Icons.email),
-                    title: 'Descripción',
-                  ),
-                  EasyStep(
-                    icon: Icon(Icons.location_on),
-                    title: 'Ubicación',
-                  ),
-                  EasyStep(
-                    icon: Icon(Icons.assignment_ind_sharp),
-                    title: 'Contactos',
-                  ),
-                  EasyStep(
-                    icon: Icon(Icons.file_present_sharp),
-                    title: 'Archivos',
-                  ),
-                  EasyStep(
-                    icon: Icon(Icons.check_circle),
-                    title: 'Solicitud creada',
-                  ),
-                ],
-                onStepReached: (index) {
-                  if (index <= currentStep) {
-                    setState(() {
-                      currentStep = index;
-                    });
-                  }
-                },
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.13,
+                child: EasyStepper(
+                  activeStep: currentStep,
+                  steps: const [
+                    EasyStep(
+                      icon: Icon(Icons.account_balance_outlined),
+                      title: 'Entidad',
+                    ),
+                    EasyStep(
+                      icon: Icon(Icons.email),
+                      title: 'Descripción',
+                    ),
+                    EasyStep(
+                      icon: Icon(Icons.location_on),
+                      title: 'Ubicación',
+                    ),
+                    EasyStep(
+                      icon: Icon(Icons.assignment_ind_sharp),
+                      title: 'Contactos',
+                    ),
+                    EasyStep(
+                      icon: Icon(Icons.file_present_sharp),
+                      title: 'Archivos',
+                    ),
+                    EasyStep(
+                      icon: Icon(Icons.check_circle),
+                      title: 'Solicitud creada',
+                    ),
+                  ],
+                  onStepReached: (index) {
+                    if (index <= currentStep) {
+                      setState(() {
+                        currentStep = index;
+                      });
+                    }
+                  },
+                ),
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  child: Form(
-                    key: _getCurrentFormKey(),
-                    child: _buildStepContent(context),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Form(
+                      key: _getCurrentFormKey(),
+                      child: _buildStepContent(context),
+                    ),
                   ),
                 ),
               ),
-              currentStep < 5 ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF8B1A42),
-                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+              currentStep < 5 ? Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF8B1A42),
+                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
+                      onPressed: currentStep > 0 ? _previousStep : null,
+                      child: const Text("Anterior"),
                     ),
-                    onPressed: currentStep > 0 ? _previousStep : null,
-                    child: const Text("Anterior"),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF8B1A42),
-                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF8B1A42),
+                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
-                    ),
-                    onPressed: () async{
-                      if(currentStep < 4){
-                        _nextStep();
-                      }else if(currentStep < 5){
-                        NewRequest data = await _submitForm();
-                        if(data.serviceDescription != null){
-                          context.read<RequestBloc>().add(PostNewRequest(requestData: data));
+                      onPressed: () async{
+                        if(currentStep < 4){
+                          _nextStep();
+                        }else if(currentStep < 5){
+                          NewRequest data = await _submitForm();
+                          if(data.serviceDescription != null){
+                            context.read<RequestBloc>().add(PostNewRequest(requestData: data));
+                          }
+                        }else{
+                          GoRouter.of(context).pop();
                         }
-                      }else{
-                        GoRouter.of(context).pop();
-                      }
-                    },
-                    child: Text(currentStep < 4 ? "Siguiente" : currentStep < 5 ? "Enviar" : "Aceptar"),
-                  ),
-                ],
+                      },
+                      child: Text(currentStep < 4 ? "Siguiente" : currentStep < 5 ? "Enviar" : "Aceptar"),
+                    ),
+                  ],
+                ),
               ) : Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(

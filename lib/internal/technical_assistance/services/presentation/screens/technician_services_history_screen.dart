@@ -35,7 +35,7 @@ class _TechnicianServicesHistoryScreenState extends State<TechnicianServicesHist
           child: SizedBox(
             height: size.height * 0.62,
             child: BlocProvider(
-              create: (context) => TechnicianServicesBloc(AppDependencies.getTechnicianServicesUsecase, AppDependencies.getTechnicianServiceDetailsUsecase),
+              create: (context) => TechnicianServicesBloc(AppDependencies.getTechnicianServicesUsecase, AppDependencies.getTechnicianServiceDetailsUsecase, AppDependencies.getDocumentByIdUsecase),
               child: BlocListener<TechnicianServicesBloc, TechnicianServicesState>(
                 listener: (context, state) {
                   if(state is ErrorGettingTechnicianServices){

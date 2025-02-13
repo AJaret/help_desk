@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:help_desk/internal/technical_assistance/services/presentation/blocs/technician_services_bloc/technician_services_bloc.dart';
+import 'package:help_desk/internal/technical_assistance/services/presentation/widgets/details_widgets/assignation_services_widget.dart';
 import 'package:help_desk/internal/technical_assistance/services/presentation/widgets/details_widgets/service_details_menu_widget.dart';
-import 'package:help_desk/internal/users/request/presentation/widgets/request_details_widgets/files_widget.dart';
+import 'package:help_desk/internal/technical_assistance/services/presentation/widgets/details_widgets/service_files_widget.dart';
 import 'package:help_desk/internal/users/request/presentation/widgets/request_details_widgets/follow_up_widget.dart';
 import 'package:help_desk/shared/helpers/app_dependencies.dart';
 
@@ -29,7 +30,7 @@ class TechnicianServiceDetailsScreen extends StatelessWidget {
       body: SizedBox(
         height: size.height,
         child: BlocProvider(
-          create: (context) => TechnicianServicesBloc(AppDependencies.getTechnicianServicesUsecase, AppDependencies.getTechnicianServiceDetailsUsecase),
+          create: (context) => TechnicianServicesBloc(AppDependencies.getTechnicianServicesUsecase, AppDependencies.getTechnicianServiceDetailsUsecase, AppDependencies.getDocumentByIdUsecase),
           child: BlocListener<TechnicianServicesBloc, TechnicianServicesState>(
             listener: (context, state) {
               if (state is ErrorGettingTechnicianServices) {
@@ -107,18 +108,20 @@ class TechnicianServiceDetailsScreen extends StatelessWidget {
                                   ServiceDetailsMenuWidget(
                                     requestData: state.services,
                                   ),
-                                  const Center(
-                                    child: Text('servicios'),
+                                  state.services.assignedAgent!.isNotEmpty ? ListView.builder(
+                                    itemCount: state.services.assignedAgent?.length,
+                                    itemBuilder: (context, index) {
+                                      return AssignationServicesWidget(assignment: state.services.assignedAgent![index]);
+                                    },
+                                  ) : const Center(
+                                    child: Text('No hay servicios asignados'),
                                   ),
-                                  FilesWidget(
+                                  ServiceFilesWidget(
                                     documents: state.services.documents ?? [],
                                   ),
                                   FollowUpWidget(
                                     followUps: state.services.followUp ?? [],
                                   ),
-                                  // ServicesWidget(
-                                  //   services: state.services ?? [],
-                                  // ),
                                 ],
                               ),
                             ),

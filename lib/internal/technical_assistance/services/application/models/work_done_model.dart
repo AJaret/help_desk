@@ -1,4 +1,6 @@
 import 'package:help_desk/internal/technical_assistance/services/domain/entities/work_done.dart';
+import 'package:help_desk/internal/users/request/application/models/document_model.dart';
+import 'package:help_desk/internal/users/request/domain/entities/document.dart';
 
 class WorkDoneModel extends WorkDone {
   WorkDoneModel({
@@ -12,6 +14,8 @@ class WorkDoneModel extends WorkDone {
     return WorkDoneModel(
       workId: json["idtrabajo"],
       date: json["fechaRegistro"],
+      workDescription: json["trabajo"],
+      documents: json["archivos"]?.map<Document>((data) => DocumentModel.fromJson(data)).toList(),
     );
   }
 

@@ -1,7 +1,7 @@
 import 'package:help_desk/internal/users/request/domain/entities/document.dart';
 
 class WorkDone {
-  final String? workId;
+  final int? workId;
   final String? date;
   final String? workDescription;
   final List<Document>? documents;

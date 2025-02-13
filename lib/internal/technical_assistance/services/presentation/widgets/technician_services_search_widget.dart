@@ -183,7 +183,7 @@ class _TechnicianServicesWidgetState extends State<TechnicianServicesSearchWidge
               Expanded(
                   child: filteredServices.isNotEmpty
                       ? BlocProvider(
-                          create: (context) => TechnicianServicesBloc(AppDependencies.getTechnicianServicesUsecase, AppDependencies.getTechnicianServiceDetailsUsecase),
+                          create: (context) => TechnicianServicesBloc(AppDependencies.getTechnicianServicesUsecase, AppDependencies.getTechnicianServiceDetailsUsecase, AppDependencies.getDocumentByIdUsecase),
                           child: ListView.builder(
                             itemCount: filteredServices.length,
                             itemBuilder: (context, index) {
