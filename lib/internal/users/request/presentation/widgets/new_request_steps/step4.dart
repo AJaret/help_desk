@@ -14,51 +14,49 @@ Widget buildStep4({
   required BuildContext context
 }) {
   return SingleChildScrollView(
-    child: Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextFormField(
-            controller: referredPersonController,
-            decoration: const InputDecoration(
-              labelText: "Persona que atenderá al técnico",
-              border: OutlineInputBorder(),
-            ),
-            validator: (value) => value == null || value.isEmpty ? "El nombre es requerido" : null,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextFormField(
+          controller: referredPersonController,
+          decoration: const InputDecoration(
+            labelText: "Persona que atenderá al técnico",
+            border: OutlineInputBorder(),
           ),
-          const SizedBox(height: 20,),
-          Container(
-            padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(25),
-              border: Border.all()
-            ),
-            child: buildMultipleItemsPhoneField(phoneController: phoneController, phoneNumbers: phoneNumbers, addItem: addItem, removeItem: removeItem)
+          validator: (value) => value == null || value.isEmpty ? "El nombre es requerido" : null,
+        ),
+        const SizedBox(height: 20,),
+        Container(
+          padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25),
+            border: Border.all()
           ),
-          const SizedBox(height: 20),
-          Container(
-            padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(25),
-              border: Border.all(
-                
-              )
-            ),
-            child: buildMultipleItemsEmailField(emailController: emailController, emails: emails, addItem: addItem, removeItem: removeItem, context: context),
+          child: buildMultipleItemsPhoneField(phoneController: phoneController, phoneNumbers: phoneNumbers, addItem: addItem, removeItem: removeItem)
+        ),
+        const SizedBox(height: 20),
+        Container(
+          padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25),
+            border: Border.all(
+              
+            )
           ),
-          const SizedBox(height: 20),
-          Container(
-            padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(25),
-              border: Border.all(
-                
-              )
-            ),
-            child: buildMultipleItemsPhoneExtensionField(extensionController: extensionController, extensions: extensions, addItem: addItem, removeItem: removeItem),
+          child: buildMultipleItemsEmailField(emailController: emailController, emails: emails, addItem: addItem, removeItem: removeItem, context: context),
+        ),
+        const SizedBox(height: 20),
+        Container(
+          padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25),
+            border: Border.all(
+              
+            )
           ),
-        ],
-      ),
+          child: buildMultipleItemsPhoneExtensionField(extensionController: extensionController, extensions: extensions, addItem: addItem, removeItem: removeItem),
+        ),
+      ],
     ),
   );
 }

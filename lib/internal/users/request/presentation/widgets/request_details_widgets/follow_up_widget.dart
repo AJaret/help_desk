@@ -15,7 +15,7 @@ class FollowUpWidget extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
 
     return Padding(
-      padding: const EdgeInsets.only(top: 15.0),
+      padding: const EdgeInsets.only(top: 10.0),
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -40,24 +40,22 @@ class FollowUpWidget extends StatelessWidget {
                   itemExtentBuilder: (_, __) => 100.0,
                   contentsBuilder: (context, index) => Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          followUps[index].status ?? '',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        if (followUps[index].email != null)
                           Text(
-                            followUps[index].status ?? '',
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                            followUps[index].email!,
+                            style: const TextStyle(color: Colors.grey),
                           ),
-                          if (followUps[index].email != null)
-                            Text(
-                              followUps[index].email!,
-                              style: const TextStyle(color: Colors.grey),
-                            ),
-                          if (followUps[index].observations != null)
-                            Text(followUps[index].observations!),
-                        ],
-                      ),
+                        if (followUps[index].observations != null)
+                          Text(followUps[index].observations!),
+                      ],
                     ),
                   ),
                   indicatorBuilder: (context, index) => const DotIndicator(

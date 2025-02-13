@@ -142,10 +142,10 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
                     icon: Icons.schedule_rounded,
                     text: 'Historial',
                   ),
-                  GButton(
-                    icon: Icons.newspaper,
-                    text: 'Anuncios',
-                  ),
+                  // GButton(
+                  //   icon: Icons.newspaper,
+                  //   text: 'Anuncios',
+                  // ),
                   GButton(
                     icon: Icons.account_circle_outlined,
                     text: 'Perfil',
