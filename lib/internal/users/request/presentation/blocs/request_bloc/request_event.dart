@@ -18,11 +18,3 @@ class PostNewRequest extends RequestEvent {
     required this.requestData,
   });
 }
-
-class DeleteRequest extends RequestEvent {
-  final String requestId;
-
-  DeleteRequest({
-    required this.requestId,
-  });
-}

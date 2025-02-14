@@ -181,49 +181,15 @@ class _MultiStepFormState extends State<NewRequestScreen> {
         ),
         BlocListener<RequestBloc, RequestState>(
           listener: (context, state) {
-            if(state is PostingNewRequest){
-              showCupertinoDialog(
-                context: context, 
-                builder: (context) => const CupertinoAlertDialog(
-                title: Text('Registrando la solicitud'),
-                  content: Center(
-                    child: CupertinoActivityIndicator(),
-                  ),
-                ),
-              );
-            }else if(state is DeletingRequest){
-              showCupertinoDialog(
-                context: context, 
-                builder: (context) => const CupertinoAlertDialog(
-                title: Text('Cancelando la solicitud'),
-                  content: Center(
-                    child: CupertinoActivityIndicator(),
-                  ),
-                ),
-              );
-            }
-            else if(state is PostRequestSuccess){
-              GoRouter.of(context).canPop() ? GoRouter.of(context).pop() : null;
-              currentStep = 5;
-              folio = state.folio;
-            }
-            else if(state is DeleteRequestSuccess){
-              GoRouter.of(context).canPop() ? GoRouter.of(context).pop() : null;
-              showCupertinoDialog(
-                context: context, 
-                builder: (context) => CupertinoAlertDialog(
-                title: const Text('Éxito'),
-                  content: const Center(
-                    child: Text('Solicitud cancelada correctamente'),
-                  ),
-                  actions: [
-                    CupertinoDialogAction(
-                      onPressed: () => GoRouter.of(context).pop(), 
-                      child: const Text('Aceptar'),
-                    ),
-                  ],
-                ),
-              );
+            if (state is PostRequestSuccess) {
+              debugPrint("🚀 PostRequestSuccess recibido con folio: ${state.folio}");
+              setState(() {
+                currentStep = 5;
+                folio = state.folio;
+              });
+              if (GoRouter.of(context).canPop()) {
+                GoRouter.of(context).pop();
+              }
             }
             else if(state is ErrorPostingRequest){
               GoRouter.of(context).canPop() ? GoRouter.of(context).pop() : null;
@@ -246,141 +212,119 @@ class _MultiStepFormState extends State<NewRequestScreen> {
           },
         ),
       ],
-      child: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 15.0, bottom: 15.0, left: 15, right: 15),
-          child: Column(
-            children: [
-              currentStep == 0 ? Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5.0),
-                  color: Colors.blue[200]
-                ),
-                width: double.infinity,
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.info),
-                    SizedBox(width: 10),
-                    SizedBox(
-                      width: 300,
-                      child: Text('Entre mejor se encuentre descrita tu solicitud de ayuda, más rápida y eficiente será atendida. ¡Gracias!')
-                    )
-                  ],
-                ),
-              ) : Container(),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.13,
-                child: EasyStepper(
-                  activeStep: currentStep,
-                  steps: const [
-                    EasyStep(
-                      icon: Icon(Icons.account_balance_outlined),
-                      title: 'Entidad',
-                    ),
-                    EasyStep(
-                      icon: Icon(Icons.email),
-                      title: 'Descripción',
-                    ),
-                    EasyStep(
-                      icon: Icon(Icons.location_on),
-                      title: 'Ubicación',
-                    ),
-                    EasyStep(
-                      icon: Icon(Icons.assignment_ind_sharp),
-                      title: 'Contactos',
-                    ),
-                    EasyStep(
-                      icon: Icon(Icons.file_present_sharp),
-                      title: 'Archivos',
-                    ),
-                    EasyStep(
-                      icon: Icon(Icons.check_circle),
-                      title: 'Solicitud creada',
-                    ),
-                  ],
-                  onStepReached: (index) {
-                    if (index <= currentStep) {
-                      setState(() {
-                        currentStep = index;
-                      });
-                    }
-                  },
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Form(
-                      key: _getCurrentFormKey(),
-                      child: _buildStepContent(context),
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        body: SafeArea(
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded( 
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 15.0, bottom: 15.0, left: 15, right: 15),
+                      child: Column(
+                        children: [
+                          if (currentStep == 0) 
+                            Container(
+                              padding: const EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5.0),
+                                color: Colors.blue[200],
+                              ),
+                              width: double.infinity,
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.info),
+                                  SizedBox(width: 10),
+                                  SizedBox(
+                                    width: 300,
+                                    child: Text('Entre mejor se encuentre descrita tu solicitud de ayuda, más rápida y eficiente será atendida. ¡Gracias!'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.13,
+                            child: EasyStepper(
+                              activeStep: currentStep,
+                              steps: const [
+                                EasyStep(icon: Icon(Icons.account_balance_outlined), title: 'Entidad'),
+                                EasyStep(icon: Icon(Icons.email), title: 'Descripción'),
+                                EasyStep(icon: Icon(Icons.location_on), title: 'Ubicación'),
+                                EasyStep(icon: Icon(Icons.assignment_ind_sharp), title: 'Contactos'),
+                                EasyStep(icon: Icon(Icons.file_present_sharp), title: 'Archivos'),
+                                EasyStep(icon: Icon(Icons.check_circle), title: 'Solicitud creada'),
+                              ],
+                              onStepReached: (index) {
+                                if (index <= currentStep) {
+                                  setState(() {
+                                    currentStep = index;
+                                  });
+                                }
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Form(
+                              key: _getCurrentFormKey(),
+                              child: _buildStepContent(context),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              currentStep < 5 ? Padding(
-                padding: const EdgeInsets.only(top: 12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF8B1A42),
-                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                Padding( // 🔹 Botones fijos abajo
+                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF8B1A42),
+                          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
+                        onPressed: currentStep > 0 ? _previousStep : null,
+                        child: const Text("Anterior"),
                       ),
-                      onPressed: currentStep > 0 ? _previousStep : null,
-                      child: const Text("Anterior"),
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF8B1A42),
-                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF8B1A42),
+                          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
-                      ),
-                      onPressed: () async{
-                        if(currentStep < 4){
-                          _nextStep();
-                        }else if(currentStep < 5){
-                          NewRequest data = await _submitForm();
-                          if(data.serviceDescription != null){
-                            context.read<RequestBloc>().add(PostNewRequest(requestData: data));
+                        onPressed: () async {
+                          if (currentStep < 4) {
+                            _nextStep();
+                          } else if (currentStep < 5) {
+                            NewRequest data = await _submitForm();
+                            if (data.serviceDescription != null) {
+                              context.read<RequestBloc>().add(PostNewRequest(requestData: data));
+                            }
+                          } else {
+                            GoRouter.of(context).pop();
                           }
-                        }else{
-                          GoRouter.of(context).pop();
-                        }
-                      },
-                      child: Text(currentStep < 4 ? "Siguiente" : currentStep < 5 ? "Enviar" : "Aceptar"),
-                    ),
-                  ],
-                ),
-              ) : Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF8B1A42),
-                    padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                        },
+                        child: Text(currentStep < 4 ? "Siguiente" : currentStep < 5 ? "Enviar" : "Aceptar"),
+                      ),
+                    ],
                   ),
-                  onPressed: (){
-                    context.read<RequestBloc>().add(GetRequests());
-                    GoRouter.of(context).pop();
-                  },
-                  child: const Text("Aceptar"),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
+      )
     );
   }
 
@@ -437,20 +381,18 @@ class _MultiStepFormState extends State<NewRequestScreen> {
           context: context
         );
       case 5:
-        return Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.3, color: Colors.green,),
-              const SizedBox(height: 20),
-              Text('Solicitud creada correctamente', style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.05), textAlign: TextAlign.center,),
-              const SizedBox(height: 20),
-              Text('Numero de folio:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.05), textAlign: TextAlign.center,),
-              const SizedBox(height: 10),
-              Text(folio ?? '', style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.05), textAlign: TextAlign.center,),
-            ],
-          )
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.3, color: Colors.green,),
+            const SizedBox(height: 20),
+            Text('Solicitud creada correctamente', style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.05), textAlign: TextAlign.center,),
+            const SizedBox(height: 20),
+            Text('Numero de folio:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.05), textAlign: TextAlign.center,),
+            const SizedBox(height: 10),
+            Text(folio ?? '', style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.05), textAlign: TextAlign.center,),
+          ],
         );
       default:
         return const SizedBox.shrink();

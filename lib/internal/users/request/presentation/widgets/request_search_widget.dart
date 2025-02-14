@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:help_desk/internal/users/request/domain/entities/request.dart';
 import 'package:help_desk/internal/users/request/presentation/blocs/request_bloc/request_bloc.dart';
 import 'package:help_desk/internal/users/request/presentation/widgets/request_card_widget.dart';
-import 'package:help_desk/shared/helpers/app_dependencies.dart';
 
 class RequestSearchWidget extends StatefulWidget {
   final String requestType;
@@ -126,13 +125,7 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
   Widget build(BuildContext context) {
     return BlocBuilder<RequestBloc, RequestState>(
       builder: (context, state) {
-        if (state is RequestInitial) {
-          context.read<RequestBloc>().add(GetRequests());
-        } else if (state is GettingRequests) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (state is GetRequestSuccess) {
+        if (state is GetRequestSuccess) {
           if (allRequests.isEmpty) {
             allRequests = widget.requestType == 'Finished' ? state.requests .where((request) => request.status == 'Solicitud finalizada' || request.status == 'Solicitud cancelada' || request.status == 'Solicitud cerrada').toList()
                 : state.requests.where((request) => request.status != 'Solicitud finalizado' && request.status != 'Solicitud cancelada' && request.status != 'Solicitud cerrada').toList();
@@ -182,16 +175,12 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
               const SizedBox(height: 10),
               Expanded(
                   child: filteredRequests.isNotEmpty
-                      ? BlocProvider(
-                          create: (context) => RequestBloc(AppDependencies.postRequestUseCase, AppDependencies.postNewRequest, AppDependencies.deleteRequestUsecase),
-                          child: ListView.builder(
-                            itemCount: filteredRequests.length,
-                            itemBuilder: (context, index) {
-                              return RequestCardWidget(
-                                  request: filteredRequests[index]);
-                            },
-                          ),
-                        )
+                      ? ListView.builder(
+                        itemCount: filteredRequests.length,
+                        itemBuilder: (context, index) {
+                          return RequestCardWidget(request: filteredRequests[index]);
+                        },
+                      )
                       : Center(
                           child: Text(
                           "No se encontraron solicitudes ${widget.requestType == 'Finished' ? 'Finalizadas' : 'pendientes'}",
