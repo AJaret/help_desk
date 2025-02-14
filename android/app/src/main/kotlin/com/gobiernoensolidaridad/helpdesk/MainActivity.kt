@@ -1,4 +1,4 @@
-package com.example.help_desk
+package com.gobiernoensolidaridad.helpdesk
 
 import io.flutter.embedding.android.FlutterActivity
 

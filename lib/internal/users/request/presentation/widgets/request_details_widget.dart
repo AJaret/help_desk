@@ -8,10 +8,22 @@ import 'package:help_desk/internal/users/request/presentation/widgets/request_de
 import 'package:help_desk/internal/users/request/presentation/widgets/request_details_widgets/request_menu_widget.dart';
 import 'package:help_desk/internal/users/request/presentation/widgets/request_details_widgets/services_widget.dart';
 
-class RequestDetailsWidget extends StatelessWidget {
+class RequestDetailsWidget extends StatefulWidget {
   final Color statusColor;
   final String requestId;
   const RequestDetailsWidget({super.key, required this.statusColor, required this.requestId});
+
+  @override
+  State<RequestDetailsWidget> createState() => _RequestDetailsWidgetState();
+}
+
+class _RequestDetailsWidgetState extends State<RequestDetailsWidget> {
+  @override
+  void initState() {
+    super.initState();
+    // Dispara el evento cuando la pantalla se carga
+    context.read<RequestDetailsBloc>().add(GetRequestById(requestId: widget.requestId));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +33,7 @@ class RequestDetailsWidget extends StatelessWidget {
     return BlocBuilder<RequestDetailsBloc, RequestDetailsState>(
       builder: (context, state) {
         if(state is RequestDetailsInitial){
-          context.read<RequestDetailsBloc>().add(GetRequestById(requestId: requestId));
+          context.read<RequestDetailsBloc>().add(GetRequestById(requestId: widget.requestId));
         }
         else if(state is GettingRequestDetails){
           return const Center(

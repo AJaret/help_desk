@@ -48,7 +48,7 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
               showCupertinoDialog(
                 context: context,
                 builder: (context) => const CupertinoAlertDialog(
-                  title: Text('Error'),
+                  title: Text('Cargando solicitudes'),
                   content: Center(
                     child: CupertinoActivityIndicator(),
                   ),

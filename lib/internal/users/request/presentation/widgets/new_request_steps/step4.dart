@@ -20,7 +20,7 @@ Widget buildStep4({
         TextFormField(
           controller: referredPersonController,
           decoration: const InputDecoration(
-            labelText: "Persona que atenderá al técnico",
+            labelText: "¿Con quién dirigirse?",
             border: OutlineInputBorder(),
           ),
           validator: (value) => value == null || value.isEmpty ? "El nombre es requerido" : null,
