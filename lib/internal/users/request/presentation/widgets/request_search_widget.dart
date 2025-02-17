@@ -136,7 +136,8 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
             });
             filteredRequests = List.from(allRequests);
           }
-          return Column(
+          return filteredRequests.isNotEmpty ?
+          Column(
             children: [
               Row(
                 children: [
@@ -174,29 +175,28 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
               ),
               const SizedBox(height: 10),
               Expanded(
-                  child: filteredRequests.isNotEmpty
-                      ? ListView.builder(
-                        itemCount: filteredRequests.length,
-                        itemBuilder: (context, index) {
-                          return RequestCardWidget(request: filteredRequests[index]);
-                        },
-                      )
-                      : Center(
-                          child: Text(
-                          "No se encontraron solicitudes ${widget.requestType == 'Finished' ? 'Finalizadas' : 'pendientes'}",
-                          style: const TextStyle(
-                            fontSize: 20,
-                          ),
-                          textAlign: TextAlign.center,
-                        ))),
+                child: ListView.builder(
+                  itemCount: filteredRequests.length,
+                  itemBuilder: (context, index) {
+                    return RequestCardWidget(request: filteredRequests[index]);
+                  },
+                )
+              )
             ],
-          );
+          ): Center(
+            child: Text(
+            "No se encontraron solicitudes ${widget.requestType == 'Finished' ? 'Finalizadas' : 'pendientes'}",
+            style: const TextStyle(
+              fontSize: 20,
+            ),
+            textAlign: TextAlign.center,
+          ));
         } else if (state is ErrorGettingRequests) {
           return Center(
             child: IconButton(
                 onPressed: () => context.read<RequestBloc>().add(GetRequests()),
                 icon: const Icon(
-                  Icons.refresh_rounded,
+                  Icons.sync,
                   size: 60,
                 )),
           );

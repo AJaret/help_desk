@@ -196,7 +196,15 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
                                         } else if (state is GetRequestSuccess) {
                                           return _widgetOptions[_selectedIndex];
                                         } else if (state is ErrorGettingRequests) {
-                                          return Center(child: Text(state.message));
+                                          return Center(
+                                            child: IconButton(
+                                              onPressed: () => context.read<RequestBloc>().add(GetRequests()),
+                                              icon: const Icon(
+                                                Icons.sync,
+                                                size: 60,
+                                              )
+                                            ),
+                                          );
                                         }
                                         return const RequestScreen();
                                       },
@@ -218,15 +226,15 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   FloatingActionButton(
-                    backgroundColor: const Color(0XFF2C2927),
+                    backgroundColor: const Color(0XFF721530),
                     onPressed: () {
                       context.read<RequestBloc>().add(GetRequests());
                     },
-                    child: const Icon(Icons.replay, color: Colors.white),
+                    child: const Icon(Icons.sync, color: Colors.white),
                   ),
                   const SizedBox(height: 10),
                   FloatingActionButton(
-                    backgroundColor: const Color(0XFF2C2927),
+                    backgroundColor: const Color(0XFF721530),
                     onPressed: () {
                       showModalBottomSheet<String>(
                         context: context,
@@ -279,7 +287,7 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   duration: const Duration(milliseconds: 400),
                   tabBackgroundColor: const Color(0xFFD4CBC0),
-                  color: Colors.black,
+                  color: Colors.white,
                   tabs: const [
                     GButton(
                       icon: Icons.inventory_2_outlined,

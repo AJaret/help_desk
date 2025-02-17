@@ -50,49 +50,52 @@ class _PdfViewerWidgetState extends State<PdfViewerWidget> {
   Widget build(BuildContext context) {
     return tempFilePath == null
         ? const Center(child: CircularProgressIndicator())
-        : Column(
-            children: [
-              Expanded(
-                child: SfPdfViewer.file(
-                  File(tempFilePath!),
-                  key: _pdfViewerKey,
-                  controller: _pdfController,
-                  enableDoubleTapZooming: true,
-                  onPageChanged: (PdfPageChangedDetails details) {
-                    setState(() {
-                      _currentPage = details.newPageNumber;
-                      _totalPages = _pdfController.pageCount ?? _totalPages;
-                    });
-                  },
-                ),
-              ),
-              if (_totalPages > 1)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back),
-                        onPressed: _currentPage > 1
-                            ? () {
-                                _pdfController.previousPage();
-                              }
-                            : null,
-                      ),
-                      Text('Página $_currentPage de $_totalPages'),
-                      IconButton(
-                        icon: const Icon(Icons.arrow_forward),
-                        onPressed: _currentPage < _totalPages
-                            ? () {
-                                _pdfController.nextPage();
-                              }
-                            : null,
-                      ),
-                    ],
+        : SizedBox(
+          height: MediaQuery.of(context).size.height * 0.7,
+          child: Column(
+              children: [
+                Expanded(
+                  child: SfPdfViewer.file(
+                    File(tempFilePath!),
+                    key: _pdfViewerKey,
+                    controller: _pdfController,
+                    enableDoubleTapZooming: true,
+                    onPageChanged: (PdfPageChangedDetails details) {
+                      setState(() {
+                        _currentPage = details.newPageNumber;
+                        _totalPages = _pdfController.pageCount;
+                      });
+                    },
                   ),
                 ),
-            ],
-          );
+                if (_totalPages > 1)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: _currentPage > 1
+                              ? () {
+                                  _pdfController.previousPage();
+                                }
+                              : null,
+                        ),
+                        Text('Página $_currentPage de $_totalPages'),
+                        IconButton(
+                          icon: const Icon(Icons.arrow_forward),
+                          onPressed: _currentPage < _totalPages
+                              ? () {
+                                  _pdfController.nextPage();
+                                }
+                              : null,
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+        );
   }
 }

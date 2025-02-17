@@ -312,6 +312,7 @@ class _MultiStepFormState extends State<NewRequestScreen> {
                               context.read<RequestBloc>().add(PostNewRequest(requestData: data));
                             }
                           } else {
+                            context.read<RequestBloc>().add(GetRequests());
                             GoRouter.of(context).pop();
                           }
                         },
