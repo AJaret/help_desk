@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:help_desk/internal/technical_assistance/services/presentation/blocs/technician_services_bloc/technician_services_bloc.dart';
 import 'package:help_desk/internal/users/request/domain/entities/document.dart';
 import 'package:help_desk/shared/helpers/app_dependencies.dart';
@@ -31,9 +30,8 @@ class ServiceFilesWidget extends StatelessWidget {
       
       return SizedBox(
         height: size.height * 0.5,
-        child: PDFView(
-          filePath: tempPath,
-        ),
+        //TODO: Cambiar por el widget de PDF
+        child: Container()
       );
     } catch (e) {
       return Center(child: Text('Error al mostrar el PDF: $e'));

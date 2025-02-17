@@ -1,15 +1,13 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:help_desk/internal/users/request/domain/entities/document.dart';
 import 'package:help_desk/internal/users/request/presentation/blocs/request_details_bloc/request_details_bloc.dart';
 import 'package:help_desk/shared/helpers/app_dependencies.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:help_desk/shared/helpers/pdf_viewer.dart';
 
 class FilesWidget extends StatelessWidget {
   final List<Document> documents;
@@ -18,27 +16,6 @@ class FilesWidget extends StatelessWidget {
     super.key,
     required this.documents,
   });
-
-  Future<Widget> _showPdf(String base64File, Size size) async {
-    try {
-      Uint8List bytes = base64Decode(base64File);
-      
-      Directory tempDir = await getTemporaryDirectory();
-      String tempPath = '${tempDir.path}/document.pdf';
-      
-      File tempFile = File(tempPath);
-      await tempFile.writeAsBytes(bytes);
-      
-      return SizedBox(
-        height: size.height * 0.5,
-        child: PDFView(
-          filePath: tempPath,
-        ),
-      );
-    } catch (e) {
-      return Center(child: Text('Error al mostrar el PDF: $e'));
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,22 +88,17 @@ class FilesWidget extends StatelessWidget {
                                           if (fileType == 'jpg' || fileType == 'jpeg' || fileType == 'png') {
                                             Uint8List bytes = base64Decode(state.doc.file!);
                                             return SizedBox(
-                                              height: size.height * 0.5,
-                                              child: Image.memory(bytes),
+                                              height: size.height * 0.7,
+                                              child: InteractiveViewer(
+                                                panEnabled: true,
+                                                boundaryMargin: const EdgeInsets.all(20),
+                                                minScale: 0.1,
+                                                maxScale: 3.0,
+                                                child: Image.memory(bytes, fit: BoxFit.contain),
+                                              ),
                                             );
                                           } else if (fileType == 'pdf') {
-                                            return FutureBuilder<Widget>(
-                                              future: _showPdf(state.doc.file ?? '', size),
-                                              builder: (context, snapshot) {
-                                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                                  return const Center(child: CircularProgressIndicator());
-                                                } else if (snapshot.hasError) {
-                                                  return Center(child: Text('Error: ${snapshot.error}'));
-                                                } else {
-                                                  return snapshot.data ?? const Center(child: Text('Error al cargar PDF'));
-                                                }
-                                              },
-                                            );
+                                            return PdfViewerWidget(base64File: state.doc.file!);
                                           } else {
                                             return Center(
                                               child: Column(
