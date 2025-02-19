@@ -1,13 +1,13 @@
-import 'package:diacritic/diacritic.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:fancy_password_field/fancy_password_field.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:help_desk/internal/users/catalog/domain/entities/dependency.dart';
+import 'package:go_router/go_router.dart';
 import 'package:help_desk/internal/users/catalog/presentation/blocs/catalog_bloc/catalog_bloc.dart';
 import 'package:help_desk/internal/users/register/domain/entities/user_register.dart';
 import 'package:help_desk/internal/users/register/presentation/blocs/user_register_bloc/user_register_bloc.dart';
+import 'package:help_desk/shared/helpers/dependency_searc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RegisterFormWidget extends StatefulWidget {
@@ -37,24 +37,24 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
 
   void _validateForm() {
     setState(() {
-      if(isDecentralized){
+      if (isDecentralized) {
         isFormValid = employeeNumberController.text.isNotEmpty &&
-          calendarFieldController.text.isNotEmpty &&
-          emailController.text.isNotEmpty &&
-          nameController.text.isNotEmpty && 
-          firstLastNameController.text.isNotEmpty &&
-          selectedValue != null &&
-          isEmailValid &&
-          isPasswordValid &&
-          privacyPolicy;
-      }else{
+            calendarFieldController.text.isNotEmpty &&
+            emailController.text.isNotEmpty &&
+            nameController.text.isNotEmpty &&
+            firstLastNameController.text.isNotEmpty &&
+            selectedValue != null &&
+            isEmailValid &&
+            isPasswordValid &&
+            privacyPolicy;
+      } else {
         isFormValid = employeeNumberController.text.isNotEmpty &&
-          calendarFieldController.text.isNotEmpty &&
-          emailController.text.isNotEmpty &&
-          selectedValue != null &&
-          isEmailValid &&
-          isPasswordValid &&
-          privacyPolicy;
+            calendarFieldController.text.isNotEmpty &&
+            emailController.text.isNotEmpty &&
+            selectedValue != null &&
+            isEmailValid &&
+            isPasswordValid &&
+            privacyPolicy;
       }
     });
   }
@@ -72,7 +72,9 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
       initialDate: selectedDate ?? DateTime.now(),
       firstDate: DateTime(1900, 1),
       lastDate: DateTime.now(),
+      locale: const Locale('es', 'ES'),
     );
+
     if (picked != null) {
       setState(() {
         selectedDate = picked;
@@ -88,12 +90,12 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
       DigitValidationRule(),
       UppercaseValidationRule(),
       LowercaseValidationRule(),
-      SpecialCharacterValidationRule(),
       MinCharactersValidationRule(8),
     };
 
     setState(() {
-      isPasswordValid = validationRules.every((rule) => rule.validate(password));
+      isPasswordValid =
+          validationRules.every((rule) => rule.validate(password));
     });
   }
 
@@ -107,467 +109,469 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Text(
-          'REGISTRO',
-          style: TextStyle(
-            color: const Color(0xFF2C2927),
-            fontSize: size.width * 0.07,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Column(
-          children: [
-            TextField(
-              controller: employeeNumberController,
-              onChanged: (value) => _validateForm(),
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                hintText: 'Número de empleado',
-                hintStyle: TextStyle(fontSize: size.width * 0.035),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
+    return BlocListener<UserRegisterBloc, UserRegisterState>(
+      listener: (context, state) {
+        if(state is PostingUserRegister){
+          showCupertinoDialog(
+            context: context,
+            builder: (context) => const CupertinoAlertDialog(
+              title: Text('Registrando datos'),
+              content: Center(
+                child: CupertinoActivityIndicator(),
               ),
             ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: calendarFieldController,
-                    readOnly: true,
-                    onTap: () => _selectDate(context),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      hintText: 'Fecha de nacimiento',
-                      hintStyle: TextStyle(fontSize: size.width * 0.035),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
+          );
+        }
+        if(state is UserRegisterPosted){
+          GoRouter.of(context).canPop() ? GoRouter.of(context).pop() : null;
+          showCupertinoDialog(
+            context: context,
+            builder: (context) {
+              return CupertinoAlertDialog(
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      "HelpDesk",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF721538),
                       ),
                     ),
-                  ),
-                ),
-                IconButton(
-                  onPressed: () => _selectDate(context),
-                  icon: const Icon(Icons.calendar_month),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            BlocBuilder<CatalogBloc, CatalogState>(
-              builder: (context, state) {
-                if (state is CatalogInitial) {
-                  context.read<CatalogBloc>().add(GetDependencies());
-                } else if (state is GettingCatalog) {
-                  return const Center(
-                    child: CircularProgressIndicator(color: Color(0XFF721538)),
-                  );
-                } else if (state is DependencyCatalogList) {
-                  return DropdownButtonHideUnderline(
-                    child: DropdownButton2<int>(
-                      isExpanded: true,
-                      hint: Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: Text(
-                          'Selecciona tu entidad',
-                          style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.035,
-                            color: Theme.of(context).hintColor,
-                          ),
+                    const SizedBox(height: 15),
+                    const Icon(
+                      CupertinoIcons.checkmark_circle_fill,
+                      color: Colors.green,
+                      size: 50,
+                    ),
+                    const SizedBox(height: 15),
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
                         ),
-                      ),
-                      items: state.dependencyList.map((item) {
-                        return DropdownMenuItem<int>(
-                          value: item.value,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Flexible(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 2.0, right: 2.0),
-                                  child: Text(
-                                    item.label ?? '',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ),
-                              const Divider(),
-                            ],
+                        children: [
+                          const TextSpan(
+                            text: "Gracias por registrarte, hemos enviado un mensaje a ",
                           ),
-                        );
-                      }).toList(),
-                      value: selectedValue,
-                      onChanged: (int? value) {
+                          TextSpan(
+                            text: emailController.text,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const TextSpan(
+                            text: " en el que encontrarás un enlace para verificar tu correo electrónico.",
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                  ],
+                ),
+                actions: [
+                  CupertinoDialogAction(
+                    isDefaultAction: true,
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text("Aceptar"),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+        if(state is ErrorPostingUserRegister){
+          GoRouter.of(context).canPop() ? GoRouter.of(context).pop() : null;
+          showCupertinoDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return CupertinoAlertDialog(
+                title:
+                    const Text('Help desk'),
+                content: Text(state.message),
+                actions: [
+                  CupertinoDialogAction(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text(
+            'REGISTRO',
+            style: TextStyle(
+              color: const Color(0xFF2C2927),
+              fontSize: size.width * 0.07,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Column(
+            children: [
+              BlocBuilder<CatalogBloc, CatalogState>(
+                builder: (context, state) {
+                  if (state is CatalogInitial) {
+                    context.read<CatalogBloc>().add(GetDependencies());
+                  } else if (state is GettingCatalog) {
+                    return const Center(
+                      child:
+                          CircularProgressIndicator(color: Color(0XFF721538)),
+                    );
+                  } else if (state is DependencyCatalogList) {
+                    return CustomDropdown(
+                      dependencyList: state.dependencyList,
+                      onSelected: (selectedEntity) {
                         setState(() {
-                          selectedValue = value;
-                          final selectedEntity = state.dependencyList.firstWhere(
-                            (item) => item.value == value,
-                            orElse: () => Catalog(),
-                          );
-                          isDecentralized = selectedEntity.decentralized ?? false;
+                          selectedValue = selectedEntity.value;
+                          isDecentralized =
+                              selectedEntity.decentralized ?? false;
                           _validateForm();
                         });
                       },
-                      buttonStyleData: const ButtonStyleData(
-                        padding: EdgeInsets.symmetric(vertical: 9),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
+                    );
+                  } else {
+                    return Center(
+                      child: IconButton(
+                        onPressed: () =>
+                            context.read<CatalogBloc>().add(GetDependencies()),
+                        icon: const Icon(Icons.refresh),
                       ),
-                      dropdownStyleData: DropdownStyleData(
-                        maxHeight: 400,
-                        // Add padding to prevent overflow
-                        decoration: BoxDecoration(
+                    );
+                  }
+
+                  return Container();
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              TextField(
+                controller: employeeNumberController,
+                onChanged: (value) => _validateForm(),
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: 'Número de empleado',
+                  hintStyle: TextStyle(fontSize: size.width * 0.035),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: calendarFieldController,
+                      readOnly: true,
+                      onTap: () => _selectDate(context),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'Fecha de nacimiento',
+                        hintStyle: TextStyle(fontSize: size.width * 0.035),
+                        border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.grey),
-                          color: Colors.white,
+                          borderSide: BorderSide.none,
                         ),
                       ),
-                      selectedItemBuilder: (BuildContext context) {
-                        return state.dependencyList.map((item) {
-                          return Text(
-                            item.label ?? '',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            maxLines: 2,
-                          );
-                        }).toList();
-                      },
-                      dropdownSearchData: DropdownSearchData(
-                        searchController: textEditingController,
-                        searchInnerWidgetHeight: 50,
-                        searchInnerWidget: Container(
-                          height: 55,
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: TextFormField(
-                            expands: true,
-                            maxLines: null,
-                            controller: textEditingController,
-                            decoration: InputDecoration(
-                              isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 8,
-                              ),
-                              hintText: 'Buscar entidad',
-                              hintStyle: const TextStyle(fontSize: 14),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => _selectDate(context),
+                    icon: const Icon(Icons.calendar_month),
+                  ),
+                ],
+              ),
+              isDecentralized ? const SizedBox(height: 20) : Container(),
+              isDecentralized
+                  ? TextField(
+                      controller: nameController,
+                      onChanged: (value) => _validateForm(),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'Nombre(s) *',
+                        hintStyle: TextStyle(fontSize: size.width * 0.035),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
                         ),
-                        searchMatchFn: (DropdownMenuItem<int> item, String searchValue) {
-                          final matchingItem = state.dependencyList.firstWhere(
-                            (dep) => dep.value == item.value,
-                            orElse: () => Catalog(),
-                          );
-                          final normalizedLabel = removeDiacritics(matchingItem.label ?? '').toLowerCase();
-                          final normalizedSearchValue = removeDiacritics(searchValue).toLowerCase();
-
-                          return normalizedLabel.contains(normalizedSearchValue);
-                        },
                       ),
-                      onMenuStateChange: (isOpen) {
-                        if (!isOpen) {
-                          textEditingController.clear();
-                        }
-                      },
-                    ),
-                  );
-                } else {
-                  return Center(
-                    child: IconButton(
-                      onPressed: () => context.read<CatalogBloc>().add(GetDependencies()),
-                      icon: const Icon(Icons.refresh),
-                    ),
-                  );
-                }
-
-                return Container();
-              },
-            ),
-            isDecentralized ? const SizedBox(height: 20) : Container(),
-            isDecentralized ? 
-            TextField(
-              controller: nameController,
-              onChanged: (value) => _validateForm(),
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                hintText: 'Nombre(s) *',
-                hintStyle: TextStyle(fontSize: size.width * 0.035),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
+                    )
+                  : Container(),
+              isDecentralized ? const SizedBox(height: 20) : Container(),
+              isDecentralized
+                  ? TextField(
+                      controller: firstLastNameController,
+                      onChanged: (value) => _validateForm(),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'Primer apellido *',
+                        hintStyle: TextStyle(fontSize: size.width * 0.035),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    )
+                  : Container(),
+              isDecentralized ? const SizedBox(height: 20) : Container(),
+              isDecentralized
+                  ? TextField(
+                      controller: secondLastNameController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'Segundo apellido',
+                        hintStyle: TextStyle(fontSize: size.width * 0.035),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    )
+                  : Container(),
+              const SizedBox(height: 20),
+              TextField(
+                controller: emailController,
+                onChanged: (value) {
+                  _validateEmail(value);
+                  _validateForm();
+                },
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: 'Correo electrónico',
+                  hintStyle: TextStyle(fontSize: size.width * 0.035),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
+                  errorText: !isEmailValid && emailController.text.isNotEmpty
+                      ? 'Por favor, ingresa un correo válido'
+                      : null,
                 ),
               ),
-            ) : Container(),
-            isDecentralized ? const SizedBox(height: 20) : Container(),
-            isDecentralized ? 
-            TextField(
-              controller: firstLastNameController,
-              onChanged: (value) => _validateForm(),
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                hintText: 'Primer apellido *',
-                hintStyle: TextStyle(fontSize: size.width * 0.035),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
+              const SizedBox(height: 25),
+              FancyPasswordField(
+                controller: passwordController,
+                onChanged: (value) {
+                  _validatePassword(value);
+                  _validateForm();
+                },
+                decoration: InputDecoration(
+                  hintText: "Contraseña",
+                  hintStyle: const TextStyle(fontSize: 16),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
-              ),
-            ) : Container(),
-            isDecentralized ? const SizedBox(height: 20) : Container(),
-            isDecentralized ? 
-            TextField(
-              controller: secondLastNameController,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                hintText: 'Segundo apellido',
-                hintStyle: TextStyle(fontSize: size.width * 0.035),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ) : Container(),
-            const SizedBox(height: 20),
-            TextField(
-              controller: emailController,
-              onChanged: (value) {
-                _validateEmail(value);
-                _validateForm();
-              },
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                hintText: 'Correo electrónico',
-                hintStyle: TextStyle(fontSize: size.width * 0.035),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
-                errorText: !isEmailValid && emailController.text.isNotEmpty
-                    ? 'Por favor, ingresa un correo válido'
-                    : null,
-              ),
-            ),
-            const SizedBox(height: 25),
-            FancyPasswordField(
-              controller: passwordController,
-              onChanged: (value) {
-                _validatePassword(value);
-                _validateForm();
-              },
-              decoration: InputDecoration(
-                hintText: "Contraseña",
-                hintStyle: const TextStyle(fontSize: 16),
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-              hasStrengthIndicator: false,
-              validationRules: {
-                DigitValidationRule(
-                  customText: "Debe contener al menos un número.",
-                ),
-                UppercaseValidationRule(
-                  customText: "Debe contener al menos una letra mayúscula.",
-                ),
-                LowercaseValidationRule(
-                  customText: "Debe contener al menos una letra minúscula.",
-                ),
-                SpecialCharacterValidationRule(
-                  customText: "Debe contener al menos un carácter especial.",
-                ),
-                MinCharactersValidationRule(
-                  8,
-                  customText: "Debe tener al menos 8 caracteres.",
-                ),
-              },
-              validationRuleBuilder: (rules, value) {
-                return Column(
-                  children: [
-                    const SizedBox(height: 15),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: rules.map((rule) {
-                        return Row(
-                          children: [
-                            Icon(
-                              rule.validate(value) ? Icons.check_circle : Icons.cancel,
-                              color: rule.validate(value) ? Colors.green : Colors.red,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                rule.name,
-                                style: TextStyle(
-                                  color: rule.validate(value) ? Colors.green : Colors.red,
-                                  fontSize: 14,
+                hasStrengthIndicator: false,
+                validationRules: {
+                  DigitValidationRule(
+                    customText: "Debe contener al menos un número.",
+                  ),
+                  UppercaseValidationRule(
+                    customText: "Debe contener al menos una letra mayúscula.",
+                  ),
+                  LowercaseValidationRule(
+                    customText: "Debe contener al menos una letra minúscula.",
+                  ),
+                  MinCharactersValidationRule(
+                    8,
+                    customText: "Debe tener al menos 8 caracteres.",
+                  ),
+                },
+                validationRuleBuilder: (rules, value) {
+                  return Column(
+                    children: [
+                      const SizedBox(height: 15),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: rules.map((rule) {
+                          return Row(
+                            children: [
+                              Icon(
+                                rule.validate(value)
+                                    ? Icons.check_circle
+                                    : Icons.cancel,
+                                color: rule.validate(value)
+                                    ? Colors.green
+                                    : Colors.red,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  rule.name,
+                                  style: TextStyle(
+                                    color: rule.validate(value)
+                                        ? Colors.green
+                                        : Colors.red,
+                                    fontSize: 14,
+                                  ),
                                 ),
                               ),
+                            ],
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: 15),
+              Row(
+                children: [
+                  Checkbox(
+                    value: privacyPolicy,
+                    onChanged: (x) {
+                      setState(() {
+                        privacyPolicy = x ?? false;
+                        _validateForm();
+                      });
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                        text: 'Autorizo el uso de mis datos de acuerdo a las ',
+                        style: const TextStyle(color: Colors.black),
+                        children: [
+                          TextSpan(
+                            text: 'Políticas de privacidad',
+                            style: const TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
                             ),
-                          ],
-                        );
-                      }).toList(),
-                    ),
-                  ],
-                );
-              },
-            ),
-            const SizedBox(height: 15),
-            Row(
-              children: [
-                Checkbox(
-                  value: privacyPolicy,
-                  onChanged: (x) {
-                    setState(() {
-                      privacyPolicy = x ?? false;
-                      _validateForm();
-                    });
-                  },
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: RichText(
-                    text: TextSpan(
-                      text: 'Autorizo el uso de mis datos de acuerdo a las ',
-                      style: const TextStyle(color: Colors.black),
-                      children: [
-                        TextSpan(
-                          text: 'Políticas de privacidad',
-                          style: const TextStyle(
-                            color: Colors.blue,
-                            decoration: TextDecoration.underline,
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () => launchURL(
+                                  'https://gobiernodesolidaridad.gob.mx/avisosdeprivacidad'),
                           ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () => launchURL(
-                                'https://gobiernodesolidaridad.gob.mx/avisosdeprivacidad'),
-                        ),
-                        const TextSpan(
-                          text: '.',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ],
+                          const TextSpan(
+                            text: '.',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        BlocBuilder<UserRegisterBloc, UserRegisterState>(
-          builder: (context, state) {
-            if(state is UserRegisterInitial){
-              return ElevatedButton(
-                onPressed: isFormValid ? () {
-                  UserRegister userData = UserRegister(
-                    employeeNumber: employeeNumberController.value.text,
-                    birthdate: calendarFieldController.value.text,
-                    entityId: selectedValue,
-                    email: emailController.value.text,
-                    password: passwordController.value.text
-                  );
-                  context.read<UserRegisterBloc>().add(PostUserRegister(userData: userData));
-                } : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF8B1A42),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                ],
+              ),
+            ],
+          ),
+          BlocBuilder<UserRegisterBloc, UserRegisterState>(
+            builder: (context, state) {
+              if (state is UserRegisterInitial) {
+                return ElevatedButton(
+                  onPressed: isFormValid
+                      ? () {
+                          UserRegister userData = UserRegister(
+                              employeeNumber:
+                                  employeeNumberController.value.text,
+                              birthdate: calendarFieldController.value.text,
+                              entityId: selectedValue,
+                              email: emailController.value.text,
+                              password: passwordController.value.text);
+                          context
+                              .read<UserRegisterBloc>()
+                              .add(PostUserRegister(userData: userData));
+                        }
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF8B1A42),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 50, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                ),
-                child: Text(
-                  'Registrarse',
-                  style: TextStyle(fontSize: size.width * 0.04),
-                ),
-              );
-            }else if(state is PostingUserRegister){
-              return ElevatedButton(
-                onPressed: null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF8B1A42),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                  child: Text(
+                    'Registrarse',
+                    style: TextStyle(fontSize: size.width * 0.04),
                   ),
-                ),
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                )
-              );
-            }else if(state is UserRegisterPosted){
-              return ElevatedButton(
-                onPressed: null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                );
+              } else if (state is PostingUserRegister) {
+                return ElevatedButton(
+                    onPressed: null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF8B1A42),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ));
+              } else if (state is UserRegisterPosted) {
+                return ElevatedButton(
+                    onPressed: null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Center(
+                      child: Icon(Icons.check),
+                    ));
+              } else if (state is ErrorPostingUserRegister) {
+                return ElevatedButton(
+                  onPressed: isFormValid
+                      ? () {
+                          UserRegister userData = UserRegister(
+                              employeeNumber:
+                                  employeeNumberController.value.text,
+                              birthdate: calendarFieldController.value.text,
+                              entityId: selectedValue,
+                              email: emailController.value.text,
+                              password: passwordController.value.text);
+                          context
+                              .read<UserRegisterBloc>()
+                              .add(PostUserRegister(userData: userData));
+                        }
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF8B1A42),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 50, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                ),
-                child: const Center(
-                  child: Icon(Icons.check),
-                )
-              );
-            }else if(state is ErrorPostingUserRegister){
-              return ElevatedButton(
-                onPressed: isFormValid ? () {
-                  print(employeeNumberController.value.text);
-                  UserRegister userData = UserRegister(
-                    employeeNumber: employeeNumberController.value.text,
-                    birthdate: calendarFieldController.value.text,
-                    entityId: selectedValue,
-                    email: emailController.value.text,
-                    password: passwordController.value.text
-                  );
-                  context.read<UserRegisterBloc>().add(PostUserRegister(userData: userData));
-                } : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF8B1A42),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                  child: Text(
+                    'Registrarse',
+                    style: TextStyle(fontSize: size.width * 0.04),
                   ),
-                ),
-                child: Text(
-                  'Registrarse',
-                  style: TextStyle(fontSize: size.width * 0.04),
-                ),
-              );
-            }
-            return Container();
-          },
-        )
-      ],
+                );
+              }
+              return Container();
+            },
+          )
+        ],
+      ),
     );
   }
 }

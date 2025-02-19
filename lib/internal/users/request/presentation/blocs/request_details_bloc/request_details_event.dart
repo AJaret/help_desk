@@ -12,9 +12,9 @@ class GetRequestById extends RequestDetailsEvent {
 }
 
 class GetDocumentFile extends RequestDetailsEvent {
-  final int documentId;
+  final List<Document> documents;
 
   GetDocumentFile({
-    required this.documentId,
+    required this.documents,
   });
 }

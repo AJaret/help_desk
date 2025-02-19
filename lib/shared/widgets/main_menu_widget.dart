@@ -221,37 +221,58 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
             }),
           ),
         ),
-        floatingActionButton: _selectedIndex == 0
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  FloatingActionButton(
-                    backgroundColor: const Color(0XFF721530),
-                    onPressed: () {
-                      context.read<RequestBloc>().add(GetRequests());
-                    },
-                    child: const Icon(Icons.sync, color: Colors.white),
-                  ),
-                  const SizedBox(height: 10),
-                  FloatingActionButton(
-                    backgroundColor: const Color(0XFF721530),
-                    onPressed: () {
-                      showModalBottomSheet<String>(
-                        context: context,
-                        isDismissible: true,
-                        isScrollControlled: true,
-                        builder: (BuildContext modalContext) => SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.9,
-                          width: MediaQuery.of(context).size.width,
-                          child: const NewRequestScreen(),
+        floatingActionButton: _selectedIndex == 0 || _selectedIndex == 1
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FloatingActionButton(
+                backgroundColor: const Color(0XFF721530),
+                onPressed: () {
+                  context.read<RequestBloc>().add(GetRequests());
+                },
+                child: const Icon(Icons.sync, color: Colors.white),
+              ),
+              const SizedBox(height: 10),
+              FloatingActionButton(
+                backgroundColor: const Color(0XFF721530),
+                onPressed: () {
+                  showModalBottomSheet<String>(
+                    context: context,
+                    isDismissible: false,
+                    isScrollControlled: true,
+                    enableDrag: false,
+                    builder: (BuildContext modalContext) {
+                      return Container(
+                        height: MediaQuery.of(context).size.height * 0.9,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                        ),
+                        child: Stack(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(top: 40),
+                              child: NewRequestScreen(),
+                            ),
+                            Positioned(
+                              top: 10,
+                              right: 10,
+                              child: IconButton(
+                                icon: const Icon(Icons.close, size: 30, color: Colors.black54),
+                                onPressed: () => Navigator.of(modalContext).pop(),
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     },
-                    child: const Icon(Icons.add, color: Colors.white),
-                  ),
-                ],
-              )
-            : Container(),
+                  );
+                },
+                child: const Icon(Icons.add, color: Colors.white),
+              ),
+            ],
+          )
+        : Container(),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         bottomNavigationBar: Container(
           decoration: BoxDecoration(

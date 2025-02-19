@@ -22,9 +22,9 @@ final class ErrorGettingRequestDetails extends RequestDetailsState {
 final class GettingDocumentFile extends RequestDetailsState {}
 
 final class DocumentFileSuccess extends RequestDetailsState {
-  final Document doc;
+  final List<Document> docs;
 
-  DocumentFileSuccess(this.doc);
+  DocumentFileSuccess(this.docs);
 }
 
 final class ErrorGettingDocumentFile extends RequestDetailsState {

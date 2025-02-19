@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:help_desk/internal/users/login/presentation/blocs/login_bloc/login_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -64,6 +65,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 10),
                   Text(userDependencyDirector ?? 'No data', style: subTitleStyle,),
                   const SizedBox(height: 30),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: (){
+                        launchUrl(Uri.parse('https://helpdesk.gobiernodesolidaridad.gob.mx/helpdesk/assets/manual_usuario.pdf'));
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        backgroundColor: const Color(0xFF8B1A42),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.description, color: Colors.white, size: 40),
+                          SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Ver",
+                                style: TextStyle(color: Colors.white, fontSize: 14),
+                              ),
+                              Text(
+                                "Manual del usuario",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
                 ],
               ),
               Expanded(
@@ -100,7 +141,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF8B1A42),
+                          backgroundColor: const Color(0XFF721538),
                           padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),

@@ -24,6 +24,10 @@ class TokenService {
     userDependencyDirector != null ? await _storage.write(key: 'userDependencyDirector', value: userDependencyDirector) : null;
   }
 
+  Future<void> saveUserEmail(String userEmail) async {
+    await _storage.write(key: 'userEmail', value: userEmail);
+  }
+
   Future<String?> getShortToken() async { 
     return await _storage.read(key: 'shortToken');
   }
@@ -38,6 +42,10 @@ class TokenService {
 
   Future<String?> getTechnicianLongToken() async {
     return await _storage.read(key: 'technicianLongToken');
+  }
+
+  Future<String?> getUserEmail() async {
+    return await _storage.read(key: 'userEmail');
   }
 
   Future<void> logout() async {

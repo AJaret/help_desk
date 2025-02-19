@@ -31,8 +31,11 @@ class RequestDetailsBloc extends Bloc<RequestDetailsEvent, RequestDetailsState> 
   Future<void> _getDocumentFile(GetDocumentFile event, Emitter<RequestDetailsState> emit) async {
     emit(GettingDocumentFile());
     try {
-      final data = await getDocumentFile.execute(documentId: event.documentId);
-      emit(DocumentFileSuccess(data));
+      List<Document> documentsList = await Future.wait(
+        event.documents.map((doc) => getDocumentFile.execute(documentId: doc.documentId ?? 0))
+      );
+
+      emit(DocumentFileSuccess(documentsList));
     } catch (e) {
       emit(ErrorGettingDocumentFile(e.toString().replaceAll(RegExp(r"Exception:"), "").trimLeft()));
     }

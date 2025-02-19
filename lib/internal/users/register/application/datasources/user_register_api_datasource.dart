@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:help_desk/internal/users/register/application/models/user_register_model.dart';
 import 'package:help_desk/internal/users/register/domain/entities/user_register.dart';
 import 'package:help_desk/internal/users/register/domain/repositories/user_register_repository.dart';
 import 'package:http/http.dart' as http;
@@ -12,13 +11,22 @@ class UserRegisterApiDatasourceImp implements UserRegisterRepository{
   @override
   Future<bool> postUser({required UserRegister userData}) async{
     try {
-      var url = Uri.http(urlApi, '/apiHelpdeskDNTICS/administrador/crear-cuenta');
+      var url = Uri.https(urlApi, '/api_helpdesk_dntics/crear-cuenta.php');
       var response = await http.post(
         url,
-        body: UserRegisterModel.fromEntity(userData).toJson(),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: {
+          "entidad": userData.entityId.toString(),
+          "correo": userData.email,
+          "numeroEmpleado": userData.employeeNumber,
+          "fechaNacimiento": userData.birthdate,
+          "contrasena": userData.password,
+        },
       );
-      dynamic body = jsonDecode(response.body);
       if (response.statusCode == 200) {
+        dynamic body = jsonDecode(response.body);
         String data = body["respuesta"];
         String message = '';
 

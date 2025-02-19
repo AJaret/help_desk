@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:help_desk/config/router/app_router.dart';
 import 'package:help_desk/config/theme/app_theme.dart';
 import 'package:help_desk/internal/users/catalog/presentation/blocs/catalog_bloc/catalog_bloc.dart';
@@ -49,6 +50,14 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => RequestDetailsBloc(AppDependencies.getRequestById, AppDependencies.getDocumentFile),),
       ],
       child: MaterialApp.router(
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('es', 'ES'),
+        ],
         theme: AppTheme().theme(),
         debugShowCheckedModeBanner: false,
         routerConfig: initialRouterConfig,

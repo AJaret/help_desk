@@ -29,8 +29,14 @@ Widget buildStep2({
             labelText: "Describe la solicitud del servicio *",
             border: const OutlineInputBorder(),
           ),
-          validator: (value) =>
-              value == null || value.isEmpty ? "El campo es requerido" : null,
+          validator: (value){
+            if(value == null || value.isEmpty){
+              return "El campo es requerido";
+            }else if(value.length < 50){
+              return "La descripción debe tener al menos 50 caracteres";
+            }
+            return null;
+          },
         ),
         const SizedBox(height: 20),
         TextFormField(

@@ -119,7 +119,7 @@ class RequestCardWidget extends StatelessWidget {
                         actions: [
                           CupertinoDialogAction(
                             onPressed: () => GoRouter.of(context).pop(),
-                            child: const Text('Cancelar'),
+                            child: const Text('No'),
                           ),
                           CupertinoDialogAction(
                             isDefaultAction: true,

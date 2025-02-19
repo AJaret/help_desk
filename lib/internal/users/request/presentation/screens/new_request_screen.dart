@@ -16,6 +16,7 @@ import 'package:help_desk/internal/users/request/presentation/widgets/new_reques
 import 'package:help_desk/internal/users/request/presentation/widgets/new_request_steps/step5.dart';
 import 'package:help_desk/shared/helpers/form_helper.dart';
 import 'package:help_desk/shared/helpers/new_request_form_helper.dart';
+import 'package:help_desk/shared/services/token_service.dart';
 import 'package:image_picker/image_picker.dart';
 
 class NewRequestScreen extends StatefulWidget {
@@ -47,9 +48,21 @@ class _MultiStepFormState extends State<NewRequestScreen> {
   final List<String> _extensions = [];
   final List<File> _files = [];
   final ImagePicker _imagePicker = ImagePicker();
-  String? folio; 
+  String? folio;
   int characterCount = 0;
   int? selectedUbi;
+
+  @override
+  void initState() {
+    super.initState();
+    getUSerEmail();
+  }
+
+  Future<void> getUSerEmail() async{
+    final TokenService tkService = TokenService();
+    String? userEmail = await tkService.getUserEmail();
+    _emails.add(userEmail ?? '');
+  }
   
   Future<void> _handleFileSelection() async {
     File? file = await selectFile(context, _imagePicker);
@@ -182,7 +195,6 @@ class _MultiStepFormState extends State<NewRequestScreen> {
         BlocListener<RequestBloc, RequestState>(
           listener: (context, state) {
             if (state is PostRequestSuccess) {
-              debugPrint("🚀 PostRequestSuccess recibido con folio: ${state.folio}");
               setState(() {
                 currentStep = 5;
                 folio = state.folio;
@@ -213,6 +225,7 @@ class _MultiStepFormState extends State<NewRequestScreen> {
         ),
       ],
       child: Scaffold(
+        backgroundColor: Colors.transparent,
         resizeToAvoidBottomInset: true,
         body: SafeArea(
           child: GestureDetector(
@@ -279,7 +292,7 @@ class _MultiStepFormState extends State<NewRequestScreen> {
                     ),
                   ),
                 ),
-                Padding( // 🔹 Botones fijos abajo
+                Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

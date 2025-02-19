@@ -35,6 +35,7 @@ class LoginApiDatasourceImp implements LoginRepository {
             userDependencyDirector = bodyDep["titular"];
             await tokenService.saveUserDependencyData(userDependency, userDependencyDirector);
           }
+          await tokenService.saveUserEmail(email);
         }else{
           throw Exception('Usuario o contraseña incorrectos');
         }

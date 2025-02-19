@@ -136,8 +136,7 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
             });
             filteredRequests = List.from(allRequests);
           }
-          return filteredRequests.isNotEmpty ?
-          Column(
+          return Column(
             children: [
               Row(
                 children: [
@@ -174,23 +173,26 @@ class _RequestSearchWidgetState extends State<RequestSearchWidget> {
                 ],
               ),
               const SizedBox(height: 10),
-              Expanded(
+               filteredRequests.isNotEmpty ? Expanded(
                 child: ListView.builder(
                   itemCount: filteredRequests.length,
                   itemBuilder: (context, index) {
                     return RequestCardWidget(request: filteredRequests[index]);
                   },
                 )
+              ) : 
+              Expanded(
+                child: Center(
+                  child: Text(
+                  "No se encontraron solicitudes ${widget.requestType == 'Finished' ? 'Finalizadas' : 'pendientes'}",
+                  style: const TextStyle(
+                    fontSize: 20,
+                  ),
+                  textAlign: TextAlign.center,
+                )),
               )
             ],
-          ): Center(
-            child: Text(
-            "No se encontraron solicitudes ${widget.requestType == 'Finished' ? 'Finalizadas' : 'pendientes'}",
-            style: const TextStyle(
-              fontSize: 20,
-            ),
-            textAlign: TextAlign.center,
-          ));
+          );
         } else if (state is ErrorGettingRequests) {
           return Center(
             child: IconButton(

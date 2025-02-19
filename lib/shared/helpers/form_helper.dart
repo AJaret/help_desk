@@ -52,13 +52,16 @@ Widget buildMultipleItemsInventoryField({
           Expanded(
             child: TextField(
               controller: inventoryController,
-              keyboardType: TextInputType.phone,
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'No. de inventario',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+              ],
             ),
           ),
           const SizedBox(width: 8),
@@ -336,13 +339,16 @@ Widget buildMultipleItemsEmailField({
                   children: [
                     const Icon(Icons.circle, size: 8, color: Colors.black),
                     const SizedBox(width: 8),
-                    Text(
-                      emails[index],
-                      style: const TextStyle(fontSize: 16),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.63,
+                      child: Text(
+                        emails[index],
+                        style: const TextStyle(fontSize: 16),
+                      ),
                     ),
                   ],
                 ),
-                IconButton(
+                index == 0 ? Container() : IconButton(
                   onPressed: () => removeItem(index, emails),
                   icon: const Icon(Icons.delete, color: Colors.red),
                 ),

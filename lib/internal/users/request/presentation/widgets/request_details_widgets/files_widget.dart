@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,144 +30,149 @@ class FilesWidget extends StatelessWidget {
       'png': Icons.image,
     };
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 15.0),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Text(
-              'Archivos digitales',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: size.width * 0.055,
-                fontWeight: FontWeight.bold,
+    return BlocProvider(
+      create: (context) => RequestDetailsBloc(AppDependencies.getRequestById, AppDependencies.getDocumentFile),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 15.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Text(
+                'Archivos digitales',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: size.width * 0.055,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const Divider(),
-            const SizedBox(
-              height: 20,
-            ),
-            documents.isNotEmpty
-                ? GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
-                      crossAxisSpacing: 8.0,
-                      mainAxisSpacing: 8.0,
-                    ),
-                    itemCount: documents.length,
-                    itemBuilder: (context, index) {
-                      final document = documents[index];
-                      final fileType = document.fileExtension;
-                      final icon = fileTypeIcons[fileType] ?? Icons.insert_drive_file;
-    
-                      return GestureDetector(
-                        onTap: () {
-                          showCupertinoModalPopup(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return BlocProvider(
-                                create: (context) => RequestDetailsBloc(AppDependencies.getRequestById, AppDependencies.getDocumentFile),
-                                child: CupertinoActionSheet(
-                                  title: Text('Documento ${document.documentId}'),
-                                  message: BlocBuilder<RequestDetailsBloc, RequestDetailsState>(
-                                    builder: (context, state){
-                                      if(state is RequestDetailsInitial){
-                                        context.read<RequestDetailsBloc>().add(GetDocumentFile(documentId: document.documentId ?? 0));
-                                      }
-                                      else if (state is GettingDocumentFile) {
-                                        return const Center(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      } else if (state is DocumentFileSuccess){
-                                        if (state.doc.file != null) {
-                                          final fileType = state.doc.fileExtension!.toLowerCase();
+              const Divider(),
+              const SizedBox(
+                height: 20,
+              ),
+              documents.isNotEmpty ? BlocBuilder<RequestDetailsBloc, RequestDetailsState>(
+                builder: (context, state) {
+                  if (state is RequestDetailsInitial) {
+                    context.read<RequestDetailsBloc>().add(GetDocumentFile(documents: documents));
+                  } else if (state is GettingDocumentFile) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is DocumentFileSuccess) {
+                    if (state.docs.isNotEmpty) {
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          crossAxisSpacing: 8.0,
+                          mainAxisSpacing: 8.0
+                        ),
+                        itemCount: documents.length,
+                        itemBuilder: (context, index) {
+                          final document = state.docs[index];
+                          final fileType = state.docs[index].fileExtension;
+                          final icon = fileTypeIcons[fileType] ?? Icons.insert_drive_file;
 
-                                          if (fileType == 'jpg' || fileType == 'jpeg' || fileType == 'png') {
-                                            Uint8List bytes = base64Decode(state.doc.file!);
-                                            return SizedBox(
-                                              height: size.height * 0.7,
-                                              child: InteractiveViewer(
-                                                panEnabled: true,
-                                                boundaryMargin: const EdgeInsets.all(20),
-                                                minScale: 0.1,
-                                                maxScale: 3.0,
-                                                child: Image.memory(bytes, fit: BoxFit.contain),
+                          return GestureDetector(
+                            onTap: () {
+                              showCupertinoModalPopup(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return CupertinoActionSheet(
+                                    message: (fileType == 'jpg' || fileType == 'jpeg' || fileType == 'png') ?
+                                      SizedBox(
+                                        height: size.height * 0.7,
+                                        child: InteractiveViewer(
+                                          panEnabled: true,
+                                          boundaryMargin: const EdgeInsets.all(20),
+                                          minScale: 0.1,
+                                          maxScale: 3.0,
+                                          child: Image.memory(base64Decode(document.file!), fit: BoxFit.contain),
+                                        ),
+                                      ) : (fileType == 'pdf') ? PdfViewerWidget(base64File: document.file!) :
+                                      Center(
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                                fileTypeIcons[fileType] ??
+                                                    Icons.insert_drive_file,
+                                                size: 50),
+                                            const SizedBox(height: 10),
+                                            Text(
+                                              'Documento ${document.documentId}',
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 16,
                                               ),
-                                            );
-                                          } else if (fileType == 'pdf') {
-                                            return PdfViewerWidget(base64File: state.doc.file!);
-                                          } else {
-                                            return Center(
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Icon(fileTypeIcons[fileType] ?? Icons.insert_drive_file, size: 50),
-                                                  const SizedBox(height: 10),
-                                                  Text(
-                                                    'Documento ${state.doc.documentId}',
-                                                    style: const TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 16,
-                                                    ),
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          }
-                                        }
-                                      } else if(state is ErrorGettingDocumentFile){
-                                        return Center(
-                                          child: Text(state.message),
-                                        );
-                                      }
-                                      return const Center(
-                                        child: Text('Error al cargar el documento'),
-                                      );
-                                    },
-                                  ),
-                                  actions: [
-                                    CupertinoActionSheetAction(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text('Cerrar'),
-                                    ),
-                                  ],
-                                ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        )
+                                      ),
+                                    actions: [
+                                      CupertinoActionSheetAction(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text('Cerrar'),
+                                      ),
+                                    ],
+                                  );
+                                }
                               );
                             },
+                            child: fileType == 'jpg' || fileType == 'jpeg' || fileType == 'png' ? ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.memory(
+                                base64Decode(document.file ?? ""),
+                                width: 90,
+                                height: 90,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Icon(
+                                    Icons.image_not_supported,
+                                    color: Colors.grey
+                                  );
+                                },
+                              ),
+                            )
+                          : Center(child: Icon(icon, size: 90)),
                           );
                         },
-                        child: Column(
-                          children: [
-                            Icon(icon, size: 40),
-                            Text(
-                              document.documentId.toString(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: size.width * 0.03,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
+                      );
+                    } else{
+                      return const Center(
+                        child: Text(
+                          'No hay archivo(s) digital(es)',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
                         ),
                       );
-                    },
-                  )
-                : const Center(
-                    child: Text(
-                      'No hay archivo(s) digital(es)',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                      ),
-                    ),
+                    }
+                  } else if (state is ErrorGettingDocumentFile) {
+                    return Center(
+                      child: Text(state.message),
+                    );
+                  }
+                  return const Center(
+                    child: Text('Error al cargar el documento'),
+                  );
+                },
+              )
+            : const Center(
+                child: Text(
+                  'No hay archivo(s) digital(es)',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
                   ),
-          ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
