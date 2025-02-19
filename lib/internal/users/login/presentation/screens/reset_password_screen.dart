@@ -46,11 +46,12 @@ class _RegisterScreenState extends State<ResetPasswordScreen> {
                       child: Image.asset(
                         'assets/images/logos/sello_logo.png',
                         fit: BoxFit.contain,
-                        width: 100,
+                        width: 110,
                       ),
                     ),
                   ]),
                 ),
+                const SizedBox(height: 20),
                 Expanded(
                   child: SingleChildScrollView(
                     child: ConstrainedBox(

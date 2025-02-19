@@ -61,13 +61,19 @@ class LoginApiDatasourceImp implements LoginRepository {
       );
       if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
+        String message = '';
         switch (data["respuesta"]) {
           case 'verificacion-pendiente':
-            throw Exception('Por el momento no se puede recuperar su contraseña ya que su cuenta se encuentra en proceso de ser activada');
+            message = 'Por el momento no se puede recuperar su contraseña ya que su cuenta se encuentra en proceso de ser activada';
           case 'incorrecto':
-            throw Exception('Alguno de los datos ingresados no coinciden con los datos registrados en su cuenta, por favor, verifique la información');
+            message = 'Alguno de los datos ingresados no coinciden con los datos registrados en su cuenta, por favor, verifique la información';
+          case 'registrado':
+            message = 'registrado';
           default: 
-            throw Exception('Ocurrió un error al al momento de hacer la petición, por favor, vuelva a intentarlo');
+            message = 'Ocurrió un error al al momento de hacer la petición, por favor, vuelva a intentarlo';
+        }
+        if(message != 'registrado'){
+          throw Exception(message);
         }
       } else {
         throw Exception('Ocurrió un error al al momento de hacer la petición, por favor, vuelva a intentarlo');

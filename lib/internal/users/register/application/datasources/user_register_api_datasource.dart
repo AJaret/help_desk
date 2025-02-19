@@ -43,6 +43,8 @@ class UserRegisterApiDatasourceImp implements UserRegisterRepository{
             message = 'El numero de empleado ingresado se encuentra dado de baja.';
           case 'fechaNacimientoIncorrecta':
             message = 'La fecha de nacimiento ingresada no coincide con la registrada en la base de datos, verifique su información.';
+          case 'registrado':
+            message = 'registrado';
           default:
             message = 'Ocurrió un error al procesar los datos, intentelo más tarde.';
         }

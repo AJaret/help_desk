@@ -124,6 +124,14 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
         }
         if(state is UserRegisterPosted){
           GoRouter.of(context).canPop() ? GoRouter.of(context).pop() : null;
+          String userEmail = emailController.text;
+          calendarFieldController.text = '';
+          employeeNumberController.text = '';
+          emailController.text = '';
+          passwordController.text = '';
+          nameController.text = '';
+          firstLastNameController.text = '';
+          secondLastNameController.text = '';
           showCupertinoDialog(
             context: context,
             builder: (context) {
@@ -158,13 +166,13 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
                             text: "Gracias por registrarte, hemos enviado un mensaje a ",
                           ),
                           TextSpan(
-                            text: emailController.text,
+                            text: userEmail,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           const TextSpan(
-                            text: " en el que encontrarás un enlace para verificar tu correo electrónico.",
+                            text: " en el que encontrarás un enlace para verificar tu correo electrónico. Una vez hayas verificado tu correo, podrás iniciar sesión",
                           ),
                         ],
                       ),
@@ -478,97 +486,33 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
               ),
             ],
           ),
-          BlocBuilder<UserRegisterBloc, UserRegisterState>(
-            builder: (context, state) {
-              if (state is UserRegisterInitial) {
-                return ElevatedButton(
-                  onPressed: isFormValid
-                      ? () {
-                          UserRegister userData = UserRegister(
-                              employeeNumber:
-                                  employeeNumberController.value.text,
-                              birthdate: calendarFieldController.value.text,
-                              entityId: selectedValue,
-                              email: emailController.value.text,
-                              password: passwordController.value.text);
-                          context
-                              .read<UserRegisterBloc>()
-                              .add(PostUserRegister(userData: userData));
-                        }
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF8B1A42),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: Text(
-                    'Registrarse',
-                    style: TextStyle(fontSize: size.width * 0.04),
-                  ),
-                );
-              } else if (state is PostingUserRegister) {
-                return ElevatedButton(
-                    onPressed: null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF8B1A42),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 50, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Center(
-                      child: CircularProgressIndicator(),
-                    ));
-              } else if (state is UserRegisterPosted) {
-                return ElevatedButton(
-                    onPressed: null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 50, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Center(
-                      child: Icon(Icons.check),
-                    ));
-              } else if (state is ErrorPostingUserRegister) {
-                return ElevatedButton(
-                  onPressed: isFormValid
-                      ? () {
-                          UserRegister userData = UserRegister(
-                              employeeNumber:
-                                  employeeNumberController.value.text,
-                              birthdate: calendarFieldController.value.text,
-                              entityId: selectedValue,
-                              email: emailController.value.text,
-                              password: passwordController.value.text);
-                          context
-                              .read<UserRegisterBloc>()
-                              .add(PostUserRegister(userData: userData));
-                        }
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF8B1A42),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: Text(
-                    'Registrarse',
-                    style: TextStyle(fontSize: size.width * 0.04),
-                  ),
-                );
-              }
-              return Container();
-            },
+          ElevatedButton(
+            onPressed: isFormValid
+                ? () {
+                    UserRegister userData = UserRegister(
+                        employeeNumber:
+                            employeeNumberController.value.text,
+                        birthdate: calendarFieldController.value.text,
+                        entityId: selectedValue,
+                        email: emailController.value.text,
+                        password: passwordController.value.text);
+                    context
+                        .read<UserRegisterBloc>()
+                        .add(PostUserRegister(userData: userData));
+                  }
+                : null,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF8B1A42),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 50, vertical: 15),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: Text(
+              'Registrarse',
+              style: TextStyle(fontSize: size.width * 0.04),
+            ),
           )
         ],
       ),

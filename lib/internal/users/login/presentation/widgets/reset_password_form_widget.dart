@@ -45,8 +45,83 @@ class _ResetPasswordFormWidgetState extends State<ResetPasswordFormWidget> {
 
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
-        print(state);
+        if(state is PostingResetPassword){
+          showCupertinoDialog(
+            context: context,
+            builder: (context) => const CupertinoAlertDialog(
+              title: Text('Verificando datos'),
+              content: Center(
+                child: CupertinoActivityIndicator(),
+              ),
+            ),
+          );
+        }
+        if(state is ResetPasswordSuccess){
+          GoRouter.of(context).canPop() ? GoRouter.of(context).pop() : null;
+          String userEmail = _emailController.text;
+          _emailController.text = '';
+          _employeeNumberController.text = '';
+          showCupertinoDialog(
+            context: context,
+            builder: (context) {
+              return CupertinoAlertDialog(
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      "HelpDesk",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF721538),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    const Icon(
+                      CupertinoIcons.checkmark_circle_fill,
+                      color: Colors.green,
+                      size: 50,
+                    ),
+                    const SizedBox(height: 15),
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                        children: [
+                          const TextSpan(
+                            text: "Hemos enviado un mensaje a ",
+                          ),
+                          TextSpan(
+                            text: userEmail,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const TextSpan(
+                            text: " en el que encontrarás un enlace para cambiar tu contraseña.",
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                  ],
+                ),
+                actions: [
+                  CupertinoDialogAction(
+                    isDefaultAction: true,
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text("Aceptar"),
+                  ),
+                ],
+              );
+            }
+          );
+        }
         if(state is ErrorPostingResetPassword){
+          GoRouter.of(context).canPop() ? GoRouter.of(context).pop() : null;
           showCupertinoDialog(
             context: context, 
             builder: (context) => CupertinoAlertDialog(
