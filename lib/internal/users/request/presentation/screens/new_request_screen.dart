@@ -54,8 +54,9 @@ class _MultiStepFormState extends State<NewRequestScreen> {
 
   @override
   void initState() {
-    super.initState();
     getUSerEmail();
+    context.read<CatalogBloc>().add(GetPhysicalLocations());
+    super.initState();
   }
 
   Future<void> getUSerEmail() async{

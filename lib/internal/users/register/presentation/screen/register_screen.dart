@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:help_desk/internal/users/catalog/presentation/blocs/catalog_bloc/catalog_bloc.dart';
 import 'package:help_desk/internal/users/register/presentation/blocs/user_register_bloc/user_register_bloc.dart';
 import 'package:help_desk/internal/users/register/presentation/widgets/register_form_widget.dart';
 import 'package:help_desk/shared/helpers/app_dependencies.dart';
@@ -13,6 +14,13 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+
+  @override
+  void initState() {
+    context.read<CatalogBloc>().add(GetDependencies());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
