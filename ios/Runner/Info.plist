@@ -27,11 +27,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Es necesario acceder a la galería del usuario para poder elegir fotos</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Es necesario acceder al micrófono para poder grabar videos</string>
+	<string>Esta aplicación necesita acceso a la cámara para permitir a los usuarios capturar imágenes como evidencia de su solicitud de soporte técnico.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Es necesario acceder a la cámara para poder tomar las fotos</string>
+	<string>Esta aplicación necesita acceso a la biblioteca de fotos para que los usuarios puedan adjuntar imágenes previamente capturadas como evidencia en su solicitud de soporte.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Esta aplicación necesita acceso al micrófono para permitir la grabación de videos que pueden adjuntarse como evidencia en las solicitudes de soporte del usuario.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

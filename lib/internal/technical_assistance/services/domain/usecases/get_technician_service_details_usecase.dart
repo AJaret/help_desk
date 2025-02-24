@@ -6,7 +6,7 @@ class GetTechnicianServiceDetailsUsecase {
 
   GetTechnicianServiceDetailsUsecase({required this.technicianServicesRepository});
 
-  Future<TechnicianService> execute({required int serviceId}) async {
+  Future<TechnicianService> execute({required String serviceId}) async {
     try {
       return await technicianServicesRepository.getTechnicianServiceDetails(serviceId);
     } catch (e) {

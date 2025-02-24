@@ -15,7 +15,7 @@ class CatalogApiDatasourceImp implements CatalogRepository {
   @override
   Future<List<Catalog>> getDependencies() async{
     try {
-      final response = await htpp.get(Uri.parse('https://helpdesk.gobiernodesolidaridad.gob.mx/apiHelpdeskDNTICS/catalogos/direcciones-secretarias'));
+      final response = await htpp.get(Uri.parse('https://test-helpdesk.gobiernodesolidaridad.gob.mx/apiHelpdeskDNTICS/catalogos/direcciones-secretarias'));
       if (response.statusCode == 201) {
         dynamic body = jsonDecode(response.body);
         List<dynamic> data = body["catalogo"];
@@ -36,7 +36,7 @@ class CatalogApiDatasourceImp implements CatalogRepository {
   @override
   Future<List<Catalog>> getPhysicalLocations() async{
     try {
-      final response = await httpService.getRequest('https://helpdesk.gobiernodesolidaridad.gob.mx/apiHelpdeskDNTICS/catalogos/ubicacion-servicio', 1);
+      final response = await httpService.getRequest('https://test-helpdesk.gobiernodesolidaridad.gob.mx/apiHelpdeskDNTICS/catalogos/ubicacion-servicio', 1);
       dynamic body = jsonDecode(response.body);
       if (response.statusCode == 201) {
         List<dynamic> data = body["catalogo"];

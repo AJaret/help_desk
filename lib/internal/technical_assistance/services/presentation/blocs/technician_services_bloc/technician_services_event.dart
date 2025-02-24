@@ -6,7 +6,7 @@ sealed class TechnicianServicesEvent {}
 class GetTechnicianServices extends TechnicianServicesEvent {}
 
 class GetTechnicianServiceDetails extends TechnicianServicesEvent {
-  final int serviceId;
+  final String serviceId;
 
   GetTechnicianServiceDetails(this.serviceId);
 }

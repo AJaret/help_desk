@@ -3,6 +3,6 @@ import 'package:help_desk/internal/users/request/domain/entities/document.dart';
 
 abstract class TechnicianServicesRepository {
   Future<List<TechnicianService>> getTechnicianServices();
-  Future<TechnicianService> getTechnicianServiceDetails(int serviceId);
+  Future<TechnicianService> getTechnicianServiceDetails(String serviceId);
   Future<Document> getDocumentById(int fileId);
 }

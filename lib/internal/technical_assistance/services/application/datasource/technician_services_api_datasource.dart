@@ -11,7 +11,7 @@ import 'package:help_desk/shared/helpers/http_interceptor.dart';
 import 'package:help_desk/shared/services/token_service.dart';
 
 class TechnicianServicesApiDatasource implements TechnicianServicesRepository {
-  final String urlApi = "https://helpdesk.gobiernodesolidaridad.gob.mx";
+  final String urlApi = "https://test-helpdesk.gobiernodesolidaridad.gob.mx";
   final TokenService tokenService = TokenService();
   final httpService = HttpService();
 
@@ -39,7 +39,7 @@ class TechnicianServicesApiDatasource implements TechnicianServicesRepository {
   }
   
   @override
-  Future<TechnicianService> getTechnicianServiceDetails(int serviceId) async{
+  Future<TechnicianService> getTechnicianServiceDetails(String serviceId) async{
     try {
       final response = await httpService.getRequest('$urlApi/apiHelpdeskDNTICS/responsables/servicio/$serviceId', 1, isTechnician: true);
       if (response.statusCode == 201) {

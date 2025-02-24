@@ -12,7 +12,7 @@ import 'package:help_desk/shared/helpers/app_dependencies.dart';
 
 class TechnicianServiceDetailsScreen extends StatelessWidget {
   final Color statusColor;
-  final int requestId;
+  final String requestId;
   const TechnicianServiceDetailsScreen({super.key, required this.statusColor, required this.requestId});
 
   @override

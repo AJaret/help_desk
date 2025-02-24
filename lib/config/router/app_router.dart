@@ -79,7 +79,7 @@ Future<RouterConfig<Object>> getInitialRoute(GlobalKey<NavigatorState> navigator
           // Se espera que 'extra' sea un Map con los parámetros.
           final args = state.extra as Map<String, dynamic>;
           final statusColor = args['statusColor'] as Color;
-          final requestId = args['requestId'] as int;
+          final requestId = args['requestId'] as String;
 
           return TechnicianServiceDetailsScreen(
             statusColor: statusColor,

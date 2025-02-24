@@ -39,7 +39,7 @@ class TechnicianServiceCardWidget extends StatelessWidget {
                 onTap: () {
                   context.push('/serviceDetails', extra: {
                     'statusColor': statusColor ?? Colors.white,
-                    'requestId': request.idServicio ?? 0,
+                    'requestId': request.idServicio.toString(),
                   });
                 },
                 child: Container(

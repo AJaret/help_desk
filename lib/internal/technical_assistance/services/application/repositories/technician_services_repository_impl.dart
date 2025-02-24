@@ -18,7 +18,7 @@ class TechnicianServicesRepositoryImpl implements TechnicianServicesRepository {
   }
   
   @override
-  Future<TechnicianService> getTechnicianServiceDetails(int serviceId) async{
+  Future<TechnicianService> getTechnicianServiceDetails(String serviceId) async{
     try {
       return await datasource.getTechnicianServiceDetails(serviceId);
     } catch (e) {
