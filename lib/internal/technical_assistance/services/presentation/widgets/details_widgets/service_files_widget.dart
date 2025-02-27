@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:help_desk/internal/technical_assistance/services/presentation/blocs/technician_request_details_bloc/request_details_bloc.dart';
+import 'package:help_desk/internal/technical_assistance/services/presentation/blocs/technician_request_details_bloc/technician_request_details_bloc.dart';
 import 'package:help_desk/internal/users/request/domain/entities/document.dart';
 import 'package:help_desk/shared/helpers/app_dependencies.dart';
 import 'package:help_desk/shared/helpers/pdf_viewer.dart';

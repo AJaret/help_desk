@@ -5,8 +5,8 @@ import 'package:help_desk/internal/technical_assistance/services/domain/usecases
 import 'package:help_desk/internal/users/request/domain/entities/document.dart';
 import 'package:meta/meta.dart';
 
-part 'request_details_event.dart';
-part 'request_details_state.dart';
+part 'technician_request_details_event.dart';
+part 'technician_request_details_state.dart';
 
 class TechnicianRequestDetailsBloc extends Bloc<TechnicianRequestDetailsEvent, TechnicianRequestDetailsState> {
 

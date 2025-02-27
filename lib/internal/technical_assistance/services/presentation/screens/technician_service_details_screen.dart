@@ -83,7 +83,7 @@ class TechnicianServiceDetailsScreen extends StatelessWidget {
                                   backgroundColor: Colors.red.shade100,
                                 ),
                                 SegmentTab(
-                                  label: 'Servicios',
+                                  label: 'Asignación',
                                   backgroundColor: Colors.blue.shade100,
                                   color: Colors.blue.shade300,
                                 ),
@@ -108,11 +108,54 @@ class TechnicianServiceDetailsScreen extends StatelessWidget {
                                   ServiceDetailsMenuWidget(
                                     requestData: state.services,
                                   ),
-                                  state.services.assignedAgent!.isNotEmpty ? ListView.builder(
-                                    itemCount: state.services.assignedAgent?.length,
-                                    itemBuilder: (context, index) {
-                                      return AssignationServicesWidget(assignment: state.services.assignedAgent![index]);
-                                    },
+                                  state.services.assignedAgent!.isNotEmpty ? 
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: ListView.builder(
+                                          itemCount: state.services.assignedAgent?.length,
+                                          itemBuilder: (context, index) {
+                                            return AssignationServicesWidget(assignment: state.services.assignedAgent![index]);
+                                          },
+                                        ),
+                                      ),
+                                      state.services.status == 'Servicio asignado' ? ElevatedButton(
+                                        onPressed: (){
+                                          showCupertinoDialog(
+                                            context: context, 
+                                            builder: (context) => CupertinoAlertDialog(
+                                              title: const Text('Iniciar servicio'),
+                                              content: const Center(
+                                                child: Text('Estas a punto de iniciar un servicio, ¿Estás seguro?'),
+                                              ),
+                                              actions: [
+                                                CupertinoDialogAction(
+                                                  isDefaultAction: true,
+                                                  onPressed: () => GoRouter.of(context).pop(), 
+                                                  child: const Text('Cancelar'),
+                                                ),
+                                                CupertinoDialogAction(
+                                                  onPressed: () => GoRouter.of(context).push('/serviceForm', extra: state.services.assignedAgent!.first), 
+                                                  child: const Text('Iniciar'),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: const Color(0xFF8B1A42),
+                                          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'Iniciar Servicio',
+                                          style: TextStyle(fontSize: size.width * 0.04),
+                                        ),
+                                      ) : Container(),
+                                    ],
                                   ) : const Center(
                                     child: Text('No hay servicios asignados'),
                                   ),

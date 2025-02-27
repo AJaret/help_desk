@@ -163,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 GestureDetector(
                   onTap: (){
-                    launchUrl(Uri.parse('https://test-helpdesk.gobiernodesolidaridad.gob.mx/helpdesk/assets/manual_usuario.pdf'));
+                    launchUrl(Uri.parse('http://localhost/helpdesk/assets/manual_usuario.pdf'));
                     setState(() {
                       _showText = false;
                     });

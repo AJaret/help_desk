@@ -34,4 +34,13 @@ class TechnicianServicesRepositoryImpl implements TechnicianServicesRepository {
       throw Exception(e.toString());
     }
   }
+  
+  @override
+  Future<Map<String, dynamic>> doeServiceRequireSignatureAndSurvey(int serviceId) async{
+    try {
+      return await datasource.doeServiceRequireSignatureAndSurvey(serviceId);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }

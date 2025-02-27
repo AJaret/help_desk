@@ -1,8 +1,12 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:help_desk/internal/technical_assistance/services/domain/entities/activity.dart';
 import 'package:help_desk/internal/technical_assistance/services/domain/entities/assigned_agent.dart';
 import 'package:help_desk/internal/technical_assistance/services/domain/entities/work_done.dart';
 import 'package:help_desk/internal/users/request/domain/entities/document.dart';
+import 'package:help_desk/shared/helpers/pdf_viewer.dart';
 import 'package:help_desk/shared/helpers/status_information.dart';
 
 
@@ -27,15 +31,12 @@ class AssignationServicesWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
             Text(
               agentName,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             buildStatusBadge(status),
             const SizedBox(height: 16),
-
-            // Activities Section
             ...activities.map((activity) {
               final String activityDescription = activity.activityDescription ?? "Sin actividad";
               final List<WorkDone> works = activity.worksDone ?? [];
@@ -49,7 +50,7 @@ class AssignationServicesWidget extends StatelessWidget {
                       Icon(Icons.headset_mic, size: 20, color: Colors.black54),
                       SizedBox(width: 8),
                       Text(
-                        "Actividad 1",
+                        "Actividad",
                         style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -106,10 +107,51 @@ class AssignationServicesWidget extends StatelessWidget {
                                   color: Colors.red,
                                 ),
                                 title: const Text("Documento"),
-                                // subtitle: Text("$fileSize\n$fileUploadDate"),
                                 isThreeLine: false,
                                 onTap: () {
-                                  // Acción al presionar el archivo
+                                  showCupertinoModalPopup(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return CupertinoActionSheet(
+                                        message: (file.fileExtension == 'jpg' || file.fileExtension == 'jpeg' || file.fileExtension == 'png') ?
+                                          SizedBox(
+                                            height: MediaQuery.of(context).size.height * 0.7,
+                                            child: InteractiveViewer(
+                                              panEnabled: true,
+                                              boundaryMargin: const EdgeInsets.all(20),
+                                              minScale: 0.1,
+                                              maxScale: 3.0,
+                                              child: Image.memory(base64Decode(file.file!), fit: BoxFit.contain),
+                                            ),
+                                          ) : (file.fileExtension == 'pdf') ? PdfViewerWidget(base64File: file.file!) :
+                                          Center(
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                const Icon(Icons.insert_drive_file,size: 50),
+                                                const SizedBox(height: 10),
+                                                Text(
+                                                  'Documento ${file.documentId}',
+                                                  style: const TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 16,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ],
+                                            )
+                                          ),
+                                        actions: [
+                                          CupertinoActionSheetAction(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text('Cerrar'),
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                  );
                                 },
                               ),
                             );

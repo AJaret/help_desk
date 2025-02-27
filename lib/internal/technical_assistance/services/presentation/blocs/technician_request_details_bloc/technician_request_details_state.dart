@@ -1,4 +1,4 @@
-part of 'request_details_bloc.dart';
+part of 'technician_request_details_bloc.dart';
 
 @immutable
 sealed class TechnicianRequestDetailsState {}

@@ -5,4 +5,5 @@ abstract class TechnicianServicesRepository {
   Future<List<TechnicianService>> getTechnicianServices();
   Future<TechnicianService> getTechnicianServiceDetails(String serviceId);
   Future<Document> getDocumentById(int fileId);
+  Future<Map<String, dynamic>> doeServiceRequireSignatureAndSurvey(int serviceId);
 }

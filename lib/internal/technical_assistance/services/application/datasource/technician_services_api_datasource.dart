@@ -11,14 +11,14 @@ import 'package:help_desk/shared/helpers/http_interceptor.dart';
 import 'package:help_desk/shared/services/token_service.dart';
 
 class TechnicianServicesApiDatasource implements TechnicianServicesRepository {
-  final String urlApi = "https://test-helpdesk.gobiernodesolidaridad.gob.mx";
+  final String urlApi = "http://localhost";
   final TokenService tokenService = TokenService();
   final httpService = HttpService();
 
   @override
   Future<List<TechnicianService>> getTechnicianServices() async{
     try {
-      final response = await httpService.getRequest('$urlApi/apiHelpdeskDNTICS/responsables/servicios', 1, isTechnician: true);
+      final response = await httpService.getRequest('$urlApi/apiHelpdeskDNTICS/responsables-app/servicios', 1, isTechnician: true);
       if (response.statusCode == 201) {
         dynamic body = jsonDecode(response.body);
         final List<TechnicianService> data = body["servicios"].map<TechnicianService>((data) => TechnicianServiceModel.fromJson(data)).toList();
@@ -41,7 +41,7 @@ class TechnicianServicesApiDatasource implements TechnicianServicesRepository {
   @override
   Future<TechnicianService> getTechnicianServiceDetails(String serviceId) async{
     try {
-      final response = await httpService.getRequest('$urlApi/apiHelpdeskDNTICS/responsables/servicio/$serviceId', 1, isTechnician: true);
+      final response = await httpService.getRequest('$urlApi/apiHelpdeskDNTICS/responsables-app/servicio/$serviceId', 1, isTechnician: true);
       if (response.statusCode == 201) {
         dynamic body = jsonDecode(response.body);
         final Map<String, dynamic> allDAta = {
@@ -78,6 +78,32 @@ class TechnicianServicesApiDatasource implements TechnicianServicesRepository {
       }
       else{
         String message = 'Ocurrió un error al obtener la solicitud.';
+        throw Exception(message);
+      }
+    } on SocketException {
+      throw Exception('No hay conexión a Internet. Por favor, revisa tu conexión.');
+    }
+    catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+  
+  @override
+  Future<Map<String, dynamic>> doeServiceRequireSignatureAndSurvey(int serviceId) async{
+    try {
+      final response = await httpService.getRequest('$urlApi/apiHelpdeskDNTICS/responsables-app/verificar-servicio-requiere-firma/$serviceId', 1, isTechnician: true);
+      if (response.statusCode == 201) {
+        dynamic body = jsonDecode(response.body);
+        final Map<String, dynamic> resp = {
+          "requiereFirma": body["requiereFirma"] ?? false,
+          "requiereEncuesta": body["requiereEncuesta"] ?? false,
+        };
+        return resp;
+      } else if(response.statusCode == 401) {
+        String message = 'Su sesión ha expirado, por favor vuelva a iniciar sesión.';
+        throw Exception(message);
+      }else{
+        String message = 'Ocurrió un error al obtener los servicios, por favor intente de nuevo.';
         throw Exception(message);
       }
     } on SocketException {
