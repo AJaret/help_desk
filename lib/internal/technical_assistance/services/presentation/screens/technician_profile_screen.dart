@@ -1,40 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:help_desk/internal/users/login/presentation/blocs/login_bloc/login_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+class TechnicianProfileScreen extends StatefulWidget {
+  const TechnicianProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<TechnicianProfileScreen> createState() => _TechnicianProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
-  String? userDependency;
-  String? userDependencyDirector;
-
-  @override
-  void initState() {
-    getDependencyData();
-    super.initState();
-  }
-
-  Future<void> getDependencyData() async{
-    const storage = FlutterSecureStorage();
-    userDependency = await storage.read(key: 'userDependency');
-    userDependencyDirector = await storage.read(key: 'userDependencyDirector');
-    setState(() {});
-  }
+class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    TextStyle titleStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: size.width * 0.045);
-    TextStyle subTitleStyle = TextStyle(fontSize: size.width * 0.035);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -57,14 +39,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text('Entidad', style: titleStyle,),
-                  const SizedBox(height: 10),
-                  Text(userDependency ?? 'No data', style: subTitleStyle,),
-                  const SizedBox(height: 30),
-                  Text('Director de la entidad', style: titleStyle,),
-                  const SizedBox(height: 10),
-                  Text(userDependencyDirector ?? 'No data', style: subTitleStyle,),
-                  const SizedBox(height: 30),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(

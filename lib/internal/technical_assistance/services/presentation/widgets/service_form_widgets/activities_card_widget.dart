@@ -4,16 +4,23 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:help_desk/internal/technical_assistance/services/domain/entities/activity.dart';
 import 'package:help_desk/internal/technical_assistance/services/domain/entities/assigned_agent.dart';
+import 'package:help_desk/internal/technical_assistance/services/domain/entities/work_done.dart';
+import 'package:help_desk/internal/users/request/domain/entities/document.dart';
 import 'package:image_picker/image_picker.dart';
-
 
 class ActivitiesCardWidget extends StatefulWidget {
   final AssignedAgent assignment;
-  final List<Map<String, dynamic>> tasks;
-  final Function(List<Map<String, dynamic>>) onTasksUpdated;
+  final Activity activity;
+  final Function(int, List<WorkDone>) onTasksUpdated;
 
-  const ActivitiesCardWidget({super.key, required this.assignment, required this.tasks, required this.onTasksUpdated});
+  const ActivitiesCardWidget({
+    super.key,
+    required this.assignment,
+    required this.activity,
+    required this.onTasksUpdated,
+  });
 
   @override
   State<ActivitiesCardWidget> createState() => _ActivitiesCardWidgetState();
@@ -21,27 +28,28 @@ class ActivitiesCardWidget extends StatefulWidget {
 
 class _ActivitiesCardWidgetState extends State<ActivitiesCardWidget> {
   final TextEditingController _descriptionController = TextEditingController();
-  final List<File> _files = [];
+  final List<Document> _files = [];
+  final List<WorkDone> _localTasks = [];
   final ImagePicker _imagePicker = ImagePicker();
-  String activityDescription = 'Sin actividad';
-  final List<Map<String, dynamic>> _localTasks = [];
 
   @override
   void initState() {
-    activityDescription = widget.assignment.activities!.first.activityDescription ?? "Sin actividad";
     super.initState();
   }
 
   Future<void> _handleFileSelection() async {
-    File? file = await selectFile(context, _imagePicker);
+    File? file = await _selectFile(context, _imagePicker);
     if (file != null) {
       setState(() {
-        _files.add(file);
+        _files.add(Document(
+          file: file.path.split('/').last,
+          fileExtension: _convertFileToBase64(file),
+        ));
       });
     }
   }
 
-  Future<File?> selectFile(BuildContext context, ImagePicker imagePicker) async {
+  Future<File?> _selectFile(BuildContext context, ImagePicker imagePicker) async {
     final Completer<File?> completer = Completer<File?>();
 
     await showModalBottomSheet(
@@ -51,7 +59,20 @@ class _ActivitiesCardWidgetState extends State<ActivitiesCardWidget> {
           children: [
             ListTile(
               leading: const Icon(Icons.photo),
-              title: const Text('Seleccionar imagen o PDF'),
+              title: const Text('Seleccionar imagen de galería'),
+              onTap: () async {
+                Navigator.of(context).pop();
+                final XFile? pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+                if (pickedFile != null) {
+                  completer.complete(File(pickedFile.path));
+                } else {
+                  completer.complete(null);
+                }
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.insert_drive_file),
+              title: const Text('Seleccionar archivo (PDF, imágenes)'),
               onTap: () async {
                 Navigator.of(context).pop();
                 FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -81,11 +102,11 @@ class _ActivitiesCardWidgetState extends State<ActivitiesCardWidget> {
   void _addTask() {
     if (_descriptionController.text.isNotEmpty) {
       setState(() {
-        _localTasks.add({
-          'description': _descriptionController.text,
-          'files': _files.map((file) => _convertFileToBase64(file)).toList(),
-        });
-        widget.onTasksUpdated(_localTasks);
+        _localTasks.add(WorkDone(
+          workDescription: _descriptionController.text,
+          documents: List<Document>.from(_files),
+        ));
+        widget.onTasksUpdated(widget.activity.activityId ?? 0, _localTasks);
         _descriptionController.clear();
         _files.clear();
       });
@@ -95,7 +116,7 @@ class _ActivitiesCardWidgetState extends State<ActivitiesCardWidget> {
   void _removeTask(int index) {
     setState(() {
       _localTasks.removeAt(index);
-      widget.onTasksUpdated(_localTasks);
+      widget.onTasksUpdated(widget.activity.activityId ?? 0, _localTasks);
     });
   }
 
@@ -107,13 +128,6 @@ class _ActivitiesCardWidgetState extends State<ActivitiesCardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, IconData> fileTypeIcons = {
-      'pdf': Icons.picture_as_pdf,
-      'jpg': Icons.image,
-      'jpeg': Icons.image,
-      'png': Icons.image,
-    };
-
     return Card(
       elevation: 3,
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -123,40 +137,18 @@ class _ActivitiesCardWidgetState extends State<ActivitiesCardWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Row(
-              children: [
-                Icon(Icons.headset_mic, size: 20, color: Colors.black54),
-                SizedBox(width: 8),
-                Text(
-                  "Actividad",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              "Descripción de la actividad:",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-            ),
-            Text(
-              activityDescription,
-              style: const TextStyle(fontSize: 14, color: Colors.black87),
-            ),
-            const SizedBox(height: 16),
+            Text("Actividad: ${widget.activity.activityDescription}", style: const TextStyle(fontWeight: FontWeight.bold)),
             const Divider(),
             ..._localTasks.asMap().entries.map((entry) {
               int index = entry.key;
-              Map<String, dynamic> task = entry.value;
+              WorkDone task = entry.value;
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "${index + 1} - ${task['description']}",
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
+                      Text("${index + 1} - ${task.workDescription}", style: const TextStyle(fontWeight: FontWeight.bold)),
                       IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
                         onPressed: () => _removeTask(index),
@@ -164,30 +156,34 @@ class _ActivitiesCardWidgetState extends State<ActivitiesCardWidget> {
                     ],
                   ),
                   Wrap(
-                    children: task['files'].map<Widget>((fileBase64) {
-                      return Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Chip(
-                          label: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(fileTypeIcons[fileBase64.substring(0, 3)] ?? Icons.insert_drive_file),
-                              const SizedBox(width: 5),
-                              const Text("Archivo adjunto"),
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                    children: task.documents?.asMap().entries.map((fileEntry) {
+                          return Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Chip(
+                              label: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.insert_drive_file),
+                                  const SizedBox(width: 5),
+                                  Text(fileEntry.value.file ?? "Archivo"),
+                                  IconButton(
+                                    icon: const Icon(Icons.close, size: 18, color: Colors.red),
+                                    onPressed: () => setState(() {
+                                      task.documents?.removeAt(fileEntry.key);
+                                    }),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }).toList() ??
+                        [],
                   ),
                   const Divider(),
                 ],
               );
-            }),
-            const Text(
-              "Descripción del trabajo realizado:",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-            ),
+            }).toList(),
+            const Text("Descripción del trabajo realizado:", style: TextStyle(fontWeight: FontWeight.bold)),
             TextField(
               controller: _descriptionController,
               maxLines: 3,
@@ -199,21 +195,18 @@ class _ActivitiesCardWidgetState extends State<ActivitiesCardWidget> {
             const SizedBox(height: 10),
             Wrap(
               children: _files.asMap().entries.map((entry) {
-                int index = entry.key;
-                File file = entry.value;
-                String fileExtension = file.path.split('.').last.toLowerCase();
                 return Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: Chip(
                     label: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(fileTypeIcons[fileExtension] ?? Icons.insert_drive_file),
+                        const Icon(Icons.insert_drive_file),
                         const SizedBox(width: 5),
-                        Text(file.path.split('/').last),
+                        Text(entry.value.file ?? "Archivo"),
                         IconButton(
                           icon: const Icon(Icons.close, size: 18, color: Colors.red),
-                          onPressed: () => _removeFile(index),
+                          onPressed: () => _removeFile(entry.key),
                         ),
                       ],
                     ),
@@ -233,7 +226,7 @@ class _ActivitiesCardWidgetState extends State<ActivitiesCardWidget> {
                 ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: _addTask,
-                  icon: const Icon(Icons.add, color: Colors.white,),
+                  icon: const Icon(Icons.add),
                   label: const Text("Agregar tarea"),
                 ),
               ],

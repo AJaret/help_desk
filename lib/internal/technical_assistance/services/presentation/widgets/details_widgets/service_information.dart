@@ -150,6 +150,54 @@ class ServiceInformationWidget extends StatelessWidget {
         Row(
           children: [
             Text(
+              'Actividad principal: ',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: size.width * 0.04,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Expanded(
+              child: Text(
+                serviceData.mainActivity ?? '',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: size.width * 0.04,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: [
+            Text(
+              'Servicio: ',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: size.width * 0.04,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Expanded(
+              child: Text(
+                serviceData.serviceTitle ?? '',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: size.width * 0.04,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: [
+            Text(
               'Descripción: ',
               style: TextStyle(
                 color: Colors.black,

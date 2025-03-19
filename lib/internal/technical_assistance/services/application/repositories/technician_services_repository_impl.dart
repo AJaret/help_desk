@@ -1,4 +1,5 @@
 import 'package:help_desk/internal/technical_assistance/services/application/datasource/technician_services_api_datasource.dart';
+import 'package:help_desk/internal/technical_assistance/services/domain/entities/closed_service.dart';
 import 'package:help_desk/internal/technical_assistance/services/domain/entities/technician_service.dart';
 import 'package:help_desk/internal/technical_assistance/services/domain/repositories/technician_services_repository.dart';
 import 'package:help_desk/internal/users/request/domain/entities/document.dart';
@@ -39,6 +40,15 @@ class TechnicianServicesRepositoryImpl implements TechnicianServicesRepository {
   Future<Map<String, dynamic>> doeServiceRequireSignatureAndSurvey(int serviceId) async{
     try {
       return await datasource.doeServiceRequireSignatureAndSurvey(serviceId);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> postCloseService(ClosedService closedService) async{
+    try {
+      return await datasource.postCloseService(closedService);
     } catch (e) {
       throw Exception(e.toString());
     }

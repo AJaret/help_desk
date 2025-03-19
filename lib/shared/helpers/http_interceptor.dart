@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 class HttpService {
   final TokenService authService = TokenService();
 
-  Future<http.Response> getRequest(String endpoint, int requestType, {Map<String, dynamic>? body, bool isTechnician = false}) async {
+  Future<http.Response> sendRequest(String endpoint, int requestType, {Map<String, dynamic>? body, bool isTechnician = false}) async {
     String? token = isTechnician ? await authService.getTechnicianShortToken() : await authService.getShortToken();
 
     if (token == null) {

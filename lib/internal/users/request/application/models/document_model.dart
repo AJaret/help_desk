@@ -10,10 +10,10 @@ class DocumentModel extends Document {
 
   factory DocumentModel.fromJson(Map<String, dynamic> json) {
     return DocumentModel(
-      documentId: json["iddocumento"],
-      fileExtension: json["extension"],
-      file: json["archivo"],
-      type: json["tipo"],
+      documentId: json["iddocumento"] ?? json["idarchivo"],
+      fileExtension: json["extension"] ?? json["nombreDocumento"],
+      file: json["archivo"] ?? json["contenido"],
+      type: json["tipo"] ?? json["fechaCarga"],
     );
   }
 

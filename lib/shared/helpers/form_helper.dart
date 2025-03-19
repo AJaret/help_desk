@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 Widget buildMultipleItemsInventoryField({
   required TextEditingController inventoryController,
@@ -500,4 +501,9 @@ String getMimeType(String filePath) {
     default:
       return 'application/octet-stream';
   }
+}
+
+String formatDateTime(DateTime dateTime) {
+  final formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+  return formatter.format(dateTime);
 }

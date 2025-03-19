@@ -123,23 +123,16 @@ class AssignationServicesWidget extends StatelessWidget {
                                               maxScale: 3.0,
                                               child: Image.memory(base64Decode(file.file!), fit: BoxFit.contain),
                                             ),
-                                          ) : (file.fileExtension == 'pdf') ? PdfViewerWidget(base64File: file.file!) :
-                                          Center(
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                const Icon(Icons.insert_drive_file,size: 50),
-                                                const SizedBox(height: 10),
-                                                Text(
-                                                  'Documento ${file.documentId}',
-                                                  style: const TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 16,
-                                                  ),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ],
-                                            )
+                                          ) : (file.fileExtension!.contains('pdf')) ? PdfViewerWidget(base64File: file.file!) :
+                                          SizedBox(
+                                            height: MediaQuery.of(context).size.height * 0.7,
+                                            child: InteractiveViewer(
+                                              panEnabled: true,
+                                              boundaryMargin: const EdgeInsets.all(20),
+                                              minScale: 0.1,
+                                              maxScale: 3.0,
+                                              child: Image.memory(base64Decode(file.file!), fit: BoxFit.contain),
+                                            ),
                                           ),
                                         actions: [
                                           CupertinoActionSheetAction(

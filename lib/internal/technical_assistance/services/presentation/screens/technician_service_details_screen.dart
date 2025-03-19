@@ -9,6 +9,7 @@ import 'package:help_desk/internal/technical_assistance/services/presentation/wi
 import 'package:help_desk/internal/technical_assistance/services/presentation/widgets/details_widgets/service_files_widget.dart';
 import 'package:help_desk/internal/users/request/presentation/widgets/request_details_widgets/follow_up_widget.dart';
 import 'package:help_desk/shared/helpers/app_dependencies.dart';
+import 'package:help_desk/shared/helpers/form_helper.dart';
 
 class TechnicianServiceDetailsScreen extends StatelessWidget {
   final Color statusColor;
@@ -136,7 +137,7 @@ class TechnicianServiceDetailsScreen extends StatelessWidget {
                                                   child: const Text('Cancelar'),
                                                 ),
                                                 CupertinoDialogAction(
-                                                  onPressed: () => GoRouter.of(context).push('/serviceForm', extra: state.services.assignedAgent!.first), 
+                                                  onPressed: () => GoRouter.of(context).push('/serviceForm', extra: {"assignment": state.services.assignedAgent, "serviceData": state.services, "startDate" : formatDateTime(DateTime.now())}), 
                                                   child: const Text('Iniciar'),
                                                 ),
                                               ],

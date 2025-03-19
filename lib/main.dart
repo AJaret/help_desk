@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:help_desk/config/router/app_router.dart';
 import 'package:help_desk/config/theme/app_theme.dart';
+import 'package:help_desk/internal/technical_assistance/services/presentation/blocs/technician_services_bloc/technician_services_bloc.dart';
 import 'package:help_desk/internal/users/catalog/presentation/blocs/catalog_bloc/catalog_bloc.dart';
 import 'package:help_desk/internal/users/login/presentation/blocs/login_bloc/login_bloc.dart';
 import 'package:help_desk/internal/users/request/presentation/blocs/delete_request_bloc/delete_request_bloc.dart';
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => DeleteRequestBloc(AppDependencies.deleteRequestUsecase)),
         BlocProvider(create: (context) => CatalogBloc(getDependencyCatalogUseCase: AppDependencies.getDependency, getPhysicalLocationsCatalogUseCase: AppDependencies.getPhysicalLocations,)),
         BlocProvider(create: (context) => RequestDetailsBloc(AppDependencies.getRequestById, AppDependencies.getDocumentFile),),
+        BlocProvider(create: (context) => TechnicianServicesBloc(AppDependencies.getTechnicianServicesUsecase, AppDependencies.getTechnicianServiceDetailsUsecase, AppDependencies.getDocumentByIdUsecase)),
       ],
       child: MaterialApp.router(
         localizationsDelegates: const [

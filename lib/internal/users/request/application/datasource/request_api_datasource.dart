@@ -14,14 +14,14 @@ import 'package:help_desk/shared/helpers/http_interceptor.dart';
 import 'package:help_desk/shared/services/token_service.dart';
 
 class RequestApiDatasourceImp implements RequestRepository {
-  final String urlApi = "http://localhost";
+  final String urlApi = "https://test-helpdesk.gobiernodesolidaridad.gob.mx";
   final TokenService tokenService = TokenService();
   final httpService = HttpService();
   
   @override
   Future<List<Request>> getRequests() async{
     try {
-      final response = await httpService.getRequest('$urlApi/apiHelpdeskDNTICS/solicitudes-usuarios/solicitudes', 2);
+      final response = await httpService.sendRequest('$urlApi/apiHelpdeskDNTICS/solicitudes-usuarios/solicitudes', 2);
       if (response.statusCode == 201) {
         dynamic body = jsonDecode(response.body);
         final List<Request> data = body["solicitudes"].map<Request>((data) => RequestModel.fromJson(data)).toList();
@@ -44,7 +44,7 @@ class RequestApiDatasourceImp implements RequestRepository {
   @override
   Future<RequestFull> getRequestById(String requestId) async{
     try {
-      final response = await httpService.getRequest('$urlApi/apiHelpdeskDNTICS/solicitudes-usuarios/solicitud/$requestId', 1);
+      final response = await httpService.sendRequest('$urlApi/apiHelpdeskDNTICS/solicitudes-usuarios/solicitud/$requestId', 1);
       if (response.statusCode == 201) {
         dynamic body = jsonDecode(response.body);
         if(body["respuesta"] == "correcto"){
@@ -69,7 +69,7 @@ class RequestApiDatasourceImp implements RequestRepository {
   @override
   Future<Document> getDocumentFile(int fileId) async{
     try {
-      final response = await httpService.getRequest('$urlApi/apiHelpdeskDNTICS/solicitudes-usuarios/archivo-digital/$fileId', 1);
+      final response = await httpService.sendRequest('$urlApi/apiHelpdeskDNTICS/solicitudes-usuarios/archivo-digital/$fileId', 1);
       if (response.statusCode == 201) {
         dynamic body = jsonDecode(response.body);
         final Document data = DocumentModel.fromJson(body);
@@ -91,7 +91,7 @@ class RequestApiDatasourceImp implements RequestRepository {
   Future<String> postNewRequest(NewRequest requestData) async{
     try {
       final Map<String, dynamic> dataToSend = NewRequestModel.fromEntity(requestData).toJson();
-      final response = await httpService.getRequest('$urlApi/apiHelpdeskDNTICS/solicitudes-usuarios/solicitud', 2, body: dataToSend);
+      final response = await httpService.sendRequest('$urlApi/apiHelpdeskDNTICS/solicitudes-usuarios/solicitud', 2, body: dataToSend);
       if (response.statusCode == 201) {
         dynamic body = jsonDecode(response.body);
         if(body["respuesta"] == 'registrado'){
@@ -120,7 +120,7 @@ class RequestApiDatasourceImp implements RequestRepository {
   Future<void> deleteRequest(String requestId) async{
     try {
       final Map<String, dynamic> data = {'token': requestId};
-      final response = await httpService.getRequest('$urlApi/apiHelpdeskDNTICS/solicitudes-usuarios/cancelar-solicitud', 2, body: data);
+      final response = await httpService.sendRequest('$urlApi/apiHelpdeskDNTICS/solicitudes-usuarios/cancelar-solicitud', 2, body: data);
       if (response.statusCode == 201) {
         dynamic body = jsonDecode(response.body);
         if(body["respuesta"] == 'noSePuedeCancelar'){
