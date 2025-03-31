@@ -32,3 +32,17 @@ final class ErrorGettingTechnicianDocumentFile extends TechnicianRequestDetailsS
 
   ErrorGettingTechnicianDocumentFile(this.message);
 }
+
+final class GettingServicePdf extends TechnicianRequestDetailsState {}
+
+final class ServicePdfSuccess extends TechnicianRequestDetailsState {
+  final String pdf;
+
+  ServicePdfSuccess(this.pdf);
+}
+
+final class ErrorGettingServicePdf extends TechnicianRequestDetailsState {
+  final String message;
+
+  ErrorGettingServicePdf(this.message);
+}

@@ -7,7 +7,7 @@ import 'package:help_desk/shared/services/token_service.dart';
 import 'package:http/http.dart' as http;
 
 class LoginApiDatasourceImp implements LoginRepository {
-  final String urlApi = "test-helpdesk.gobiernodesolidaridad.gob.mx";
+  final String urlApi = "helpdesk.gobiernodesolidaridad.gob.mx";
   final TokenService tokenService = TokenService();
   final httpService = HttpService();
 
@@ -28,7 +28,7 @@ class LoginApiDatasourceImp implements LoginRepository {
           final shortToken = data['token'];
           final longToken = data['refreshToken'];
           await tokenService.saveTokens(shortToken, longToken);
-          final responseDep = await httpService.sendRequest('https://test-helpdesk.gobiernodesolidaridad.gob.mx/apiHelpdeskDNTICS/solicitudes-usuarios/entidad-director-usuario', 1);
+          final responseDep = await httpService.sendRequest('https://helpdesk.gobiernodesolidaridad.gob.mx/apiHelpdeskDNTICS/solicitudes-usuarios/entidad-director-usuario', 1);
           if(responseDep.statusCode == 201){
             dynamic bodyDep = jsonDecode(responseDep.body);
             userDependency = bodyDep["entidad"];

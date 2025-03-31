@@ -43,7 +43,7 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: (){
-                        launchUrl(Uri.parse('https://test-helpdesk.gobiernodesolidaridad.gob.mx/helpdesk/assets/manual_usuario.pdf'));
+                        launchUrl(Uri.parse('https://helpdesk.gobiernodesolidaridad.gob.mx/helpdesk/assets/manual_usuario.pdf'));
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),

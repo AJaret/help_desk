@@ -31,7 +31,7 @@ class ServiceFilesWidget extends StatelessWidget {
     };
 
     return BlocProvider(
-      create: (context) => TechnicianRequestDetailsBloc(AppDependencies.getTechnicianServiceDetailsUsecase, AppDependencies.getDocumentByIdUsecase),
+      create: (context) => TechnicianRequestDetailsBloc(AppDependencies.getTechnicianServiceDetailsUsecase, AppDependencies.getDocumentByIdUsecase, AppDependencies.getServicePdfUsecase),
       child: Padding(
         padding: const EdgeInsets.only(top: 15.0),
         child: SingleChildScrollView(

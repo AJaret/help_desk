@@ -71,6 +71,19 @@ class _ActivitiesCardWidgetState extends State<ActivitiesCardWidget> {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text('Tomar foto con la cámara'),
+              onTap: () async {
+                Navigator.of(context).pop();
+                final XFile? pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
+                if (pickedFile != null) {
+                  completer.complete(File(pickedFile.path));
+                } else {
+                  completer.complete(null);
+                }
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.insert_drive_file),
               title: const Text('Seleccionar archivo (PDF, imágenes)'),
               onTap: () async {
@@ -182,7 +195,7 @@ class _ActivitiesCardWidgetState extends State<ActivitiesCardWidget> {
                   const Divider(),
                 ],
               );
-            }).toList(),
+            }),
             const Text("Descripción del trabajo realizado:", style: TextStyle(fontWeight: FontWeight.bold)),
             TextField(
               controller: _descriptionController,
@@ -227,7 +240,7 @@ class _ActivitiesCardWidgetState extends State<ActivitiesCardWidget> {
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: _addTask,
                   icon: const Icon(Icons.add),
-                  label: const Text("Agregar tarea"),
+                  label: const Text("Agregar trabajo"),
                 ),
               ],
             ),

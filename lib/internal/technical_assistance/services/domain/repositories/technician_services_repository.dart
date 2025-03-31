@@ -8,4 +8,5 @@ abstract class TechnicianServicesRepository {
   Future<Document> getDocumentById(int fileId);
   Future<Map<String, dynamic>> doeServiceRequireSignatureAndSurvey(int serviceId);
   Future<Map<String, dynamic>> postCloseService(ClosedService closedService);
+  Future<String> getServicePdf(String serviceToken);
 }

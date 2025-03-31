@@ -12,7 +12,7 @@ import 'package:help_desk/shared/helpers/http_interceptor.dart';
 import 'package:help_desk/shared/services/token_service.dart';
 
 class TechnicianServicesApiDatasource implements TechnicianServicesRepository {
-  final String urlApi = "https://test-helpdesk.gobiernodesolidaridad.gob.mx";
+  final String urlApi = "https://helpdesk.gobiernodesolidaridad.gob.mx";
   final TokenService tokenService = TokenService();
   final httpService = HttpService();
 
@@ -146,6 +146,32 @@ class TechnicianServicesApiDatasource implements TechnicianServicesRepository {
         throw Exception(message);
       }else{
         String message = 'Ocurrió un error al cerrar el servicio, por favor intente de nuevo.';
+        throw Exception(message);
+      }
+    } on SocketException {
+      throw Exception('No hay conexión a Internet. Por favor, revisa tu conexión.');
+    }
+    catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+  
+  @override
+  Future<String> getServicePdf(String serviceToken) async{
+    try {
+      final response = await httpService.sendRequest('$urlApi/apiHelpdeskDNTICS/responsables-app/servicio/pdf/$serviceToken', 1, isTechnician: true);
+      if (response.statusCode == 200) {
+        dynamic body = jsonDecode(response.body);
+        if(body["mensaje"] == 'PDF generado correctamente' && body["pdfBase64"] != null){
+          return body["pdfBase64"];
+        }else{
+          throw Exception('Ocurrió un error al obtener el pdf.');
+        }
+      } else if(response.statusCode == 401) {
+        String message = 'Su sesión ha expirado, por favor vuelva a iniciar sesión.';
+        throw Exception(message);
+      }else{
+        String message = 'Ocurrió un error al obtener los el pdf, por favor intente de nuevo.';
         throw Exception(message);
       }
     } on SocketException {

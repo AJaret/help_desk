@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:help_desk/internal/technical_assistance/services/domain/entities/technician_service.dart';
 import 'package:help_desk/internal/technical_assistance/services/domain/usecases/get_document_by_id_usecase.dart';
+import 'package:help_desk/internal/technical_assistance/services/domain/usecases/get_service_pdf_usecase.dart';
 import 'package:help_desk/internal/technical_assistance/services/domain/usecases/get_technician_service_details_usecase.dart';
 import 'package:help_desk/internal/users/request/domain/entities/document.dart';
 import 'package:meta/meta.dart';
@@ -12,10 +13,12 @@ class TechnicianRequestDetailsBloc extends Bloc<TechnicianRequestDetailsEvent, T
 
   final GetTechnicianServiceDetailsUsecase getTechnicianServiceDetailsUsecase;
   final GetDocumentByIdUsecase getDocumentByIdUsecase;
+  final GetServicePdfUsecase getServicePdfUsecase;
 
-  TechnicianRequestDetailsBloc(this.getTechnicianServiceDetailsUsecase, this.getDocumentByIdUsecase) : super(TechnicianRequestDetailsInitial()) {
+  TechnicianRequestDetailsBloc(this.getTechnicianServiceDetailsUsecase, this.getDocumentByIdUsecase, this.getServicePdfUsecase) : super(TechnicianRequestDetailsInitial()) {
     on<GetTechnicianRequestById>(_getTechnicianServiceDetails);
     on<GetTechnicianDocumentFile>(_getDocumentById);
+    on<GetServicePdf>(_getServicePdf);
   }
 
   Future<void> _getTechnicianServiceDetails(GetTechnicianRequestById event, Emitter<TechnicianRequestDetailsState> emit) async {
@@ -38,6 +41,17 @@ class TechnicianRequestDetailsBloc extends Bloc<TechnicianRequestDetailsEvent, T
       emit(TechnicianDocumentFileSuccess(documentsList));
     } catch (e) {
       emit(ErrorGettingTechnicianDocumentFile(e.toString().replaceAll(RegExp(r"Exception:"), "").trimLeft()));
+    }
+  }
+
+  Future<void> _getServicePdf(GetServicePdf event, Emitter<TechnicianRequestDetailsState> emit) async {
+    emit(GettingServicePdf());
+    try {
+      String pdfBase64 = await getServicePdfUsecase.execute(serviceToken: event.serviceToken);
+
+      emit(ServicePdfSuccess(pdfBase64));
+    } catch (e) {
+      emit(ErrorGettingServicePdf(e.toString().replaceAll(RegExp(r"Exception:"), "").trimLeft()));
     }
   }
 }

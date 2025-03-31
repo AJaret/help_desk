@@ -54,8 +54,6 @@ class _ServiceFormState extends State<ServiceFormScreen> {
     }
 
     await _getCurrentTime();
-
-    // 🔹 Convertimos las actividades a una lista normal (`List<Map<String, dynamic>>`)
     List<Map<String, dynamic>> actividades = widget.assignments
         .expand((assignment) => assignment.activities?.map((activity) {
               return {

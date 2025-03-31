@@ -77,6 +77,13 @@ class TechnicianServiceCardWidget extends StatelessWidget {
                                 ),
                               ),
                               Text(
+                                'Servicio: ${request.serviceFolio}',
+                                style: TextStyle(
+                                  color: textColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
                                 'Dirección: ${request.dependency}',
                                 style: TextStyle(
                                   color: textColor,

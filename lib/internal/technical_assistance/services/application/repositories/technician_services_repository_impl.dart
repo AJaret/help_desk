@@ -53,4 +53,13 @@ class TechnicianServicesRepositoryImpl implements TechnicianServicesRepository {
       throw Exception(e.toString());
     }
   }
+  
+  @override
+  Future<String> getServicePdf(String serviceToken) async{
+    try {
+      return await datasource.getServicePdf(serviceToken);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }

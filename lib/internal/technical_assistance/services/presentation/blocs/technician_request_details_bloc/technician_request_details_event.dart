@@ -18,3 +18,11 @@ class GetTechnicianDocumentFile extends TechnicianRequestDetailsEvent {
     required this.documents,
   });
 }
+
+class GetServicePdf extends TechnicianRequestDetailsEvent {
+  final String serviceToken;
+
+  GetServicePdf({
+    required this.serviceToken,
+  });
+}
