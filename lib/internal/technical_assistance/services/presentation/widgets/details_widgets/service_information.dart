@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:help_desk/internal/technical_assistance/services/domain/entities/technician_service.dart';
 import 'package:help_desk/shared/helpers/status_information.dart';
 import 'package:intl/intl.dart';
@@ -206,12 +207,8 @@ class ServiceInformationWidget extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: Text(
-                serviceData.serviceDescription ?? '',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: size.width * 0.04,
-                ),
+              child: Html(
+                data: serviceData.serviceDescription ?? ''
               ),
             ),
           ],

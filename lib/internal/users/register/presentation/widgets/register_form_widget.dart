@@ -472,7 +472,7 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () => launchURL(
-                                  'https://gobiernodesolidaridad.gob.mx/avisosdeprivacidad'),
+                                  'https://helpdesk.playadelcarmen.gob.mx/politicas/aviso_privacidad.html'),
                           ),
                           const TextSpan(
                             text: '.',

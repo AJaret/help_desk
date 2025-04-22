@@ -123,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 GestureDetector(
                   onTap: (){
-                    launchUrl(Uri.parse('https://gobiernodesolidaridad.gob.mx/avisos-de-privacidad-de-la-oficialia-mayor'));
+                    launchUrl(Uri.parse('https://helpdesk.playadelcarmen.gob.mx/politicas/aviso_privacidad.html'));
                     setState(() {
                       _showTextPrivacy = false;
                     });
@@ -163,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 GestureDetector(
                   onTap: (){
-                    launchUrl(Uri.parse('https://helpdesk.gobiernodesolidaridad.gob.mx/helpdesk/assets/manual_usuario.pdf'));
+                    launchUrl(Uri.parse('https://helpdesk.playadelcarmen.gob.mx/helpdesk/assets/manual_usuario.pdf'));
                     setState(() {
                       _showText = false;
                     });

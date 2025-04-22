@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:help_desk/internal/technical_assistance/services/domain/entities/assigned_agent.dart';
 import 'package:help_desk/internal/technical_assistance/services/domain/entities/closed_service.dart';
@@ -49,11 +50,13 @@ class _ServiceFormState extends State<ServiceFormScreen> {
   }
 
   void _finishService() async {
-    if (activityTasks.isEmpty) {
-      return;
-    }
+    if (activityTasks.isEmpty) return;
 
     await _getCurrentTime();
+
+    final posicion = await _obtenerUbicacion();
+    if (posicion == null) return;
+
     List<Map<String, dynamic>> actividades = widget.assignments
         .expand((assignment) => assignment.activities?.map((activity) {
               return {
@@ -90,6 +93,8 @@ class _ServiceFormState extends State<ServiceFormScreen> {
           surveyAnswers: [],
           fechaInicio: widget.startDate,
           fechaFin: formatDateTime(DateTime.now()),
+          latitude: posicion.latitude.toString(),
+          longitude: posicion.longitude.toString(),
         );
 
         if (requiereFirma || requiereEncuesta) {
@@ -104,6 +109,40 @@ class _ServiceFormState extends State<ServiceFormScreen> {
         }
       }
     });
+  }
+
+  Future<Position?> _obtenerUbicacion() async {
+    bool servicioHabilitado;
+    LocationPermission permiso;
+
+    servicioHabilitado = await Geolocator.isLocationServiceEnabled();
+    if (!servicioHabilitado) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Por favor, habilita el GPS.")),
+      );
+      return null;
+    }
+
+    // Verifica permiso
+    permiso = await Geolocator.checkPermission();
+    if (permiso == LocationPermission.denied) {
+      permiso = await Geolocator.requestPermission();
+      if (permiso == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Permiso de ubicación denegado.")),
+        );
+        return null;
+      }
+    }
+
+    if (permiso == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Permiso denegado permanentemente.")),
+      );
+      return null;
+    }
+
+    return await Geolocator.getCurrentPosition();
   }
 
   @override

@@ -6,7 +6,7 @@ import 'package:help_desk/internal/users/register/domain/repositories/user_regis
 import 'package:http/http.dart' as http;
 
 class UserRegisterApiDatasourceImp implements UserRegisterRepository{
-  String urlApi = "helpdesk.gobiernodesolidaridad.gob.mx";
+  String urlApi = "helpdesk.playadelcarmen.gob.mx";
   
   @override
   Future<bool> postUser({required UserRegister userData}) async{

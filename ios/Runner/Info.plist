@@ -32,6 +32,10 @@
 	<string>Esta aplicación necesita acceso a la biblioteca de fotos para que los usuarios puedan adjuntar imágenes previamente capturadas como evidencia en su solicitud de soporte.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Esta aplicación necesita acceso al micrófono para permitir la grabación de videos que pueden adjuntarse como evidencia en las solicitudes de soporte del usuario.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Esta aplicación necesita acceso a la ubicación para registrar dónde se cerró un servicio.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Esta aplicación necesita acceso a la ubicación para registrar dónde se cerró un servicio.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

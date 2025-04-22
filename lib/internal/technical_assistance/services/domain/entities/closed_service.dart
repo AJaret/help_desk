@@ -5,7 +5,9 @@ class ClosedService {
   final List<dynamic>? surveyAnswers;
   final String? signBase64;
   final String? fechaInicio; 
-  final String? fechaFin; 
+  final String? fechaFin;
+  final String? latitude;
+  final String? longitude;
 
   ClosedService({
     this.serviceId,
@@ -15,5 +17,7 @@ class ClosedService {
     this.signBase64,
     this.fechaFin,
     this.fechaInicio,
+    this.latitude,
+    this.longitude
   });
 }

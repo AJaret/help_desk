@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:help_desk/internal/users/request/domain/entities/request.dart';
 import 'package:help_desk/shared/helpers/status_information.dart';
 import 'package:intl/intl.dart';
@@ -121,12 +122,8 @@ class RequestInformationWidget extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: Text(
-                requestData.serviceDescription ?? '',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: size.width * 0.04,
-                ),
+              child: Html(
+                data: requestData.serviceDescription ?? ''
               ),
             ),
           ],

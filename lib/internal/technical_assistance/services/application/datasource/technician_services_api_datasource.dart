@@ -12,7 +12,7 @@ import 'package:help_desk/shared/helpers/http_interceptor.dart';
 import 'package:help_desk/shared/services/token_service.dart';
 
 class TechnicianServicesApiDatasource implements TechnicianServicesRepository {
-  final String urlApi = "https://helpdesk.gobiernodesolidaridad.gob.mx";
+  final String urlApi = "https://helpdesk.playadelcarmen.gob.mx";
   final TokenService tokenService = TokenService();
   final httpService = HttpService();
 
@@ -126,6 +126,8 @@ class TechnicianServicesApiDatasource implements TechnicianServicesRepository {
         "actividades": closedService.activities,
         "firmaBase64": closedService.signBase64,
         "respuestasEncuesta": closedService.surveyAnswers,
+        "latitude": closedService.latitude,
+        "longitude": closedService.longitude,
       };
 
       final response = await httpService.sendRequest('$urlApi/apiHelpdeskDNTICS/responsables-app/cerrar-servicio', 2, isTechnician: true, body: body);
